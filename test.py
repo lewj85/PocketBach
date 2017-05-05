@@ -50,9 +50,9 @@ def main():
     # create a 2D note matrix
     # dimensions:
     #   1. notes in current chord
-    #   2. note data: pitch, duration, direction, interval, chord root, 7th chord,
-    #        tonality, inversion, prev chord root, pickup, beat, measure
-    noteMTX = [[0 for x in range(16)] for y in range(12)]
+    #   2. 12 note data types: pitch, duration, direction, interval, chord root,
+    #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+    noteMTX = [[0 for y in range(12)] for x in range(lenCA)]
 
     #print(noteMTX)
 
@@ -62,9 +62,11 @@ def main():
 
     # fill in the chords:
     for j in range(lenCA):
-        noteMTX[j][4] = chordArray[j]
-        noteMTX[j][10] = 1
-        noteMTX[j][11] = j+1
+        noteMTX[j][4] = chordArray[j]                       # chord root
+        if j > 0:
+            noteMTX[j][8] = noteMTX[j-1][4]                 # prev chord root
+        noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
+        noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
         noteMTXList.append(noteMTX[j][:])
 
     print(noteMTXList)

@@ -3,14 +3,16 @@ import pyaudio
 import wave
 
 
+# initialize variables
 FORMAT = pyaudio.paInt16
-CHANNELS = 2                        # stereo
-RATE = 44100                        # framerate in Hz
-CHUNK = 1024                        # frames per buffer
-RECORD_SECONDS = 10                 # 10 seconds max
+CHANNELS = 2            # stereo
+RATE = 44100            # framerate in Hz
+CHUNK = 1024            # frames per buffer
+RECORD_SECONDS = 10     # 10 seconds max
 WAVE_OUTPUT_FILENAME = "melody.wav"
 
 
+# record() function definition
 def record(event):
     audio = pyaudio.PyAudio()
 
@@ -21,6 +23,7 @@ def record(event):
     print("Recording...")
     frames = []
 
+    # continue recording while event (Enter key) has not occurred
     while not event.wait(0):
         data = stream.read(CHUNK)
         frames.append(data)
@@ -41,15 +44,19 @@ def record(event):
     waveFile.close()
 
 
+# main() function
 def main():
-  event = threading.Event()
-  thread = threading.Thread(target=record, args=(event,))
-  thread.start()
+    # create recording event for multithreading
+    event = threading.Event()
+    thread = threading.Thread(target=record, args=(event,))
+    thread.start()
 
-  input("Press Enter to stop recording.")
-  event.set()
-  thread.join()
-  print("Recording complete.")
+    # check for Enter key to be pressed while still recording
+    input("Press Enter to stop recording.")
+    event.set()
+    thread.join()
+    print("Recording complete.")
 
 
+# call main()
 main()
