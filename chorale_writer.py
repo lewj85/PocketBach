@@ -41,7 +41,7 @@ def main():
         chordArray.append(nextChord)
 
     # display chordArray
-    print(chordArray)
+    #print(chordArray)
 
     # create a 2D note matrix
     # x dimension = chords
@@ -65,7 +65,7 @@ def main():
         noteMTXList.append(noteMTX[j][:])
 
     # display noteMTXList
-    print(noteMTXList)
+    #print(noteMTXList)
 
 
     #####################################################################
@@ -103,7 +103,7 @@ def main():
     chordArray.append(5)
 
     # display chordArray
-    print(chordArray)
+    #print(chordArray)
 
     # create a 2D note matrix
     # x dimension = chords
@@ -120,7 +120,7 @@ def main():
         noteMTXList.append(noteMTX[j][:])
 
     # display noteMTXList
-    print(noteMTXList)
+    #print(noteMTXList)
 
 
     #####################################################################
@@ -131,7 +131,7 @@ def main():
         chordArray.append(chordArray[m])
 
     # display chordArray
-    print(chordArray)
+    #print(chordArray)
 
     # create a 2D note matrix
     # x dimension = chords
@@ -148,7 +148,7 @@ def main():
         noteMTXList.append(noteMTX[j][:])
 
     # display noteMTXList
-    print(noteMTXList)
+    #print(noteMTXList)
 
 
     #####################################################################
