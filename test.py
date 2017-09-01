@@ -1,4 +1,4 @@
-import chord_writer
+from getNextChord import getNextChord
 #import chorale_writer
 
 # main() function
@@ -36,7 +36,7 @@ def main():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = chord_writer.getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord)
 
     # add the destination chord to the end of the chordArray after filling it
@@ -79,4 +79,6 @@ def main():
 
 
 # call main()
-main()
+if __name__ == "__main__":
+    print('Test - by Jesse Lew')
+    main()

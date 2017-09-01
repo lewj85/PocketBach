@@ -1,4 +1,5 @@
-#import chord_writer
+from getNextChord import getNextChord
+from numToPitch import numToPitch
 import random
 
 
@@ -6,6 +7,7 @@ import random
 def main():
 
     # initialize variables
+    key = 'C'
     chordArray = []
     chordsPerMeasure = 1
     beatsPerMeasure = 4
@@ -37,7 +39,7 @@ def main():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = chord_writer.getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord)
 
     # display chordArray
@@ -62,7 +64,7 @@ def main():
             noteMTX[j][8] = noteMTX[j-1][4]                 # prev chord root
         noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-        noteMTXList.append(noteMTX[j][:])
+        #noteMTXList.append(noteMTX[j][:])
 
     # display noteMTXList
     #print(noteMTXList)
@@ -96,7 +98,7 @@ def main():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = chord_writer.getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord)
 
     # add the hard-coded V destination to bring us back to I in measure 9
@@ -117,7 +119,7 @@ def main():
         noteMTX[j][8] = noteMTX[j-1][4]                     # prev chord root
         noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-        noteMTXList.append(noteMTX[j][:])
+        #noteMTXList.append(noteMTX[j][:])
 
     # display noteMTXList
     #print(noteMTXList)
@@ -145,7 +147,7 @@ def main():
         noteMTX[j][8] = noteMTX[j - 1][4]                   # prev chord root
         noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1  # beats
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-        noteMTXList.append(noteMTX[j][:])
+        #noteMTXList.append(noteMTX[j][:])
 
     # display noteMTXList
     #print(noteMTXList)
@@ -169,14 +171,19 @@ def main():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = chord_writer.getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord)
 
     # add the hard-coded I destination to end the chorale
     chordArray.append(1)
 
-    # display chordArray
+    # display chordArray, both in numbers and pitches
     print(chordArray)
+    chordArray2 = []
+    for c in range(len(chordArray)):
+        chordArray2.append(numToPitch(chordArray[c],key))
+    print(chordArray2)
+
 
     # create a 2D note matrix
     # x dimension = chords
@@ -190,10 +197,11 @@ def main():
         noteMTX[j][8] = noteMTX[j-1][4]                     # prev chord root
         noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-        noteMTXList.append(noteMTX[j][:])
+        #noteMTXList.append(noteMTX[j][:])
 
-    # display noteMTXList
-    print(noteMTXList)
+    # display noteMTX
+    #print(noteMTXList)
+    print(noteMTX)
 
 
 
@@ -209,4 +217,6 @@ def main():
 
 
 # call main()
-main()
+if __name__ == "__main__":
+    print('Chorale Writer - by Jesse Lew')
+    main()
