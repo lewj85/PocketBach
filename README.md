@@ -7,7 +7,7 @@
 
 To record:
 ```
-$ python3 audio_recorder.py
+$ python3 audioRecorder.py
 ```
 
 To play back:
