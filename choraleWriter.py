@@ -1,5 +1,6 @@
-from getNextChord import getNextChord
-from numToPitch import numToPitch
+import getNextChord as gnc
+import numToPitch as ntp
+import orchestrate as orch
 import random
 
 
@@ -39,7 +40,7 @@ def main():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord)
 
     # display chordArray
@@ -55,7 +56,7 @@ def main():
 
     # create a list of the note matrices
     #   broken down by chord
-    noteMTXList = []
+    #noteMTXList = []
 
     # fill in the chords:
     for j in range(4):
@@ -98,7 +99,7 @@ def main():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord)
 
     # add the hard-coded V destination to bring us back to I in measure 9
@@ -171,7 +172,7 @@ def main():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord)
 
     # add the hard-coded I destination to end the chorale
@@ -181,7 +182,7 @@ def main():
     print(chordArray)
     chordArray2 = []
     for c in range(len(chordArray)):
-        chordArray2.append(numToPitch(chordArray[c],key))
+        chordArray2.append(ntp.numToPitch(chordArray[c],key))
     print(chordArray2)
 
 
@@ -204,16 +205,10 @@ def main():
     print(noteMTX)
 
 
+    # orchestrate the 3 voices
+    finalMTX = orch.orchestrate(noteMTX, chordsPerMeasure, beatsPerMeasure)
+    print(finalMTX)
 
-
-    # fill in the bass
-    #getBass(noteMTXList)
-
-    # fill in the soprano
-    #getSoprano(noteMTXList)
-
-    # fill in the tenor/alto
-    #getTenor(noteMTXList)
 
 
 # call main()
