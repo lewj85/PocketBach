@@ -52,8 +52,8 @@ def orchestrate(noteMTX, chordsPerMeasure=1, beatsPerMeasure=4):
         # soprano has highest chance to move stepwise
         # fill alto/tenor last
         # NOTE: percentages should be calculated from actual data
-        # check for parallel 5ths, parallel octaves, tri-tones - redo a chord that fails check
-        pass
+        # NOTE: check for parallel 5ths, parallel octaves, tri-tones - redo a chord that fails check
+        pass  # use getNextNote() in while loops until an acceptable note is chosen
 
     #print(finalMTX)
     return finalMTX
