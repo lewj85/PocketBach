@@ -1,7 +1,7 @@
 # major: 0 = major, 1 = minor
 # root: 1-7
 # seventh: 0 = no, 1 = yes
-# tonality: 0 = tonal root, 1 = raised (bVII vs vii in a minor key)
+# tonality: 0 = tonal root, 1 = raised (bVII vs viio in a minor key)
 
 def defineChord(key='C', major=0, root=1, seventh=0, tonality=0, inversion=0):
     chord = []
@@ -126,4 +126,5 @@ def defineChord(key='C', major=0, root=1, seventh=0, tonality=0, inversion=0):
                         chord = ['F', 'A', 'B', 'D']
                     elif inversion == 3:
                         chord = ['A', 'B', 'D', 'F']
+
     return chord

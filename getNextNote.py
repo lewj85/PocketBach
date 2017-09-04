@@ -2,13 +2,16 @@
 
 import random
 import numToPitch as ntp
+import defineChord as dc
 
-def getNextNote(prevNote=1, currentChord=1, nextChord=1, seventhChord=0, voice=0):
+def getNextNote(prevNote=1, currentChord=1, nextChord=1, key='C', major=0, root=1, \
+                seventh=0, tonality=0, inversion=0, voice=0):
     # NOTE: need to add nextChord considerations!!
     #   especially for 7th chords because of 3rd inversion linear descents,
     #   but also for picking 2nd inversions, which should be rare if it isn't linear motion
 
     num1 = random.random()
+    chordVec = dc.defineChord(key, major, root, seventh, tonality, inversion)
 
     # if bass line, high chance to pick root, even if there's a jump
     # NOTE: need to consider repeated pitches
@@ -43,8 +46,26 @@ def getNextNote(prevNote=1, currentChord=1, nextChord=1, seventhChord=0, voice=0
 
     # if alto/tenor, high probability of repeating pitch,
     # equal probability to pick root, 3rd, or 5th
+    # NOTE: need to check for note chosen in voice 0... consider passing the whole finalMTX with a cursor param
     elif voice == 1:
-        pass
+        if num1 < 0.75:  # 75% chance to repeat note if possible
+            if ntp.numToPitch(prevNote) in ntp.numToPitch(currentChord):
+                nextNote = prevNote
+            else:
+                if num1 < 0.25:
+                    nextNote = chordVec[0]
+                elif num1 < 0.5:
+                    nextNote = chordVec[1]
+                else:
+                    nextNote = chordVec[2]
+        # elif linear prevNote+1/-1 considerations? this section needs improvement
+        else:
+            if num1 < 0.85:  # 10% chance to pick root
+                nextNote = chordVec[0]
+            elif num1 < 0.95:  # 10% chance to pick 3rd
+                nextNote = chordVec[1]
+            else:  # 5% chance to pick 5th
+                nextNote = chordVec[2]
 
     # if soprano, linear motion has highest probability
     # repeated notes should be unlikely (melody should have motion)
