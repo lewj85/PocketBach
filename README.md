@@ -19,6 +19,8 @@ $ aplay melody.wav
 
 **Music Theory Analyzer** - *Incomplete*
 
+**Chorale Writer** - *Harmony complete, Orchestration incomplete*
+
 **Fugue Writer** - *Incomplete*
 
 
