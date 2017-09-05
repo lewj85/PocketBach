@@ -9,10 +9,11 @@ def main():
 
     # initialize variables
     key = 'C'
+    major = 1
     chordArray = []
     chordsPerMeasure = 1
     beatsPerMeasure = 4
-
+    measures = 16
 
     #####################################################################
     # CREATE MEASURES 1-4
@@ -206,7 +207,7 @@ def main():
 
 
     # orchestrate the 3 voices
-    finalMTX = orch.orchestrate(noteMTX, chordsPerMeasure, beatsPerMeasure)
+    finalMTX = orch.orchestrate(noteMTX, chordsPerMeasure, beatsPerMeasure, measures, key, major)
     print(finalMTX)
 
 

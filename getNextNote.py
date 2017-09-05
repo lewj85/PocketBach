@@ -4,7 +4,7 @@ import random
 import numToPitch as ntp
 import defineChord as dc
 
-def getNextNote(prevNote=1, currentChord=1, nextChord=1, key='C', major=0, root=1, \
+def getNextNote(prevNote=1, currentChord=1, nextChord=1, key='C', major=0, root=1,
                 seventh=0, tonality=0, inversion=0, voice=0):
     # NOTE: need to add nextChord considerations!!
     #   especially for 7th chords because of 3rd inversion linear descents,

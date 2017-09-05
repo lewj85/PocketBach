@@ -3,10 +3,10 @@
 # seventh: 0 = no, 1 = yes
 # tonality: 0 = tonal root, 1 = raised (bVII vs viio in a minor key)
 
-def defineChord(key='C', major=0, root=1, seventh=0, tonality=0, inversion=0):
+def defineChord(key='C', major=1, root=1, seventh=0, tonality=0, inversion=0):
     chord = []
     if key == 'C':
-        if major == 0:
+        if major == 1:
             if root == 1:
                 if seventh == 0:
                     if inversion == 0:

@@ -2,8 +2,9 @@
 
 import numpy as np
 import random
+import getNextNote as gnn
 
-def orchestrate(noteMTX, chordsPerMeasure=1, beatsPerMeasure=4):
+def orchestrate(noteMTX, chordsPerMeasure=1, beatsPerMeasure=4, measures=16, key='C', major=1):
     # 3 dimensional matrix finalMTX contains the fully orchestrated chorale
     # x = time (16 chords)
     # y = note (12 note and chord data)
@@ -47,13 +48,24 @@ def orchestrate(noteMTX, chordsPerMeasure=1, beatsPerMeasure=4):
     ################################################################
     # orchestrate the remaining chords
     ################################################################
-    for i in range(15):
-        # bass has higher percent chance to jump to root than to move stepwise to inversion
-        # soprano has highest chance to move stepwise
-        # fill alto/tenor last
-        # NOTE: percentages should be calculated from actual data
-        # NOTE: check for parallel 5ths, parallel octaves, tri-tones - redo a chord that fails check
-        pass  # use getNextNote() in while loops until an acceptable note is chosen
+    # bass has higher percent chance to jump to root than to move stepwise to inversion
+    # soprano has highest chance to move stepwise
+    # fill alto/tenor last
+    # NOTE: percentages should be calculated from actual data
+    # NOTE: check for parallel 5ths, parallel octaves, tri-tones - redo a chord that fails check
+
+    # bass line first
+    voice = 0
+    for i in range(1,measures):
+        if i < measures-1:
+            nextChord = noteMTX[i+1][4]
+        else:
+            nextChord = 1
+        # NOTE: add while loop here for validation until acceptable note is chosen
+        finalMTX[i][0][0] = gnn.getNextNote(finalMTX[i-1][0][0], noteMTX[i][4], nextChord,
+                                            key, major, noteMTX[i][4], noteMTX[i][5],
+                                            noteMTX[i][6], noteMTX[i][7], voice)
+        # set all columns for i-th row of finalMTX using noteMTX in this loop
 
     #print(finalMTX)
     return finalMTX
