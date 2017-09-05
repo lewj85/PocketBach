@@ -1,6 +1,6 @@
 # PocketBach - by Jesse Lew
 
-## A program that records a melody, transcribes it, analyzes it, and composes a fugue with it.
+## A program that records a melody, transcribes it, analyzes it, and composes a chorale or fugue with it.
 
 
 **Audio Recorder** - *Complete*
