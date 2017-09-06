@@ -10,38 +10,51 @@ def getNextNote(prevNote=1, currentChord=1, nextChord=1, key='C', major=0, root=
     #   especially for 7th chords because of 3rd inversion linear descents,
     #   but also for picking 2nd inversions, which should be rare if it isn't linear motion
 
+    # debugging
+    #print('prevNote = ', prevNote)
+
     num1 = random.random()
     chordVec = dc.defineChord(key, major, root, seventh, tonality, inversion)
+    #print(chordVec)
 
     # if bass line, high chance to pick root, even if there's a jump
     # NOTE: need to consider repeated pitches
     # NOTE: need to make it unlikely to pick 5th for 2nd inversion...
     if voice == 0:
-        if num1 < 0.7:  # 70% chance to simply pick root
+        if num1 < 0.5:  # 50% chance to simply pick root
+            #print('root')
             nextNote = currentChord
-        elif num1 < 0.85:   # 15% chance to move up linearly (technically less than 15%,
+        elif num1 < 0.75:   # 25% chance to move up linearly (technically less than 25%,
                             # because we check to see if prevNote + 1 is a chord tone)
             if prevNote == 7:  # if prevNote is 7, can't use prevNote + 1
-                if ntp.numToPitch(1) in ntp.numToPitch(currentChord):
+                if ntp.numToPitch(1) in chordVec:
+                    #print('linear up')
                     nextNote = 1
                 else:  # otherwise just go with root
+                    #print('root')
                     nextNote = currentChord
             else:  # if prevNote isn't 7, can use prevNote + 1
-                if ntp.numToPitch(prevNote + 1) in ntp.numToPitch(currentChord):
+                if ntp.numToPitch(prevNote + 1) in chordVec:
+                    #print('linear up')
                     nextNote = prevNote + 1
                 else:  # otherwise just go with root
+                    #print('root')
                     nextNote = currentChord
-        else:   # 15% chance to move down linearly (technically less than 15%,
+        else:   # 25% chance to move down linearly (technically less than 25%,
                 # because we check to see if prevNote - 1 is a chord tone)
             if prevNote == 1:  # if prevNote is 1, can't use prevNote - 1
-                if ntp.numToPitch(7) in ntp.numToPitch(currentChord):
+                if ntp.numToPitch(7) in chordVec:
+                    #print('linear down')
                     nextNote = 7
                 else:  # otherwise just go with root
+                    #print('root')
                     nextNote = currentChord
             else:  # if prevNote isn't 1, can use prevNote - 1
-                if ntp.numToPitch(prevNote - 1) in ntp.numToPitch(currentChord):
+                if ntp.numToPitch(prevNote - 1) in chordVec:
+                    #print('linear down')
                     nextNote = prevNote - 1
                 else:  # otherwise just go with root
+                    #print('root')
                     nextNote = currentChord
 
     # if alto/tenor, high probability of repeating pitch,
@@ -50,7 +63,7 @@ def getNextNote(prevNote=1, currentChord=1, nextChord=1, key='C', major=0, root=
     #   consider passing the whole finalMTX with a cursor param
     elif voice == 1:
         if num1 < 0.75:  # 75% chance to repeat note if possible
-            if ntp.numToPitch(prevNote) in ntp.numToPitch(currentChord):
+            if ntp.numToPitch(prevNote) in chordVec:
                 nextNote = prevNote
             else:
                 if num1 < 0.25:
@@ -74,7 +87,7 @@ def getNextNote(prevNote=1, currentChord=1, nextChord=1, key='C', major=0, root=
     #   consider passing the whole finalMTX with a cursor param
     else:
         if num1 < 0.2:  # 20% chance to repeat note (technically less)
-            if ntp.numToPitch(prevNote) in ntp.numToPitch(currentChord):
+            if ntp.numToPitch(prevNote) in chordVec:
                 nextNote = prevNote
             else:
                 if num1 < 0.5:  # 5% chance to pick root
@@ -86,7 +99,7 @@ def getNextNote(prevNote=1, currentChord=1, nextChord=1, key='C', major=0, root=
         elif num1 < 0.6:    # 40% chance to move up linearly (technically less than 40%,
                             # because we check to see if prevNote + 1 is a chord tone)
             if prevNote == 7:  # if prevNote is 7, can't use prevNote + 1
-                if ntp.numToPitch(1) in ntp.numToPitch(currentChord):
+                if ntp.numToPitch(1) in chordVec:
                     nextNote = 1
                 else:
                     if num1 < 0.3:  # 10% chance to pick root
@@ -96,7 +109,7 @@ def getNextNote(prevNote=1, currentChord=1, nextChord=1, key='C', major=0, root=
                     else:  # 10% chance to pick 5th
                         nextNote = chordVec[2]
             else:  # if prevNote isn't 7, can use prevNote + 1
-                if ntp.numToPitch(prevNote + 1) in ntp.numToPitch(currentChord):
+                if ntp.numToPitch(prevNote + 1) in chordVec:
                     nextNote = prevNote + 1
                 else:
                     if num1 < 0.3:  # 10% chance to pick root
@@ -108,7 +121,7 @@ def getNextNote(prevNote=1, currentChord=1, nextChord=1, key='C', major=0, root=
         else:   # 40% chance to move down linearly (technically less than 40%,
                 # because we check to see if prevNote - 1 is a chord tone)
             if prevNote == 1:  # if prevNote is 1, can't use prevNote - 1
-                if ntp.numToPitch(7) in ntp.numToPitch(currentChord):
+                if ntp.numToPitch(7) in chordVec:
                     nextNote = 7
                 else:
                     if num1 < 0.7:  # 10% chance to pick root
@@ -118,7 +131,7 @@ def getNextNote(prevNote=1, currentChord=1, nextChord=1, key='C', major=0, root=
                     else:  # 10% chance to pick 5th
                         nextNote = chordVec[2]
             else:  # if prevNote isn't 1, can use prevNote - 1
-                if ntp.numToPitch(prevNote - 1) in ntp.numToPitch(currentChord):
+                if ntp.numToPitch(prevNote - 1) in chordVec:
                     nextNote = prevNote - 1
                 else:
                     if num1 < 0.7:  # 10% chance to pick root
