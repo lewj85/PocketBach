@@ -6,7 +6,7 @@ import getNextNote as gnn
 import defineChord as dc
 import pitchToNum as ptn
 
-def orchestrate(noteMTX, chordsPerMeasure=1, beatsPerMeasure=4, measures=16, key='C', major=1):
+def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures):
     # 3 dimensional matrix finalMTX contains the fully orchestrated chorale
     # x = time (16 chords)
     # y = note (12 note and chord data)
@@ -50,23 +50,20 @@ def orchestrate(noteMTX, chordsPerMeasure=1, beatsPerMeasure=4, measures=16, key
     ################################################################
     # orchestrate the remaining chords
     ################################################################
-    # bass has higher percent chance to jump to root than to move stepwise to inversion
-    # soprano has highest chance to move stepwise
-    # fill alto/tenor last
-    # NOTE: percentages should be calculated from actual data
     # NOTE: check for parallel 5ths, parallel octaves, tri-tones - redo a chord that fails check
 
+    ################################################################
     # bass line first
+    ################################################################
     voice = 0
-    for i in range(1,measures):
+    for i in range(1, measures):
         if i < measures-1:
             nextChord = noteMTX[i+1][4]
         else:
             nextChord = 1
-        # NOTE: add while loop here for validation until acceptable note is chosen
-        finalMTX[i][0][0] = gnn.getNextNote(finalMTX[i-1][0][0], noteMTX[i][4], nextChord,
-                                            key, major, noteMTX[i][4], noteMTX[i][5],
-                                            noteMTX[i][6], noteMTX[i][7], voice)
+        # TO DO: add while loop here for validation until acceptable note is chosen
+        #   if no acceptable note available, decrement i and replace previous choices
+        finalMTX[i][0][0] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, voice)
 
         # set all columns for i-th row of finalMTX using noteMTX
         #   12 note data types: pitch, duration, direction, interval, chord root,
@@ -118,6 +115,45 @@ def orchestrate(noteMTX, chordsPerMeasure=1, beatsPerMeasure=4, measures=16, key
         finalMTX[i][9][0] = 0                                   # pickup, none in bass
         finalMTX[i][10][0] = noteMTX[i][10]                     # beat
         finalMTX[i][11][0] = noteMTX[i][11]                     # measure
+
+        # NOTE: keep soprano and alto/tenor inside this loop so the program writes
+        #   one measure at a time rather than the whole bass line followed by the
+        #   whole soprano, etc
+        ################################################################
+        # soprano (melody) 2nd
+        ################################################################
+        # RULES:
+        # can't be 3rd+3rd
+        # can't be 5th+5th
+        # no parallel 5ths or octaves
+        voice = 2
+
+        # TO DO: add while loop here for validation until acceptable note is chosen
+        #   if no acceptable note available, decrement i and replace previous choices
+        finalMTX[i][0][2] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, voice)
+        # TO DO: fill rest of matrix for [][][2]
+
+        ################################################################
+        # alto/tenor last
+        ################################################################
+        # RULES:
+        # if root+root, must be 3rd
+        # if root+3rd, can be root or 5th
+        # if root+5th, must be 3rd
+        # if 3rd+root, can be root or 5th
+        # can't be 3rd+3rd
+        # if 3rd+5th, must be root
+        # if 5th+root, must be 3rd
+        # if 5th+3rd, must be root
+        # can't be 5th+5th
+        # no parallel 5ths or octaves
+        voice = 1
+
+        # TO DO: add while loop here for validation until acceptable note is chosen
+        #   if no acceptable note available, decrement i and replace previous choices
+        finalMTX[i][0][1] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, voice)
+        # TO DO: fill rest of matrix for [][][1]
+
 
     #print(finalMTX)
     return finalMTX

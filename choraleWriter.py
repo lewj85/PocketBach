@@ -183,7 +183,7 @@ def main():
     print(chordArray)
     chordArray2 = []
     for c in range(len(chordArray)):
-        chordArray2.append(ntp.numToPitch(chordArray[c],key))
+        chordArray2.append(ntp.numToPitch(chordArray[c], key))
     print(chordArray2)
 
 
@@ -207,7 +207,7 @@ def main():
 
 
     # orchestrate the 3 voices
-    finalMTX = orch.orchestrate(noteMTX, chordsPerMeasure, beatsPerMeasure, measures, key, major)
+    finalMTX = orch.orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures)
     print(finalMTX)
 
 

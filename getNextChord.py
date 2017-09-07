@@ -6,6 +6,8 @@
 import random
 
 def getNextChord(chordsRemaining, destination, previousChord):
+    # NOTE: use actual data to derive percentages based on each composer's preferences
+    #   pass these preferences as parameters
     if chordsRemaining == 1:      # if on last chord
         if destination == 1:      # if destination is tonic I
             newChord = 5          # return dominant V

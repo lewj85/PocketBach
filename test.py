@@ -1,14 +1,12 @@
-from getNextChord import getNextChord
+import getNextChord as gnc
 #import chorale_writer
 
 # main() function
 def main():
 
-    # initialize variables
-    beatsPerMeasure = 4
-
     # get the rate of chord movement
     numMeasures = int(input("Enter number of measures: "))
+    beatsPerMeasure = int(input("Enter number of beats per measure: "))
     chordsPerMeasure = int(input("Enter the number of chords per measure: "))
 
     # get first chord or first few chords
@@ -16,7 +14,7 @@ def main():
     # if no previous chords are provided, the first chord is defaulted to 1
     if chordArray == []:
         chordArray.append(1)
-    #print(chordArray)  # comment out
+    #print(chordArray)
 
     # get destination
     try:
@@ -36,7 +34,7 @@ def main():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord)
 
     # add the destination chord to the end of the chordArray after filling it
@@ -67,15 +65,10 @@ def main():
             noteMTX[j][8] = noteMTX[j-1][4]                 # prev chord root
         noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-        noteMTXList.append(noteMTX[j][:])
+        #noteMTXList.append(noteMTX[j][:])
 
-    print(noteMTXList)
-
-    # fill in the bass line
-
-
-
-    #print(noteMTX)
+    #print(noteMTXList)
+    print(noteMTX)
 
 
 # call main()
