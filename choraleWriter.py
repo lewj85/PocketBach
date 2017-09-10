@@ -15,6 +15,7 @@ def main():
     chordsPerMeasure = 1
     beatsPerMeasure = 4
     measures = 16
+    maxVoices = 3
 
     #####################################################################
     # CREATE MEASURES 1-4
@@ -212,7 +213,7 @@ def main():
     print(finalMTX)
 
     # create a pdf score with LilyPad
-    cl.createLily(key, major, finalMTX, measures, 3)
+    cl.createLily(key, major, finalMTX, measures, maxVoices)
 
 
 # call main()
