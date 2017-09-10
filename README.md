@@ -1,9 +1,7 @@
 # PocketBach - by Jesse Lew
 
-## A program that records a melody, transcribes it, analyzes it, composes a chorale or Baroque fugue with it, and creates both a MusicXML score and a pdf of it using a homemade LilyPond API.
+## A program that records a melody, transcribes it, analyzes it, composes a chorale or Baroque fugue using the user's melody and data from Hooktheory's API, and creates both a MusicXML score and a pdf score using LilyPond.
 
-
-**Audio Recorder** - *Complete*
 
 To record:
 ```
@@ -15,17 +13,21 @@ To play back:
 $ aplay melody.wav
 ```
 
+**Audio Recorder** - Complete, no known issues
+
 **Audio Transcriber** - *Incomplete*
 
 **Music Theory Analyzer** - *Incomplete*
 
-**Chorale Writer** - *Harmony complete, Orchestration incomplete*
+**Hooktheory API Data Extractor** - *Incomplete*
+
+**Chorale Writer** - Complete, no known issues
 
 **Fugue Writer** - *Incomplete*
 
 **MusicXML Converter** - *Incomplete*
 
-**LilyPond API** - *Incomplete*
+**LilyPond Converter** - *Incomplete*
 
 
 
