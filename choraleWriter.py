@@ -1,6 +1,7 @@
 import getNextChord as gnc
 import numToPitch as ntp
 import orchestrate as orch
+import createLily as cl
 import random
 
 
@@ -210,6 +211,8 @@ def main():
     finalMTX = orch.orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures)
     print(finalMTX)
 
+    # create a pdf score with LilyPad
+    cl.createLily(key, major, finalMTX, measures, 3)
 
 
 # call main()

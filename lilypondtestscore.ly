@@ -1,4 +1,4 @@
-\version "2.16.0"  % necessary for upgrading to future LilyPond versions.
+\version "2.16.0"  % necessary for upgrading to future LilyPond versions
 
 % in-line comment syntax
 %{ multiple line 
@@ -37,7 +37,7 @@ and r instead of pitch is rest, so r1 is a whole note rest, r2 is a half note re
  e a b bf |		% tonality isn't default, so it will use naturals despite key signature
  << \new Staff c1 >>	% more staves
  g4-> g-. g4.-. g8-.-> |	% articulations: accent -> and staccato -. and both ->-. or -.->
-				% dotted staccato must repeat duration value, not just .-. or -..
+				% dotted staccato must repeat duration integer, not just .-. or -..
  
 }
 
