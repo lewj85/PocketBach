@@ -20,7 +20,7 @@ def record(event):
     stream = audio.open(format=FORMAT, channels=CHANNELS,
                     rate=RATE, input=True,
                     frames_per_buffer=CHUNK)
-    print("Recording...")
+    print("\nRecording...")
     frames = []
 
     # continue recording while event (Enter key) has not occurred
@@ -59,4 +59,6 @@ def main():
 
 
 # call main()
-main()
+if __name__ == "__main__":
+    print('Audio Recorder - by Jesse Lew\n\n')
+    main()

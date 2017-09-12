@@ -6,7 +6,7 @@ import getNextNote as gnn
 import defineChord as dc
 import pitchToNum as ptn
 
-def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures):
+def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices):
     # 3 dimensional matrix finalMTX contains the fully orchestrated chorale
     # x = time (16 chords)
     # y = note (12 note and chord data)
@@ -53,34 +53,35 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
     # NOTE: check for parallel 5ths, parallel octaves, tri-tones - redo a chord that fails check
 
     for i in range(1, measures):
+        voice = 0  # reset this each time to start with bass in next measure
         if i < measures-1:
             nextChord = noteMTX[i+1][4]
         else:
             nextChord = 1
 
-        # NO RULES NEEDED FOR BASS
         # TO DO: add while loop around each voice for validation until acceptable note is chosen
         #   if no acceptable note available, decrement i and rewrite previous choices
-        finalMTX[i][0][0] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 0)  # bass
+        # bass
+        finalMTX[i][0][0] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 0, maxVoices)
+        # fill out inversion column for the other voices to follow rules
+        if finalMTX[i][0][0] == noteMTX[i][4]:  # inversion
+            finalMTX[i][7][0] = 0
+        else:
+            chordArr = dc.defineChord(key, major, noteMTX[i][4],
+                                      noteMTX[i][5], noteMTX[i][6], noteMTX[i][7])
+            print('The chord array is: ', chordArr)
+            if finalMTX[i][0][0] == ptn.pitchToNum(chordArr[1]):
+                finalMTX[i][7][0] = 1
+            elif finalMTX[i][0][0] == ptn.pitchToNum(chordArr[2]):
+                finalMTX[i][7][0] = 2
+            else:
+                finalMTX[i][7][0] = 3  # 7th chords have 3rd inversion
 
-        # RULES FOR SOPRANO:
-        # can't be 3rd+3rd
-        # can't be 5th+5th
-        # no parallel 5ths or octaves
-        finalMTX[i][0][2] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 2)  # soprano
+        # soprano
+        finalMTX[i][0][2] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 2, maxVoices)  # soprano
 
-        # RULES FOR ALTO/TENOR:
-        # if root+root, must be 3rd
-        # if root+3rd, can be root or 5th
-        # if root+5th, must be 3rd
-        # if 3rd+root, can be root or 5th
-        # can't be 3rd+3rd
-        # if 3rd+5th, must be root
-        # if 5th+root, must be 3rd
-        # if 5th+3rd, must be root
-        # can't be 5th+5th
-        # no parallel 5ths or octaves
-        finalMTX[i][0][1] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 1)  # alto/tenor
+        # alto/tenor:
+        finalMTX[i][0][1] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 1, maxVoices)  # alto/tenor
 
         # set all columns for i-th row of finalMTX using noteMTX
         #   12 note data types: pitch, duration, direction, interval, chord root,
@@ -139,4 +140,3 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
 
     #print(finalMTX)
     return finalMTX
-

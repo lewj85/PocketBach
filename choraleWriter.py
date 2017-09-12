@@ -209,7 +209,7 @@ def main():
 
 
     # orchestrate the 3 voices
-    finalMTX = orch.orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures)
+    finalMTX = orch.orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices)
     print(finalMTX)
 
     # create a pdf score with LilyPad

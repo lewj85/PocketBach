@@ -6,68 +6,68 @@
 \parallelMusic #'(voiceA voiceB voiceC)
 {
 e1 |
-c1 |
-c1 |
+\relative f' g1 |
+\relative c c1 |
 
-d1 |
-d1 |
-b1 |
+\relative c'' c1 |
+\relative f' e1 |
+\relative c a1 |
 
-c1 |
-e1 |
-c1 |
+\relative c'' a1 |
+\relative f' c1 |
+\relative c f1 |
 
-g1 |
-c1 |
-c1 |
+\relative c'' c1 |
+\relative f' e1 |
+\relative c c1 |
 
-c1 |
-a1 |
-f1 |
+\relative c'' g1 |
+\relative f' b1 |
+\relative c g1 |
 
-g1 |
-c1 |
-c1 |
+\relative c'' e1 |
+\relative f' c1 |
+\relative c a1 |
 
-f1 |
-c1 |
-f1 |
+\relative c'' d1 |
+\relative f' f1 |
+\relative c d1 |
 
-g1 |
-d1 |
-g1 |
+\relative c'' d1 |
+\relative f' b1 |
+\relative c g1 |
 
-g1 |
-g1 |
-c1 |
+\relative c'' g1 |
+\relative f' e1 |
+\relative c c1 |
 
-g1 |
-g1 |
-d1 |
+\relative c'' c1 |
+\relative f' a1 |
+\relative c a1 |
 
-c1 |
-e1 |
-c1 |
+\relative c'' a1 |
+\relative f' c1 |
+\relative c f1 |
 
-e1 |
-e1 |
-c1 |
+\relative c'' e1 |
+\relative f' g1 |
+\relative c c1 |
 
-c1 |
-c1 |
-c1 |
+\relative c'' e1 |
+\relative f' g1 |
+\relative c c1 |
 
-f1 |
-f1 |
-d1 |
+\relative c'' f1 |
+\relative f' a1 |
+\relative c f1 |
 
-d1 |
-d1 |
-g1 |
+\relative c'' g1 |
+\relative f' b1 |
+\relative c g1 |
 
-e1 |
-g1 |
-c1 |
+\relative c'' c1 |
+\relative f' e1 |
+\relative c c1 |
 
 }
 \new StaffGroup <<

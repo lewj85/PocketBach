@@ -127,4 +127,5 @@ def defineChord(key='C', major=1, root=1, seventh=0, tonality=0, inversion=0):
                     elif inversion == 3:
                         chord = ['A', 'B', 'D', 'F']
 
+
     return chord
