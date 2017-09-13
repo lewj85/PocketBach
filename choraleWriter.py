@@ -3,6 +3,7 @@ import numToPitch as ntp
 import orchestrate as orch
 import createLily as cl
 import random
+import time
 
 
 # main() function
@@ -16,6 +17,7 @@ def main():
     beatsPerMeasure = 4
     measures = 16
     maxVoices = 3
+    species = 1  # first- through fifth-species counterpoint
 
     #####################################################################
     # CREATE MEASURES 1-4
@@ -213,7 +215,14 @@ def main():
     print(finalMTX)
 
     # create a pdf score with LilyPad
-    cl.createLily(key, major, finalMTX, measures, maxVoices)
+    cl.createLily(key, major, finalMTX, measures, maxVoices, species)
+
+    # create the pdf score - apparently this only opens it as a text file though...
+    #filename = 'newScore.ly'
+    #f = open(filename)
+    #print("Creating .pdf with LilyPond...")
+    #time.sleep(5)
+    #f.close()
 
 
 # call main()

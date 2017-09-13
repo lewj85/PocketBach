@@ -63,7 +63,7 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
                 j += 1  # go to next note
 
             # measure symbol is optional, but we will be using it
-            finalString += "|\n"
+            finalString += "| %" + str(i) + "\n"
             # print(finalString)
 
             # add \relative c to the beginning of each alto/tenor voice line

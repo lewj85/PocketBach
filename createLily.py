@@ -1,6 +1,7 @@
 import matrixToLily as mtl
+import speciesCP
 
-def createLily(key, major, finalMTX, measures, maxVoices):
+def createLily(key, major, finalMTX, measures, maxVoices, species=1):
 
     filename = 'newScore.ly'
     f = open(filename, 'w')
@@ -9,7 +10,7 @@ def createLily(key, major, finalMTX, measures, maxVoices):
                 "% PocketBach Score by Jesse Lew\n" +
                 "\\language \"english\"\n\n" +
                 "\\parallelMusic #\'(voiceA voiceB voiceC)\n" +
-                "{\n" +
+                "{\n\\relative c'' " +
                 mtl.matrixToLily(key, major, finalMTX, measures, maxVoices) +
                 "}\n"
                 "\\new StaffGroup <<\n"
@@ -18,4 +19,14 @@ def createLily(key, major, finalMTX, measures, maxVoices):
                 ">>")
     elif maxVoices == 4:
         pass
-    f.close()
+    f.close()  # save work, even if you're about to change it below
+
+    if species == 2:
+        speciesCP.secondSpecies(filename, finalMTX)
+    elif species == 3:
+        speciesCP.thirdSpecies(filename, finalMTX)
+    elif species == 4:
+        speciesCP.fourthSpecies(filename, finalMTX)
+    elif species == 5:
+        speciesCP.fifthSpecies(filename, finalMTX)
+

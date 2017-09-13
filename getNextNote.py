@@ -117,30 +117,29 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
                 elif finalMTX[index][7][0] == 3:  # if inversion = 3
                     chordVec = [chordVec[0], chordVec[1], chordVec[2]]
 
-        if num1 < 0.75:     # 75% chance to repeat note (technically less
-                            # because we check to see if prevNote is a chord tone)
-            if ntp.numToPitch(prevNote) in chordVec:
-                return prevNote
-        elif num1 < 0.3:    # 30% chance to move up linearly (technically less than 30%,
-                            # because we check to see if prevNote + 1 is a chord tone)
-            if prevNote == 7:  # if prevNote is 7, can't use prevNote + 1
+        # all percentages are multiplied by 2.5/7 = 0.36 because there's only about a 2.5/7 chance
+        #   for the prevNote or prevNote +1/-1 to be a chord tone
+        # TO DO: right now it checks for upward motion first, so percentages of upward/downward
+        #   motion aren't equal... need to equalize
+        if num1 < 0.83:         # 83% * 0.36 = 30% chance to move up or down
+            if prevNote == 7:   # if prevNote is 7, can't use prevNote + 1
                 if ntp.numToPitch(1) in chordVec:
                     return 1
             else:  # if prevNote isn't 7, can use prevNote + 1
                 if ntp.numToPitch(prevNote + 1) in chordVec:
                     return prevNote + 1
-        elif num1 < 0.6:    # 60% chance to move down linearly (technically less than 30%,
-                            # because we check to see if prevNote - 1 is a chord tone)
-                            # NOTE: higher than previous elif to balance up and down movement
             if prevNote == 1:  # if prevNote is 1, can't use prevNote - 1
                 if ntp.numToPitch(7) in chordVec:
                     return 7
             else:  # if prevNote isn't 1, can use prevNote - 1
                 if ntp.numToPitch(prevNote - 1) in chordVec:
                     return prevNote - 1
+        else:      # 100% * 0.36 = 36% * 0.7 (30% less chance to make it through first if) = 25% chance to repeat note
+            if ntp.numToPitch(prevNote) in chordVec:
+                return prevNote
 
-        # 25% base chance to run this anyway, but there's a small chance the note will fall
-        # through the if-elifs above, so don't put this line into "else:"
+        # there's a high chance the note will fall through the if-elifs above,
+        #   so don't put this line into "else:"
         return ptn.pitchToNum(chordVec[random.randint(0, len(chordVec) - 1)])
 
     ################################################################
