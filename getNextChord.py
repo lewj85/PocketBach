@@ -6,6 +6,7 @@
 import random
 
 def getNextChord(chordsRemaining, destination, previousChord):
+    inversion = 0
     # NOTE: use actual data to derive percentages based on each composer's preferences
     #   pass these preferences as parameters
     if chordsRemaining == 1:      # if on last chord
@@ -50,10 +51,14 @@ def getNextChord(chordsRemaining, destination, previousChord):
     elif chordsRemaining == 2:    # if on second to last chord
         if destination == 1:      # if destination is tonic I
             num1 = random.random()
-            if num1 < 0.5:        # return random predominant ii or IV
+            if num1 < 0.4:        # return random predominant ii or IV
                 newChord = 4
-            else:
+            elif num1 < 0.8:
                 newChord = 2
+            else:
+                newChord = 1
+                inversion = 2
+                #print("I-6/4 chord")
         elif destination == 5:
             num1 = random.random()
             # return random predominant ii/V or IV/V, which is vi or I
@@ -141,4 +146,4 @@ def getNextChord(chordsRemaining, destination, previousChord):
         else:  # 5% chance to stay the same
             newChord = previousChord
 
-    return newChord
+    return [newChord, inversion]

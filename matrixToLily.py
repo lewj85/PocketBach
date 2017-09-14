@@ -27,17 +27,8 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
                         #print(finalString)
 
                         # duration optional for repeated durations, but we will be using it
-                        # NOTE: duration in matrix does not equal LilyPond duration notation!!!
-                        #   so must use dictionary to return correct symbol
                         # TO DO: fix this to take timesig param and calculate/convert durations properly
-                        matrixDuration = str(finalMTX[j][1][voice])
-                        lilyDuration = {
-                            '1': '4',
-                            '2': '2',
-                            '3': '2.',  # for 3/4 time
-                            '4': '1'
-                        }.get(matrixDuration, '1')  # find 'pitch' in dictionary above, otherwise default to 1
-                        finalString += lilyDuration
+                        finalString += str(finalMTX[j][1][voice])
                         #print(finalString)
 
                         # TO DO: direction only needs to check if > 4 for "'" or < -4 for ","

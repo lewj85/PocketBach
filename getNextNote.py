@@ -28,8 +28,9 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
     num1 = random.random()
 
     # track chord tones
-    chordVec = dc.defineChord(key, major, currentRoot, seventh, tonality, inversion)
+    chordVec = dc.defineChord(key, major, currentRoot, seventh, tonality)
     #print(chordVec)
+
 
     ################################################################
     # bass
@@ -40,6 +41,13 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
     # NOTE: use actual data to derive percentages based on each composer's preferences
     # TO DO: need to consider repeated pitches
     if voice == 0:
+
+        # first of all... return 5th for I-6/4 chords in bass
+        if inversion == 2:
+            nextNote = currentRoot + 4
+            while nextNote > 7:
+                nextNote -= 7
+            return nextNote
 
         # 7th chords with only 3 voices cannot be in 2nd inversion (5th in bass)
         if noteMTX[index][5] == 1 and maxVoices == 3:
@@ -92,6 +100,11 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
     elif voice == 2:
         # enforce rules above by changing chordVec!!!
         # check for 7th chords first
+
+        # first of all... if on the last measure, just return tonic
+        if noteMTX[index][11] == measures:
+            return 1
+
         if finalMTX[index][5][0] == 0:  # if not a 7th chord
             if finalMTX[index][7][0] == 1:  # if inversion = 1
                 # can also use "del chordVec[1]"

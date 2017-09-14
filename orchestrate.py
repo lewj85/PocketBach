@@ -23,14 +23,14 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
     ################################################################
     # bass
     finalMTX[0][0][0] = 1
-    finalMTX[0][1][0] = beatsPerMeasure/chordsPerMeasure
+    finalMTX[0][1][0] = chordsPerMeasure    # TO DO: fix this for non-4/4
     finalMTX[0][4][0] = 1
     finalMTX[0][10][0] = 1
     finalMTX[0][11][0] = 1
     # alto/tenor
     chordNotes = [1, 3, 5]  # create array for random to choose from below
     finalMTX[0][0][1] = chordNotes[random.randint(1, 3)-1]  # pick 1, 3, or 5
-    finalMTX[0][1][1] = beatsPerMeasure/chordsPerMeasure
+    finalMTX[0][1][1] = chordsPerMeasure    # TO DO: fix this for non-4/4
     finalMTX[0][4][1] = 1
     finalMTX[0][10][1] = 1
     finalMTX[0][11][1] = 1
@@ -42,7 +42,7 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
         finalMTX[0][0][2] = chordNotes[random.randint(1, 2)-1]
     else:                           # if root and 5th, must pick 3rd
         finalMTX[0][0][2] = 3
-    finalMTX[0][1][2] = beatsPerMeasure/chordsPerMeasure
+    finalMTX[0][1][2] = chordsPerMeasure    # TO DO: fix this for non-4/4
     finalMTX[0][4][2] = 1
     finalMTX[0][10][2] = 1
     finalMTX[0][11][2] = 1
@@ -53,29 +53,22 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
     # NOTE: check for parallel 5ths, parallel octaves, tri-tones - redo a chord that fails check
 
     for i in range(1, measures):
-        voice = 0  # reset this each time to start with bass in next measure
-        if i < measures-1:
-            nextChord = noteMTX[i+1][4]
-        else:
-            nextChord = 1
 
         # TO DO: add while loop around each voice for validation until acceptable note is chosen
         #   if no acceptable note available, decrement i and rewrite previous choices
+
         # bass
         finalMTX[i][0][0] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 0, maxVoices)
         # fill out inversion column for the other voices to follow rules
-        if finalMTX[i][0][0] == noteMTX[i][4]:  # inversion
+        chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6])
+        if finalMTX[i][0][0] == ptn.pitchToNum(chordArr[0]):
             finalMTX[i][7][0] = 0
+        elif finalMTX[i][0][0] == ptn.pitchToNum(chordArr[1]):
+            finalMTX[i][7][0] = 1
+        elif finalMTX[i][0][0] == ptn.pitchToNum(chordArr[2]):
+            finalMTX[i][7][0] = 2
         else:
-            chordArr = dc.defineChord(key, major, noteMTX[i][4],
-                                      noteMTX[i][5], noteMTX[i][6], noteMTX[i][7])
-            print('The chord array is: ', chordArr)
-            if finalMTX[i][0][0] == ptn.pitchToNum(chordArr[1]):
-                finalMTX[i][7][0] = 1
-            elif finalMTX[i][0][0] == ptn.pitchToNum(chordArr[2]):
-                finalMTX[i][7][0] = 2
-            else:
-                finalMTX[i][7][0] = 3  # 7th chords have 3rd inversion
+            finalMTX[i][7][0] = 3  # 7th chords have 3rd inversion
 
         # soprano
         finalMTX[i][0][2] = gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 2, maxVoices)  # soprano
@@ -87,7 +80,7 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
         #   12 note data types: pitch, duration, direction, interval, chord root,
         #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
         for voice in range(3):
-            finalMTX[i][1][voice] = beatsPerMeasure/chordsPerMeasure    # duration
+            finalMTX[i][1][voice] = chordsPerMeasure    # duration
 
             # voice 0 interval
             if finalMTX[i][0][voice] == 1 or finalMTX[i][0][voice] == 2:    # interval, must check for 'wrapping'
@@ -120,17 +113,15 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
             finalMTX[i][5][voice] = noteMTX[i][5]                       # 7th chord
             finalMTX[i][6][voice] = noteMTX[i][6]                       # tonality
 
-            if finalMTX[i][0][voice] == noteMTX[i][4]:                  # inversion
+            chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6])  # inversion
+            if finalMTX[i][0][voice] == ptn.pitchToNum(chordArr[0]):
                 finalMTX[i][7][voice] = 0
+            elif finalMTX[i][0][voice] == ptn.pitchToNum(chordArr[1]):
+                finalMTX[i][7][voice] = 1
+            elif finalMTX[i][0][voice] == ptn.pitchToNum(chordArr[2]):
+                finalMTX[i][7][voice] = 2
             else:
-                chordArr = dc.defineChord(key, major, finalMTX[i][4][voice],
-                                          finalMTX[i][5][voice], finalMTX[i][6][voice], 0)
-                if finalMTX[i][0][voice] == ptn.pitchToNum(chordArr[1]):
-                    finalMTX[i][7][voice] = 1
-                elif finalMTX[i][0][voice] == ptn.pitchToNum(chordArr[2]):
-                    finalMTX[i][7][voice] = 2
-                else:
-                    finalMTX[i][7][voice] = 3  # 7th chords have 3rd inversion
+                finalMTX[i][7][voice] = 3  # 7th chords have 3rd inversion
 
             finalMTX[i][8][voice] = noteMTX[i-1][4]                     # prev chord root
             finalMTX[i][9][voice] = 0                                   # pickup, none in bass

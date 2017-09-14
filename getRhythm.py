@@ -3,4 +3,4 @@
 import random
 
 def getRhythm(finalMTX, measure, measures, voice):
-    pass
+    num1 = random.random()

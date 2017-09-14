@@ -38,6 +38,7 @@ def main():
 
     # calculate number of chords that need to be filled
     chordsNeeded = 3
+    secondInversionLocations = []
 
     # fill in the missing chords
     for i in range(0, chordsNeeded):
@@ -46,7 +47,9 @@ def main():
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
         nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
-        chordArray.append(nextChord)
+        chordArray.append(nextChord[0])
+        if nextChord[1] != 0:
+            secondInversionLocations.append(i)
 
     # display chordArray
     #print(chordArray)
@@ -105,7 +108,9 @@ def main():
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
         nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
-        chordArray.append(nextChord)
+        chordArray.append(nextChord[0])
+        if nextChord[1] != 0:
+            secondInversionLocations.append(i)
 
     # add the hard-coded V destination to bring us back to I in measure 9
     chordArray.append(5)
@@ -150,6 +155,7 @@ def main():
     # fill in the chords:
     for j in range(8, 12):
         noteMTX[j][4] = chordArray[j]                       # chord root
+        noteMTX[j][7] = noteMTX[j-8][7]                     # inversion
         noteMTX[j][8] = noteMTX[j - 1][4]                   # prev chord root
         noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1  # beats
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
@@ -165,11 +171,13 @@ def main():
     # set destination to I
     destination = 1
 
-    # for consistency, repeat chord from measure 9
-    chordArray.append(chordArray[8])
-
-    # get 2 more chords (V is set manually afterward)
-    chordsNeeded = 2
+    # half the time start with 1, other half can do anything
+    num1 = random.random()
+    if num1 < 0.5:
+        chordArray.append(1)
+        chordsNeeded = 2
+    else:
+        chordsNeeded = 3
 
     # fill in the missing chords
     for i in range(0, chordsNeeded):
@@ -178,7 +186,9 @@ def main():
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
         nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
-        chordArray.append(nextChord)
+        chordArray.append(nextChord[0])
+        if nextChord[1] != 0:
+            secondInversionLocations.append(i+13)
 
     # add the hard-coded I destination to end the chorale
     chordArray.append(1)
@@ -188,7 +198,7 @@ def main():
     chordArray2 = []
     for c in range(len(chordArray)):
         chordArray2.append(ntp.numToPitch(chordArray[c], key))
-    print(chordArray2)
+    #print(chordArray2)
 
 
     # create a 2D note matrix
@@ -205,14 +215,25 @@ def main():
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
         #noteMTXList.append(noteMTX[j][:])
 
+
+    # add the secondInversionLocations data to matrix
+    for i in secondInversionLocations:
+        noteMTX[i][7] = 2
+    #print(secondInversionLocations)
+
+
     # display noteMTX
     #print(noteMTXList)
-    print(noteMTX)
+    #print(noteMTX)
 
 
     # orchestrate the 3 voices
     finalMTX = orch.orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices)
-    print(finalMTX)
+    #print(finalMTX)
+
+    # debugging inversions
+    # for i in range(16):
+    #     print(finalMTX[i][7][0])
 
     # create a pdf score with LilyPad
     cl.createLily(key, major, finalMTX, measures, maxVoices, species)
