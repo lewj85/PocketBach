@@ -3,6 +3,7 @@ import numToPitch as ntp
 import orchestrate as orch
 import createLily as cl
 import random
+import os
 import time
 
 
@@ -238,12 +239,11 @@ def main():
     # create a pdf score with LilyPad
     cl.createLily(key, major, finalMTX, measures, maxVoices, species)
 
-    # create the pdf score - apparently this only opens it as a text file though...
-    #filename = 'newScore.ly'
-    #f = open(filename)
-    #print("Creating .pdf with LilyPond...")
-    #time.sleep(5)
-    #f.close()
+    # create the pdf score
+    print("Creating .pdf with LilyPond...")
+    filename = 'newScore.ly'
+    os.system(filename)
+    #time.sleep(3)
 
 
 # call main()
