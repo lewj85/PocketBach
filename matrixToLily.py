@@ -23,7 +23,9 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
                 if key == 'C':
                     if major == 1:
                         # pitch
-                        finalString += str.lower(ntp.numToPitch(finalMTX[j][0][voice], key))
+                        # NOTE: str.lower() no longer needed as they are now lowercase
+                        # TO DO: add flats and sharps for secondary dominants
+                        finalString += ntp.numToPitch(finalMTX[j][0][voice], key)
                         #print(finalString)
 
                         # duration optional for repeated durations, but we will be using it
