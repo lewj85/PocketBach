@@ -76,23 +76,55 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
     ################################################################
     # NOTE: check for parallel 5ths, parallel octaves, tri-tones - redo a chord that fails check
 
-    for i in range(1, measures):
+    # save for overwrite prevention
+    i64 = (noteMTX[13][7] == 2)
 
+    for i in range(1, measures):
+        #print(noteMTX[i][7])  # debugging
         # TO DO: add while loop around each voice for validation until acceptable note is chosen
         #   if no acceptable note available, decrement i and rewrite previous choices
 
         # bass
         finalMTX[0][i][0] = str(gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 0, maxVoices))
         # fill out inversion column for the other voices to follow rules
-        chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6])
-        if finalMTX[0][i][0] == ptn.pitchToNum(chordArr[0]):
+        if int(finalMTX[0][i][0]) == noteMTX[i][4]:
+            noteMTX[i][7] = 0
             finalMTX[0][i][7] = 0
-        elif finalMTX[0][i][0] == ptn.pitchToNum(chordArr[1]):
+        elif int(finalMTX[0][i][0]) == noteMTX[i][4]+2 or int(finalMTX[0][i][0]) == noteMTX[i][4]-5:  # wrapping 1-7
+            print('1st')
+            noteMTX[i][7] = 1
             finalMTX[0][i][7] = 1
-        elif finalMTX[0][i][0] == ptn.pitchToNum(chordArr[2]):
+        elif int(finalMTX[0][i][0]) == noteMTX[i][4]+4 or int(finalMTX[0][i][0]) == noteMTX[i][4]-3:  # wrapping 1-7
+            print('2nd')
+            noteMTX[i][7] = 2
             finalMTX[0][i][7] = 2
         else:
+            print('3rd')
+            noteMTX[i][7] = 3
             finalMTX[0][i][7] = 3  # 7th chords have 3rd inversion
+
+        # keeping all these old comments for legacy
+        #chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6], finalMTX[0][i][0])
+        #print(chordArr)
+        #print(str(int(finalMTX[0][i][0])))
+        #print(ptn.pitchToNum(chordArr[0]))
+        #print(str(int(finalMTX[0][i][0])) == ptn.pitchToNum(chordArr[0]))
+        # FOUND A BUG: after converting to structs, need to remove the "b'value'" from first 2 columns...
+        # TO DO: CHORALEWRITER'S GETNEXTCHORD IS CURRENTLY DECIDING WHETHER OR NOT TO ADD INVERSIONS, BUT
+        #       GETNEXTNOTE ABOVE REALLY OUGHT TO BE THE THING DECIDING IF THERE ARE INVERSIONS (except for 164 cadences)
+        #       so FIX IT - use the code below, not #finalMTX[0][i][7] = noteMTX[i][7] (except for 164 cadences...)
+        # choraleWriter creates inversions now, so replace everything above with this?
+        #finalMTX[0][i][7] = noteMTX[i][7]
+
+        # manually reset 164 if it was overwritten
+        if i == 13 and i64 == True:
+            #print('overwriting')
+            noteMTX[13][0] = str(noteMTX[0][4]+4)
+            if int(noteMTX[13][0]) > 7:
+                noteMTX[13][0] = str(int(noteMTX[13][0]) - 7)
+            finalMTX[0][13][0] = noteMTX[13][0]
+            noteMTX[13][7] = 2
+            finalMTX[0][13][7] = 2
 
         # soprano
         finalMTX[2][i][0] = str(gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 2, maxVoices))  # soprano
@@ -137,15 +169,17 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
             finalMTX[voice][i][5] = noteMTX[i][5]                       # 7th chord
             finalMTX[voice][i][6] = noteMTX[i][6]                       # tonality
 
-            chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6])  # inversion
-            if finalMTX[voice][i][0] == ptn.pitchToNum(chordArr[0]):
+            chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6], noteMTX[i][7])  # inversion
+            if str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(chordArr[0]):
                 finalMTX[voice][i][7] = 0
-            elif finalMTX[voice][i][0] == ptn.pitchToNum(chordArr[1]):
+            elif str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(chordArr[1]):
                 finalMTX[voice][i][7] = 1
-            elif finalMTX[voice][i][0] == ptn.pitchToNum(chordArr[2]):
+            elif str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(chordArr[2]):
                 finalMTX[voice][i][7] = 2
             else:
                 finalMTX[voice][i][7] = 3  # 7th chords have 3rd inversion
+            # replace everything above with this?
+            #finalMTX[voice][i][7] = noteMTX[i][7]                       # inversion
 
             finalMTX[voice][i][8] = noteMTX[i-1][4]                     # prev chord root
             finalMTX[voice][i][9] = 0                                   # pickup, none in bass

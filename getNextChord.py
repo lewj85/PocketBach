@@ -23,27 +23,27 @@ def getNextChord(chordsRemaining, destination, previousChord):
             num1 = random.random()
             if num1 < 0.4:  # 40% chance to move up a fourth
                 newChord = previousChord + 3
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             elif num1 < 0.6:  # 20% chance to move up a sixth
                 newChord = previousChord + 5
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             elif num1 < 0.75:  # 15% chance to move up a fifth
                 newChord = previousChord + 4
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             elif num1 < 0.85:  # 10% chance to move up a second
                 newChord = previousChord + 1
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             elif num1 < 0.9:  # 5% chance to move up a third
                 newChord = previousChord + 2
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             elif num1 < 0.95:  # 5% chance to move up a seventh
                 newChord = previousChord + 6
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             else:  # 5% chance to stay the same
                 newChord = previousChord
@@ -88,27 +88,27 @@ def getNextChord(chordsRemaining, destination, previousChord):
             num1 = random.random()
             if num1 < 0.4:  # 40% chance to move up a fourth
                 newChord = previousChord + 3
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             elif num1 < 0.6:  # 20% chance to move up a sixth
                 newChord = previousChord + 5
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             elif num1 < 0.75:  # 15% chance to move up a fifth
                 newChord = previousChord + 4
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             elif num1 < 0.85:  # 10% chance to move up a second
                 newChord = previousChord + 1
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             elif num1 < 0.9:  # 5% chance to move up a third
                 newChord = previousChord + 2
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             elif num1 < 0.95:  # 5% chance to move up a seventh
                 newChord = previousChord + 6
-                while newChord > 7:  # bring newChord range down to 1-7
+                if newChord > 7:  # bring newChord range down to 1-7
                     newChord -= 7
             else:  # 5% chance to stay the same
                 newChord = previousChord
@@ -120,29 +120,34 @@ def getNextChord(chordsRemaining, destination, previousChord):
         # if previousChord == 5, 62% chance to go up a fourth
         if num1 < 0.4:  # 40% chance to move up a fourth
             newChord = previousChord + 3
-            while newChord > 7:   # bring newChord range down to 1-7
+            if newChord > 7:   # bring newChord range down to 1-7
                 newChord -= 7
         elif num1 < 0.6:  # 20% chance to move up a sixth
             newChord = previousChord + 5
-            while newChord > 7:   # bring newChord range down to 1-7
+            if newChord > 7:   # bring newChord range down to 1-7
                 newChord -= 7
         elif num1 < 0.75:  # 15% chance to move up a fifth
             newChord = previousChord + 4
-            while newChord > 7:   # bring newChord range down to 1-7
+            if newChord > 7:   # bring newChord range down to 1-7
                 newChord -= 7
         elif num1 < 0.85:  # 10% chance to move up a second
             newChord = previousChord + 1
-            while newChord > 7:   # bring newChord range down to 1-7
+            if newChord > 7:   # bring newChord range down to 1-7
                 newChord -= 7
         elif num1 < 0.9:  # 5% chance to move up a third
             newChord = previousChord + 2
-            while newChord > 7:   # bring newChord range down to 1-7
+            if newChord > 7:   # bring newChord range down to 1-7
                 newChord -= 7
         elif num1 < 0.95:  # 5% chance to move up a seventh
             newChord = previousChord + 6
-            while newChord > 7:   # bring newChord range down to 1-7
+            if newChord > 7:   # bring newChord range down to 1-7
                 newChord -= 7
         else:  # 5% chance to stay the same
             newChord = previousChord
+        # inversion randomizer
+        # NOTE: REMOVED SO THAT GETNEXTNOTE HAS THE POWER TO FIND STEPWISE INVERSIONS - KEEPING 164 FOR CADENCES THOUGH
+        #num2 = random.random()
+        #if num2 > 0.8:
+        #    inversion = random.randint(1,2)
 
     return [newChord, inversion]

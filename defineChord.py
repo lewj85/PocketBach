@@ -22,7 +22,7 @@ on the subject of scope, consider if you really want to write music more than C 
 """
 
 
-def defineChord(key = 'C', major = 1, root = 1, seventh = 0, inversion = 0, tonality = 0):
+def defineChord(key = 'C', major = 1, root = 1, seventh = 0, tonality = 0, inversion = 0):
 
     # create the dictionary key by concatenating the params using Hooktheory's chord terminology
     #   so we can complete searches in O(1) time
@@ -61,7 +61,9 @@ def defineChord(key = 'C', major = 1, root = 1, seventh = 0, inversion = 0, tona
     if tonality > 0:
         dictKey += '/'+str(secroot)
 
-    print(dictKey)  # debugging
+    # TO DO: dictKey not working...
+    #print("inversion is:", inversion)
+    #print("dictKey is:", dictKey)
 
     # TO DO: fix the chordArr adjustments in getNextNote.py to account for inversions being added
 
@@ -208,5 +210,5 @@ def defineChord(key = 'C', major = 1, root = 1, seventh = 0, inversion = 0, tona
         elif major == 0:
             pass
 
-
+    #print('should not see this...')
     return 'r'

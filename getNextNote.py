@@ -7,7 +7,7 @@ import defineChord as dc
 
 def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices):
     # extract relevant data from matrices
-    prevNote = int(finalMTX[0][index - 1][0])   # previous note, TO DO: change this to a dictionary
+    prevNote = int(finalMTX[voice][index - 1][0])   # previous note, TO DO: change this to a dictionary
     currentRoot = noteMTX[index][4]             # current chord root
     nextChord = 1                               # next chord root, currently unused
     if index < measures - 1:
@@ -28,7 +28,7 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
     num1 = random.random()
 
     # track chord tones
-    chordVec = dc.defineChord(key, major, currentRoot, seventh, tonality)
+    chordVec = dc.defineChord(key, major, currentRoot, seventh, tonality, inversion)
     #print(chordVec)
 
 
@@ -58,7 +58,7 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
             nextNote = currentRoot
         elif num1 < 0.6:    # 20% chance to repeat bass note (technically less than 20%,
                             # because we check to see if prevNote is a chord tone)
-            if prevNote in chordVec:  # repeat prevNote if you can
+            if ntp.numToPitch(prevNote) in chordVec:  # repeat prevNote if you can
                 nextNote = prevNote
             else:  # otherwise just go with root
                 nextNote = currentRoot

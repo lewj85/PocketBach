@@ -7,7 +7,8 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
     finalString = ""
     j = 0
     #voice = 0
-    totalNotes = finalMTX.shape[0]
+    #print(finalMTX.shape)
+    totalNotes = finalMTX.shape[1]  # changed from [0] to [1] after voice changed dimensions
     #print('total notes = ', totalNotes)
 
     for i in range(1, measures + 1):  # while there's another measure in the matrix
@@ -18,19 +19,19 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
 
             # while you haven't reached the end of the piece yet AND you're still on the current measure
             # NOTE: the statement below only works because of the short-circuit "and"!!!
-            while j < totalNotes and finalMTX[j][11][voice] == i:
+            while j < totalNotes and finalMTX[voice][j][11] == i:
                 #print('loop #', i)
                 if key == 'C':
                     if major == 1:
                         # pitch
                         # NOTE: str.lower() no longer needed as they are now lowercase
                         # TO DO: add flats and sharps for secondary dominants
-                        finalString += ntp.numToPitch(finalMTX[j][0][voice], key)
+                        finalString += ntp.numToPitch(key, int(finalMTX[voice][j][0]))
                         #print(finalString)
 
                         # duration optional for repeated durations, but we will be using it
                         # TO DO: fix this to take timesig param and calculate/convert durations properly
-                        finalString += str(finalMTX[j][1][voice])
+                        finalString += str(int(finalMTX[voice][j][1])) # was printing '#' instead of #, so converted to int and back to string!
                         #print(finalString)
 
                         # TO DO: direction only needs to check if > 4 for "'" or < -4 for ","

@@ -39,6 +39,7 @@ def main():
 
     # calculate number of chords that need to be filled
     chordsNeeded = 3
+    firstInversionLocations = []
     secondInversionLocations = []
 
     # fill in the missing chords
@@ -49,8 +50,12 @@ def main():
         # 3. the previous chord, found by chordArray[-1]
         nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord[0])
-        if nextChord[1] != 0:
-            secondInversionLocations.append(i)
+        # if nextChord[1] == 1:
+        #     firstInversionLocations.append(i+2)
+        #     firstInversionLocations.append(i+10)  # add same inversions to measures 9-12 (really 10-12)
+        # elif nextChord[1] == 2:
+        #     secondInversionLocations.append(i+2)
+        #     secondInversionLocations.append(i+10)  # add same inversions to measures 9-12 (really 10-12)
 
     # display chordArray
     #print(chordArray)
@@ -84,6 +89,7 @@ def main():
     # CREATE MEASURES 5-8
     #####################################################################
     # start with I, IV, V, or vi
+    # NOTE: we want a different chord than previous so...
     chordArray.append(chordArray[-1])  # to enter loop below (no python do-while)
     while chordArray[3] == chordArray[-1]:
         num1 = random.random()
@@ -110,8 +116,10 @@ def main():
         # 3. the previous chord, found by chordArray[-1]
         nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord[0])
-        if nextChord[1] != 0:
-            secondInversionLocations.append(i)
+        # if nextChord[1] == 1:
+        #     firstInversionLocations.append(i+6)  # NOTE: not i+5 because we start with a non-inversion on measure 5
+        # elif nextChord[1] == 2:
+        #     secondInversionLocations.append(i+6)  # NOTE: not i+5 because we start with a non-inversion on measure 5
 
     # add the hard-coded V destination to bring us back to I in measure 9
     chordArray.append(5)
@@ -156,11 +164,12 @@ def main():
     # fill in the chords:
     for j in range(8, 12):
         noteMTX[j][4] = chordArray[j]                       # chord root
-        noteMTX[j][7] = noteMTX[j-8][7]                     # inversion
+        #noteMTX[j][7] = noteMTX[j-8][7]                     # inversion - this is done at the end
         noteMTX[j][8] = noteMTX[j - 1][4]                   # prev chord root
         noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1  # beats
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
         #noteMTXList.append(noteMTX[j][:])
+
 
     # display noteMTXList
     #print(noteMTXList)
@@ -172,9 +181,9 @@ def main():
     # set destination to I
     destination = 1
 
-    # half the time start with 1, other half can do anything
+    # 40% the time start with 1, other 60% can do anything
     num1 = random.random()
-    if num1 < 0.5:
+    if num1 < 0.4:
         chordArray.append(1)
         chordsNeeded = 2
     else:
@@ -188,8 +197,9 @@ def main():
         # 3. the previous chord, found by chordArray[-1]
         nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
         chordArray.append(nextChord[0])
-        if nextChord[1] != 0:
-            secondInversionLocations.append(i+13)
+        # NOTE: NO INVERSIONS FOR LAST 4 MEASURES EXCEPT FOR POSSIBLE I64-V-I
+        if len(chordArray) == 14 and nextChord[0] == 1 and nextChord[1] == 2:
+            noteMTX[13][7] = 2
 
     # add the hard-coded I destination to end the chorale
     chordArray.append(1)
@@ -198,7 +208,7 @@ def main():
     print(chordArray)
     chordArray2 = []
     for c in range(len(chordArray)):
-        chordArray2.append(ntp.numToPitch(chordArray[c], key))
+        chordArray2.append(ntp.numToPitch(key, chordArray[c]))
     #print(chordArray2)
 
 
@@ -216,11 +226,14 @@ def main():
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
         #noteMTXList.append(noteMTX[j][:])
 
-
-    # add the secondInversionLocations data to matrix
-    for i in secondInversionLocations:
-        noteMTX[i][7] = 2
-    #print(secondInversionLocations)
+    # # add the inversion location data to matrix
+    # for i in firstInversionLocations:
+    #     print("first inversions:", i)
+    #     noteMTX[i][7] = 1
+    # for i in secondInversionLocations:
+    #     print("second inversions:", i)
+    #     noteMTX[i][7] = 2
+    # #print(secondInversionLocations)
 
 
     # display noteMTX
