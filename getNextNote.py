@@ -1,4 +1,4 @@
-# getNextNote() chooses the next note based on the previous note and current chord
+"""getNextNote() chooses the next note based on the previous note and current chord, returns an int (not a string)"""
 
 import random
 import numToPitch as ntp
@@ -7,16 +7,16 @@ import defineChord as dc
 
 def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices):
     # extract relevant data from matrices
-    prevNote = finalMTX[index - 1][0][0]        # previous note
+    prevNote = int(finalMTX[0][index - 1][0])   # previous note, TO DO: change this to a dictionary
     currentRoot = noteMTX[index][4]             # current chord root
-    nextChord = 1                               # next chord root
+    nextChord = 1                               # next chord root, currently unused
     if index < measures - 1:
         nextChord = noteMTX[index + 1][4]
     seventh = noteMTX[index][5]                 # seventh chord?
     tonality = noteMTX[index][6]                # tonal root?
     inversion = noteMTX[index][7]               # inversion
 
-    # NOTE: need to add nextChord considerations!!
+    # TO DO: need to add nextChord considerations!!
     #   especially for 7th chords because of 3rd inversion linear descents,
     #   but also for picking 2nd inversions, which should be rare if it isn't linear motion
 
@@ -45,7 +45,7 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
         # first of all... return 5th for I-6/4 chords in bass
         if inversion == 2:
             nextNote = currentRoot + 4
-            while nextNote > 7:
+            if nextNote > 7:
                 nextNote -= 7
             return nextNote
 
@@ -105,29 +105,29 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
         if noteMTX[index][11] == measures:
             return 1
 
-        if finalMTX[index][5][0] == 0:  # if not a 7th chord
-            if finalMTX[index][7][0] == 1:  # if inversion = 1
+        if finalMTX[0][index][5] == 0:  # if not a 7th chord
+            if finalMTX[0][index][7] == 1:  # if inversion = 1
                 # can also use "del chordVec[1]"
                 chordVec = [chordVec[0], chordVec[2]]  # can't be 3rd+3rd
-            elif finalMTX[index][7][0] == 2:  # if inversion = 2
+            elif finalMTX[0][index][7] == 2:  # if inversion = 2
                 chordVec = [chordVec[0], chordVec[1]]  # can't be 5th+5th
         else:  # elif finalMTX[index][5][0] == 1:
             # 7th chords with 3 voices cannot have a 5th
             if maxVoices == 3:
-                if finalMTX[index][7][0] == 0:  # if inversion = 0
+                if finalMTX[0][index][7] == 0:  # if inversion = 0
                     chordVec = [chordVec[1], chordVec[3]]  # 7th chords with 3 voices cannot be root+root
-                elif finalMTX[index][7][0] == 1:  # if inversion = 1
+                elif finalMTX[0][index][7] == 1:  # if inversion = 1
                     chordVec = [chordVec[0], chordVec[3]]
                 # elif finalMTX[index][7][0] == 2:  # NOTE: this should never happen with only 3 voices...
                 #    chordVec = [chordVec[0], chordVec[1], chordVec[3]]
                 else:  # finalMTX[index][7][0] == 3:  # if inversion = 3
                     chordVec = [chordVec[0], chordVec[1]]
             else:
-                if finalMTX[index][7][0] == 1:  # if inversion = 1
+                if finalMTX[0][index][7] == 1:  # if inversion = 1
                     chordVec = [chordVec[0], chordVec[2], chordVec[3]]
-                elif finalMTX[index][7][0] == 2:  # if inversion = 2
+                elif finalMTX[0][index][7] == 2:  # if inversion = 2
                     chordVec = [chordVec[0], chordVec[1], chordVec[3]]
-                elif finalMTX[index][7][0] == 3:  # if inversion = 3
+                elif finalMTX[0][index][7] == 3:  # if inversion = 3
                     chordVec = [chordVec[0], chordVec[1], chordVec[2]]
 
         # all percentages are multiplied by 2.5/7 = 0.36 because there's only about a 2.5/7 chance
@@ -183,22 +183,22 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
     else:
         # enforce rules above by changing chordVec!!!
         # check for 7th chords first
-        if finalMTX[index][5][0] == 0:  # if not a 7th chord
-            if finalMTX[index][7][0] == 0:  # if inversion = 0
-                if finalMTX[index][0][2] == ptn.pitchToNum(chordVec[0]):  # if root+root, must be 3rd
+        if finalMTX[0][index][5] == 0:  # if not a 7th chord
+            if finalMTX[0][index][7] == 0:  # if inversion = 0
+                if finalMTX[2][index][0] == ptn.pitchToNum(chordVec[0]):  # if root+root, must be 3rd
                     return ptn.pitchToNum(chordVec[1])  # NOTE: return
-                elif finalMTX[index][0][2] == ptn.pitchToNum(chordVec[1]):  # if root+3rd, can be root or 5th
+                elif finalMTX[2][index][0] == ptn.pitchToNum(chordVec[1]):  # if root+3rd, can be root or 5th
                     chordVec = [chordVec[0], chordVec[2]]
                 else:  # if root+5th, must be 3rd
                     return ptn.pitchToNum(chordVec[1])  # NOTE: return
-            elif finalMTX[index][7][0] == 1:  # if inversion = 1
-                if finalMTX[index][0][2] == ptn.pitchToNum(chordVec[0]):  # if 3rd+root, can be root or 5th
+            elif finalMTX[0][index][7] == 1:  # if inversion = 1
+                if finalMTX[2][index][0] == ptn.pitchToNum(chordVec[0]):  # if 3rd+root, can be root or 5th
                     chordVec = [chordVec[0], chordVec[2]]
                 # elif # can't be 3rd+3rd
                 else:  # if 3rd+5th, must be root
                     return ptn.pitchToNum(chordVec[1])  # NOTE: return
-            elif finalMTX[index][7][0] == 2:  # if inversion = 2
-                if finalMTX[index][0][2] == ptn.pitchToNum(chordVec[0]):  # if 5th+root, must be 3rd
+            elif finalMTX[0][index][7] == 2:  # if inversion = 2
+                if finalMTX[2][index][0] == ptn.pitchToNum(chordVec[0]):  # if 5th+root, must be 3rd
                     return ptn.pitchToNum(chordVec[1])  # NOTE: return
                 # elif # can't be 5th+5th
                 else:  # if 5th+3rd, must be root
@@ -206,15 +206,15 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
         else:  # if a 7th chord
             # 7th chords with 3 voices cannot have a 5th
             if maxVoices == 3:
-                if finalMTX[index][7][0] == 0:  # if inversion = 0
+                if finalMTX[0][index][7] == 0:  # if inversion = 0
                     # 7th chords with 3 voices cannot be root+root
-                    if finalMTX[index][0][2] == ptn.pitchToNum(chordVec[1]):  # 7th chords with 3 voices with root+3rd, must be 7th
+                    if finalMTX[2][index][0] == ptn.pitchToNum(chordVec[1]):  # 7th chords with 3 voices with root+3rd, must be 7th
                         return ptn.pitchToNum(chordVec[3])  # NOTE: return
                     # elif # 7th chords with 3 voices cannot have a 5th
                     else:  # 7th chords with 3 voices with root+7th, must be 3rd
                         return ptn.pitchToNum(chordVec[1])  # NOTE: return
-                elif finalMTX[index][7][0] == 1:  # if inversion = 1
-                    if finalMTX[index][0][2] == ptn.pitchToNum(chordVec[0]):  # 7th chords with 3 voices with 3rd+root, must be 7th
+                elif finalMTX[0][index][7] == 1:  # if inversion = 1
+                    if finalMTX[2][index][0] == ptn.pitchToNum(chordVec[0]):  # 7th chords with 3 voices with 3rd+root, must be 7th
                         return ptn.pitchToNum(chordVec[3])  # NOTE: return
                     # elif # can't be 3rd+3rd
                     # elif # 7th chords with 3 voices cannot have a 5th
@@ -222,7 +222,7 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
                         return ptn.pitchToNum(chordVec[0])  # NOTE: return
                 # elif # 7th chords with 3 voices cannot have a 5th
                 else:  # if inversion = 3
-                    if finalMTX[index][0][2] == ptn.pitchToNum(chordVec[0]):  # 7th chords with 3 voices with 7th+root, must be 3rd
+                    if finalMTX[2][index][0] == ptn.pitchToNum(chordVec[0]):  # 7th chords with 3 voices with 7th+root, must be 3rd
                         return ptn.pitchToNum(chordVec[1])  # NOTE: return
                     else:  # 7th chords with 3 voices with 7th+3rd, must be root
                         return ptn.pitchToNum(chordVec[0])  # NOTE: return
@@ -232,11 +232,11 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
             # TO DO: many possible combinations and rules for 4 voices below...
             # not relevant at the moment so skipping them...
             else:
-                if finalMTX[index][7][0] == 1:  # if inversion = 1
+                if finalMTX[0][index][7] == 1:  # if inversion = 1
                     chordVec = [chordVec[0], chordVec[2], chordVec[3]]
-                elif finalMTX[index][7][0] == 2:  # if inversion = 2
+                elif finalMTX[0][index][7] == 2:  # if inversion = 2
                     chordVec = [chordVec[0], chordVec[1], chordVec[3]]
-                elif finalMTX[index][7][0] == 3:  # if inversion = 3
+                elif finalMTX[0][index][7] == 3:  # if inversion = 3
                     chordVec = [chordVec[0], chordVec[1], chordVec[2]]
 
         if num1 < 0.4:  # 40% chance to repeat note (technically less)

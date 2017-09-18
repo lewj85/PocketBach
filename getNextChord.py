@@ -1,6 +1,5 @@
-# getNextChord() chooses which chord should be next based on the number of
-# chords remaining, the destination chord, and various weights. it makes
-# use of the random() function when there are multiple options.
+"""getNextChord() chooses which chord should be next based on the number of chords remaining, the destination chord, and various weights."""
+# it makes use of the random() function when there are multiple options.
 # NOTE: rearrange if statements so destination is outer if-else
 
 import random

@@ -3,6 +3,9 @@
 ## A program that composes a chorale or Baroque fugue for 3 or 4 voices. It either composes its own melody or records one from the user. If it records one, it transcribes the melody and analyzes it. The program uses data extracted from Hooktheory's API as weights for writing chord progressions. It creates both a MusicXML score and a pdf score using LilyPond.
 
 
+Requires LilyPond to be installed: http://lilypond.org/
+
+
 To record:
 ```
 $ python3 audioRecorder.py
