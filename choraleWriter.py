@@ -2,9 +2,11 @@ import getNextChord as gnc
 import numToPitch as ntp
 import orchestrate as orch
 import createLily as cl
+import speciesCP as scp
 import random
 import os
 import time
+from shutil import copyfile
 
 
 # main() function
@@ -18,7 +20,6 @@ def main():
     beatsPerMeasure = 4
     measures = 16
     maxVoices = 3
-    species = 1  # first- through fifth-species counterpoint
 
     #####################################################################
     # CREATE MEASURES 1-4
@@ -170,7 +171,6 @@ def main():
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
         #noteMTXList.append(noteMTX[j][:])
 
-
     # display noteMTXList
     #print(noteMTXList)
 
@@ -226,31 +226,23 @@ def main():
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
         #noteMTXList.append(noteMTX[j][:])
 
-    # # add the inversion location data to matrix
-    # for i in firstInversionLocations:
-    #     print("first inversions:", i)
-    #     noteMTX[i][7] = 1
-    # for i in secondInversionLocations:
-    #     print("second inversions:", i)
-    #     noteMTX[i][7] = 2
-    # #print(secondInversionLocations)
 
-
-    # display noteMTX
-    #print(noteMTXList)
-    #print(noteMTX)
-
+    #####################################################################
+    # MAGIC
+    #####################################################################
 
     # orchestrate the 3 voices
     finalMTX = orch.orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices)
+    # print(noteMTX)
     print(finalMTX)
 
-    # debugging inversions
-    # for i in range(16):
-    #     print(finalMTX[i][7][0])
+    # create .ly files for each species
+    cl.createLily(key, major, finalMTX, measures, maxVoices, 1)  # first species
+    cl.createLily(key, major, finalMTX, measures, maxVoices, 2)  # second species
+    # TO DO: add other species
+    # not using regex so don't need this anymore, keeping for legacy
+    #copyfile('newScore.ly','newScore2.ly')
 
-    # create a pdf score with LilyPad
-    cl.createLily(key, major, finalMTX, measures, maxVoices, species)
 
     # create the pdf score
     print("Creating .pdf with LilyPond...")

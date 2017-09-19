@@ -63,11 +63,11 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
             # add \relative c to the beginning of each alto/tenor voice line
             # note that this happens after voice 2, but before voice is updated to 1
             if voice == 2:
-                finalString += "\\relative f' "
+                finalString += "%alto\n\\relative f' "
             # add \relative f' to the beginning of each bass voice line
             # note that this happens after voice 1, but before voice is updated to 0
             elif voice == 1:
-                finalString += "\\relative c "
+                finalString += "%bass\n\\relative c "
 
             # reset j to old value for the next voice, but not after the last voice
             if voice != 0:
@@ -79,6 +79,6 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
         # note that this happens right before we begin the next measure
         # we have to make sure not to add it after the last measure though
         if j < totalNotes:
-            finalString += "\\relative c'' "
+            finalString += "%soprano\n\\relative c'' "
 
     return finalString
