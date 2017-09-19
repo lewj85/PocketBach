@@ -243,7 +243,7 @@ def main():
 
     # orchestrate the 3 voices
     finalMTX = orch.orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices)
-    #print(finalMTX)
+    print(finalMTX)
 
     # debugging inversions
     # for i in range(16):
