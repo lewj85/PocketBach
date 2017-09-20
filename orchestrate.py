@@ -24,7 +24,7 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
     # NOTE: THE NEW WAY OF DOING THIS USES STRUCTS TO ALLOW MULTIPLE TYPES INTO THE MATRIX.
     #       this 'removes' the note data dimension, though it can still be accessed with finalMTX[voice][measure][note data]
     # TO DO: swap the dimensions from [measure][note data][voice] to [voice][measure][note data]
-    finalMTX = np.array([('r', 'r', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)],
+    finalMTX = np.array([('0', '0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)],
                         dtype=[('pitch','S5'),('duration','S5'),('direction','i4'),
                         ('interval', 'i4'), ('chordRoot', 'i4'), ('seventhChord', 'i4'),
                         ('tonality', 'i4'), ('inversion', 'i4'), ('prevRoot', 'i4'),

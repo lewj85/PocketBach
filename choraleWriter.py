@@ -238,15 +238,15 @@ def main():
 
     # create .ly files for each species
     cl.createLily(key, major, finalMTX, measures, maxVoices, 1)  # first species
-    cl.createLily(key, major, finalMTX, measures, maxVoices, 2)  # second species
+    #cl.createLily(key, major, finalMTX, measures, maxVoices, 2)  # second species
     # TO DO: add other species
     # not using regex so don't need this anymore, keeping for legacy
     #copyfile('newScore.ly','newScore2.ly')
 
 
     # create the pdf score
-    print("Creating .pdf with LilyPond...")
-    filename = 'newScore.ly'
+    print("Creating .pdf file(s) with LilyPond...")
+    filename = 'ChoraleFirstSpecies.ly'
     os.system(filename)
     #time.sleep(3)
 

@@ -4,3 +4,5 @@ import random
 
 def getRhythm(finalMTX, measure, measures, voice):
     num1 = random.random()
+    rhythmArr = [2, 2]
+    return rhythmArr

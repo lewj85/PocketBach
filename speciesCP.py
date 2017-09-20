@@ -20,8 +20,8 @@
 going with option #1 now that we can easily adjust the matrix for an unknown number of notes"""
 
 import random
-import defineChord as dc
 import numpy as np
+import getRhythm as gr
 #import re
 
 # NOTE: just as getNextChord has destination and chordsRemaining params, so should these
@@ -129,24 +129,45 @@ def fourthSpecies(finalMTX):
 
 def fifthSpecies(finalMTX):
     # MAKE A NEW MATRIX
-    newMTX = np.array([('r', 'r', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)],
+    newMTX = np.array([('0', '0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)],
                         dtype=[('pitch', 'S5'), ('duration', 'S5'), ('direction', 'i4'),
                                ('interval', 'i4'), ('chordRoot', 'i4'), ('seventhChord', 'i4'),
                                ('tonality', 'i4'), ('inversion', 'i4'), ('prevRoot', 'i4'),
                                ('pickup', 'i4'), ('beat', 'i4'), ('measure', 'i4')])
-    for i in range(4):  # only 4 because finalMTX doubles in size each time, so 2^4 = 16
-        newMTX = np.concatenate((newMTX, newMTX), 0)
     newMTX = np.expand_dims(newMTX, 0)  # add the 3rd dimension as new 1st dimension
-    copyMTX = newMTX  # copy for tacking on later
-    newMTX = np.concatenate((newMTX, newMTX), 0)  # create more voices
-                                                    # NOTE: i tried making it the 3rd but it won't work...
-    newMTX = np.concatenate((newMTX, copyMTX), 0)  # tack on one more 16x12 grid to make it 3x16x12
-                                                    # NOTE: can't use (finalMTX, finalMTX) or it will double to 4x16x12
+    copyMTX = newMTX  # copy for tacking on one at a time
+    for i in range(finalMTX.shape[0]-1):  # tack on one more voice - will create 3x16x12 or 4x16x12
+        newMTX = np.concatenate((newMTX, copyMTX), 0)
+    newMeasure = newMTX  # now we can use np.concatenate([newMTX, newMeasure],1) to add a new note
 
-    # for each measure in finalMTX:
-    #     measureRhythms = getRhythm()
-    #     for each duration in measureRhythms:
-    #         np.concatenate() a new column to newMTX
-    #         find appropriate pitches. can still use +2/-2 logic for linear ascents/descents by the way, since durations are irrelevant; only the number of notes matters!
+    prevj = 0
+    for i in range(finalMTX[0][0][-1]):
+        measureRhythmsArr = gr.getRhythm()
+        for j in range(prevj, prevj+len(measureRhythmsArr)):
+            if j > 0:  # don't add the new note if j==0 because we already created the first struct (it's just empty)
+                np.concatenate([newMTX, newMeasure],1)  # add a new note
+            # fill all appropriate columns of the soprano
+            # for reference:
+            # 12 note data types: pitch, duration, direction, interval, chord root,
+            #   7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+            for m in range(4,12):
+                newMTX[finalMTX.shape[0]-1][i][m] = finalMTX[finalMTX.shape[0]-1][i][m]  # instead of hardwiring voice 2
+
+            # find appropriate pitches. can still use +2/-2 logic for linear ascents/descents by the way, since
+            #   durations are irrelevant; only the number of notes matters!
+
+            # set pitches, duration, direction, interval for soprano
+
+            # set measure value for all voices
+            for n in range(finalMTX.shape[0]-1):
+                newMTX[n][j][11] = finalMTX[0][i][11]
+
+        # when done with all notes in the soprano in the current measure, fill in other voices exactly as they are in finalMTX
+        for p in range(finalMTX.shape[0] - 1):
+            for q in range(12):
+                newMTX[p][i][q] = finalMTX[p][i][q]
+
+        # update prevj to know what index to start at in the next measure
+        prevj = j + 1
 
     return newMTX

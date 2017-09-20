@@ -11,48 +11,51 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
     totalNotes = finalMTX.shape[1]  # changed from [0] to [1] after voice changed dimensions
     #print('total notes = ', totalNotes)
 
-    for i in range(1, measures + 1):  # while there's another measure in the matrix
-
-        # TO DO: all voices need to be added...
+    # for each measure
+    # NOTE: this must be above voice because we write all voices one measure at a time
+    for i in range(1, measures + 1):
+        # for each voice
         for voice in range(maxVoices - 1, -1, -1):
             prevj = j  # store old j value to reset for each voice
-
             # while you haven't reached the end of the piece yet AND you're still on the current measure
+            #   add each note to the current line (voice) in the string
             # NOTE: the statement below only works because of the short-circuit "and"!!!
             while j < totalNotes and finalMTX[voice][j][11] == i:
-                #print('loop #', i)
-                if key == 'C':
-                    if major == 1:
-                        # pitch
-                        # NOTE: str.lower() no longer needed as they are now lowercase
-                        # TO DO: add flats and sharps for secondary dominants
-                        finalString += ntp.numToPitch(key, int(finalMTX[voice][j][0]))
-                        #print(finalString)
+                # NOTE: for different species, some notes in the matrix will have the same measure but pitch = '0'
+                #   so we have to check for these and increment j instead of adding anything to the string
+                if int(finalMTX[voice][j][0]) != 0:
+                    if key == 'C':
+                        if major == 1:
+                            # pitch
+                            # NOTE: str.lower() no longer needed as they are now lowercase
+                            # TO DO: add flats and sharps for secondary dominants
+                            finalString += ntp.numToPitch(key, int(finalMTX[voice][j][0]))
+                            #print(finalString)
 
-                        # duration optional for repeated durations, but we will be using it
-                        # TO DO: fix this to take timesig param and calculate/convert durations properly
-                        finalString += str(int(finalMTX[voice][j][1])) # was printing '#' instead of #, so converted to int and back to string!
-                        #print(finalString)
+                            # duration optional for repeated durations, but we will be using it
+                            # TO DO: fix this to take timesig param and calculate/convert durations properly
+                            finalString += str(int(finalMTX[voice][j][1])) # was printing '1' instead of 1, so converted to int and back to string!
+                            #print(finalString)
 
-                        # TO DO: direction only needs to check if > 4 for "'" or < -4 for ","
+                            # TO DO: direction only needs to check if > 4 for "'" or < -4 for ","
 
-                        # chord root and 7th chord not needed for LilyPond
+                            # chord root and 7th chord not needed for LilyPond
 
-                        # TO DO: tonality not needed in major (until we add secondary dominants)
+                            # TO DO: tonality not needed in major (until we add secondary dominants)
 
-                        # inversion and prev chord root not needed for LilyPond
+                            # inversion and prev chord root not needed for LilyPond
 
-                        # TO DO: pickup needed for LilyPond but not for chorale
+                            # TO DO: pickup needed for LilyPond but not for chorale
 
-                        # beat not needed for LilyPond
+                            # beat not needed for LilyPond
 
-                        # TO DO: articulation will go here eventually
+                            # TO DO: articulation will go here eventually
 
-                        # put a space after each note
-                        finalString += " "
-                        #print(finalString)
+                            # put a space after each note
+                            finalString += " "
+                            #print(finalString)
 
-                        # TO DO: ties go here with a space after them too
+                            # TO DO: ties go here with a space after them too
 
                 j += 1  # go to next note
 
@@ -63,7 +66,7 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
             # add \relative c to the beginning of each alto/tenor voice line
             # note that this happens after voice 2, but before voice is updated to 1
             if voice == 2:
-                finalString += "%alto\n\\relative f' "
+                finalString += "%alto\n\\relative g' "
             # add \relative f' to the beginning of each bass voice line
             # note that this happens after voice 1, but before voice is updated to 0
             elif voice == 1:
