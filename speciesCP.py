@@ -138,14 +138,14 @@ def fifthSpecies(finalMTX):
     copyMTX = newMTX  # copy for tacking on one at a time
     for i in range(finalMTX.shape[0]-1):  # tack on one more voice - will create 3x16x12 or 4x16x12
         newMTX = np.concatenate((newMTX, copyMTX), 0)
-    newMeasure = newMTX  # now we can use np.concatenate([newMTX, newMeasure],1) to add a new note
+    newNote = newMTX  # now we can use np.concatenate([newMTX, newMeasure],1) to add a new note
 
     prevj = 0
     for i in range(finalMTX[0][0][-1]):
         measureRhythmsArr = gr.getRhythm()
         for j in range(prevj, prevj+len(measureRhythmsArr)):
             if j > 0:  # don't add the new note if j==0 because we already created the first struct (it's just empty)
-                np.concatenate([newMTX, newMeasure],1)  # add a new note
+                np.concatenate([newMTX, newNote],1)  # add a new note
             # fill all appropriate columns of the soprano
             # for reference:
             # 12 note data types: pitch, duration, direction, interval, chord root,
@@ -163,7 +163,7 @@ def fifthSpecies(finalMTX):
                 newMTX[n][j][11] = finalMTX[0][i][11]
 
         # when done with all notes in the soprano in the current measure, fill in other voices exactly as they are in finalMTX
-        for p in range(finalMTX.shape[0] - 1):
+        for p in range(finalMTX.shape[0]):
             for q in range(12):
                 newMTX[p][i][q] = finalMTX[p][i][q]
 
