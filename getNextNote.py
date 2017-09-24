@@ -44,12 +44,16 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
     if voice == 0:
         #print(chordVec)
 
-        # first of all... return 5th for I-6/4 chords in bass
-        if inversion == 2:
+        # return 5th for I-6/4 chords in bass
+        if currentRoot == 1 and inversion == 2:
             nextNote = currentRoot + 4
             if nextNote > 7:
                 nextNote -= 7
             return nextNote
+
+        # if on the 2nd to last measure return a 5
+        if index == measures - 2:
+            return 5
 
         # 7th chords with only 3 voices cannot be in 2nd inversion (5th in bass)
         if noteMTX[index][5] == 1 and maxVoices == 3:

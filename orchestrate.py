@@ -76,25 +76,23 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
     # orchestrate the remaining chords
     ################################################################
     # NOTE: check for parallel 5ths, parallel octaves, tri-tones - redo a chord that fails check
+    attempts = 0
+    totalFailures = 0
 
     # save for overwrite prevention
     i64 = (noteMTX[13][7] == 2)
 
     i = 1
-    while i < measures:  # NOTE: this used to be a for loop from 1 to measures, but i changed to
+    while i < measures:  # NOTE: this used to be a for loop from 1 to 'measures', but i changed to
                         # a while loop so we could add checks for tritones and reset 'i' to re-write
                         # any 'bad' measures
-        #print(noteMTX[i][7])  # debugging
-        # TO DO: add while loop around each voice for validation until acceptable note is chosen
-        #   if no acceptable note available, decrement i and rewrite previous choices
 
         # bass
         finalMTX[0][i][0] = str(gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 0, maxVoices))
-        #print(finalMTX[0][i][0])
 
         # manually set last measure's bass to 1, apparently this wasn't a thing already...
-        if i == measures-1:
-            finalMTX[0][i][0] == str(noteMTX[i][4])
+        if i == measures - 1:
+            finalMTX[0][i][0] = str(noteMTX[i][4])
 
         # fill out inversion column for the other voices to follow rules
         if int(finalMTX[0][i][0]) == noteMTX[i][4]:
@@ -142,15 +140,42 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
         # alto/tenor:
         finalMTX[1][i][0] = str(gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 1, maxVoices))  # alto/tenor
 
-        # check for tritones. if any are found, rewrite the whole measure!
+        # check for tritones, parallel 5ths, and parallel octaves. if any are found, rewrite the whole measure
         if (int(finalMTX[0][i][0]) == 4 and int(finalMTX[0][i - 1][0]) == 7) or \
             (int(finalMTX[0][i][0]) == 7 and int(finalMTX[0][i - 1][0]) == 4) or \
             (int(finalMTX[1][i][0]) == 4 and int(finalMTX[1][i - 1][0]) == 7) or \
             (int(finalMTX[1][i][0]) == 7 and int(finalMTX[1][i - 1][0]) == 4) or \
             (int(finalMTX[2][i][0]) == 4 and int(finalMTX[2][i - 1][0]) == 7) or \
-            (int(finalMTX[2][i][0]) == 7 and int(finalMTX[2][i - 1][0]) == 4):
-            i -= 1  # bump index back so the measure will be re-written
+            (int(finalMTX[2][i][0]) == 7 and int(finalMTX[2][i - 1][0]) == 4) or \
+            (int(finalMTX[0][i][0]) == (int(finalMTX[1][i][0]) + 3) % 7 + 1) and (
+        int(finalMTX[0][i - 1][0]) == (int(finalMTX[1][i - 1][0]) + 3) % 7 + 1) or \
+            (int(finalMTX[0][i][0]) == (int(finalMTX[2][i][0]) + 3) % 7 + 1) and (
+        int(finalMTX[0][i - 1][0]) == (int(finalMTX[2][i - 1][0]) + 3) % 7 + 1) or \
+            (int(finalMTX[1][i][0]) == (int(finalMTX[2][i][0]) + 3) % 7 + 1) and (
+        int(finalMTX[1][i - 1][0]) == (int(finalMTX[2][i - 1][0]) + 3) % 7 + 1) or \
+            (int(finalMTX[0][i][0]) == int(finalMTX[1][i][0]) and int(finalMTX[0][i - 1][0]) == int(finalMTX[1][i - 1][0])) or \
+            (int(finalMTX[0][i][0]) == int(finalMTX[2][i][0]) and int(finalMTX[0][i - 1][0]) == int(finalMTX[2][i - 1][0])) or \
+            (int(finalMTX[1][i][0]) == int(finalMTX[2][i][0]) and int(finalMTX[1][i - 1][0]) == int(finalMTX[2][i - 1][0])):
+
+            # increment
+            attempts += 1
+            totalFailures += 1
+
+            if totalFailures < 40:  # only try to go back if we're not caught in an endless loop
+                i -= attempts  # rewrite the last few measures, the more failures, the farther back we go
+            elif totalFailures >= 40:  # otherwise we probably ended up in an endless loop so try changing noteMTX
+                print("Changing the matrix. Measure "+str(i + 1)+" is now a I chord.")
+                noteMTX[i][4] = 1
+                i -= 1  # reattempt current measure with new noteMTX
+                totalFailures = 0
+
+            if i < 0: # just in case we go back too far or get caught in a loop, start at measure 2
+                i = 0
+                attempts = 0
+            print("Attempt #" + str(attempts) + ". Rewriting measure " + str(i + 1) + ".")
+
         else:
+            attempts = 0  # reset
             # set all columns for i-th row of finalMTX using noteMTX
             #   12 note data types: pitch, duration, direction, interval, chord root,
             #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure

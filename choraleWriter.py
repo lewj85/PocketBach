@@ -205,7 +205,7 @@ def main():
     chordArray.append(1)
 
     # display chordArray, both in numbers and pitches
-    print(chordArray)
+    #print(chordArray)
     chordArray2 = []
     for c in range(len(chordArray)):
         chordArray2.append(ntp.numToPitch(key, chordArray[c]))
@@ -234,7 +234,7 @@ def main():
     # orchestrate the 3 voices
     finalMTX = orch.orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices)
     # print(noteMTX)
-    print(finalMTX)
+    #print(finalMTX)
 
     # create .ly files for each species
     cl.createLily(key, major, finalMTX, measures, maxVoices, 1)  # first species
