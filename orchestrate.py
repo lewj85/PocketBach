@@ -80,7 +80,10 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
     # save for overwrite prevention
     i64 = (noteMTX[13][7] == 2)
 
-    for i in range(1, measures):
+    i = 1
+    while i < measures:  # NOTE: this used to be a for loop from 1 to measures, but i changed to
+                        # a while loop so we could add checks for tritones and reset 'i' to re-write
+                        # any 'bad' measures
         #print(noteMTX[i][7])  # debugging
         # TO DO: add while loop around each voice for validation until acceptable note is chosen
         #   if no acceptable note available, decrement i and rewrite previous choices
@@ -139,60 +142,70 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
         # alto/tenor:
         finalMTX[1][i][0] = str(gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 1, maxVoices))  # alto/tenor
 
-        # set all columns for i-th row of finalMTX using noteMTX
-        #   12 note data types: pitch, duration, direction, interval, chord root,
-        #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
-        for voice in range(3):
-            finalMTX[voice][i][1] = chordsPerMeasure    # duration
+        # check for tritones. if any are found, rewrite the whole measure!
+        if (int(finalMTX[0][i][0]) == 4 and int(finalMTX[0][i - 1][0]) == 7) or \
+            (int(finalMTX[0][i][0]) == 7 and int(finalMTX[0][i - 1][0]) == 4) or \
+            (int(finalMTX[1][i][0]) == 4 and int(finalMTX[1][i - 1][0]) == 7) or \
+            (int(finalMTX[1][i][0]) == 7 and int(finalMTX[1][i - 1][0]) == 4) or \
+            (int(finalMTX[2][i][0]) == 4 and int(finalMTX[2][i - 1][0]) == 7) or \
+            (int(finalMTX[2][i][0]) == 7 and int(finalMTX[2][i - 1][0]) == 4):
+            i -= 1  # bump index back so the measure will be re-written
+        else:
+            # set all columns for i-th row of finalMTX using noteMTX
+            #   12 note data types: pitch, duration, direction, interval, chord root,
+            #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+            for voice in range(3):
+                finalMTX[voice][i][1] = chordsPerMeasure    # duration
 
-            # voice 0 interval
-            if finalMTX[voice][i][0] == '1' or finalMTX[voice][i][0] == '2':    # interval, must check for 'wrapping'
-                if finalMTX[voice][i-1][0] == '6' or finalMTX[voice][i-1][0] == '7':
-                    temp = int(finalMTX[voice][i][0]) - int(finalMTX[voice][i-1][0])
-                    if temp < 0:
-                        temp += 7
-                    finalMTX[0][i][3] = temp
-                else:
-                    finalMTX[voice][i][3] = finalMTX[voice][i][0] - finalMTX[voice][i-1][0]
-            elif finalMTX[voice][i][0] == '6' or finalMTX[voice][i][0] == '7':
-                if finalMTX[voice][i-1][0] == '1' or finalMTX[voice][i-1][0] == '2':
-                    temp = int(finalMTX[voice][i][0]) - int(finalMTX[voice][i-1][0])
-                    if temp > 0:
-                        temp -= 7
-                    finalMTX[voice][i][3] = temp
+                # voice 0 interval
+                if finalMTX[voice][i][0] == '1' or finalMTX[voice][i][0] == '2':    # interval, must check for 'wrapping'
+                    if finalMTX[voice][i-1][0] == '6' or finalMTX[voice][i-1][0] == '7':
+                        temp = int(finalMTX[voice][i][0]) - int(finalMTX[voice][i-1][0])
+                        if temp < 0:
+                            temp += 7
+                        finalMTX[0][i][3] = temp
+                    else:
+                        finalMTX[voice][i][3] = finalMTX[voice][i][0] - finalMTX[voice][i-1][0]
+                elif finalMTX[voice][i][0] == '6' or finalMTX[voice][i][0] == '7':
+                    if finalMTX[voice][i-1][0] == '1' or finalMTX[voice][i-1][0] == '2':
+                        temp = int(finalMTX[voice][i][0]) - int(finalMTX[voice][i-1][0])
+                        if temp > 0:
+                            temp -= 7
+                        finalMTX[voice][i][3] = temp
+                    else:
+                        finalMTX[voice][i][3] = int(finalMTX[voice][i][0]) - int(finalMTX[voice][i-1][0])
                 else:
                     finalMTX[voice][i][3] = int(finalMTX[voice][i][0]) - int(finalMTX[voice][i-1][0])
-            else:
-                finalMTX[voice][i][3] = int(finalMTX[voice][i][0]) - int(finalMTX[voice][i-1][0])
 
-            if finalMTX[voice][i][3] == 0:                              # direction
-                finalMTX[voice][i][2] = 0
-            elif finalMTX[voice][i][3] > 0:
-                finalMTX[voice][i][2] = 1
-            else:
-                finalMTX[voice][i][2] = -1
+                if finalMTX[voice][i][3] == 0:                              # direction
+                    finalMTX[voice][i][2] = 0
+                elif finalMTX[voice][i][3] > 0:
+                    finalMTX[voice][i][2] = 1
+                else:
+                    finalMTX[voice][i][2] = -1
 
-            finalMTX[voice][i][4] = noteMTX[i][4]                       # chord root
-            finalMTX[voice][i][5] = noteMTX[i][5]                       # 7th chord
-            finalMTX[voice][i][6] = noteMTX[i][6]                       # tonality
+                finalMTX[voice][i][4] = noteMTX[i][4]                       # chord root
+                finalMTX[voice][i][5] = noteMTX[i][5]                       # 7th chord
+                finalMTX[voice][i][6] = noteMTX[i][6]                       # tonality
 
-            # chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6], noteMTX[i][7])  # inversion
-            # if str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(key, chordArr[0]):
-            #     finalMTX[voice][i][7] = 0
-            # elif str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(key, chordArr[1]):
-            #     finalMTX[voice][i][7] = 1
-            # elif str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(key, chordArr[2]):
-            #     finalMTX[voice][i][7] = 2
-            # else:
-            #     finalMTX[voice][i][7] = 3  # 7th chords have 3rd inversion
-            # replace everything above with this
-            finalMTX[voice][i][7] = noteMTX[i][7]                       # inversion
+                # chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6], noteMTX[i][7])  # inversion
+                # if str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(key, chordArr[0]):
+                #     finalMTX[voice][i][7] = 0
+                # elif str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(key, chordArr[1]):
+                #     finalMTX[voice][i][7] = 1
+                # elif str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(key, chordArr[2]):
+                #     finalMTX[voice][i][7] = 2
+                # else:
+                #     finalMTX[voice][i][7] = 3  # 7th chords have 3rd inversion
+                # replace everything above with this
+                finalMTX[voice][i][7] = noteMTX[i][7]                       # inversion
 
-            finalMTX[voice][i][8] = noteMTX[i-1][4]                     # prev chord root
-            finalMTX[voice][i][9] = 0                                   # pickup, none in bass
-            finalMTX[voice][i][10] = noteMTX[i][10]                     # beat
-            finalMTX[voice][i][11] = noteMTX[i][11]                     # measure
+                finalMTX[voice][i][8] = noteMTX[i-1][4]                     # prev chord root
+                finalMTX[voice][i][9] = 0                                   # pickup, none in bass
+                finalMTX[voice][i][10] = noteMTX[i][10]                     # beat
+                finalMTX[voice][i][11] = noteMTX[i][11]                     # measure
 
+        i += 1  # move on to the next measure
 
     #print(finalMTX)
     return finalMTX
