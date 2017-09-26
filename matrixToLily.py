@@ -3,7 +3,7 @@ from numpy import shape
 
 def matrixToLily(key, major, finalMTX, measures, maxVoices):
     #   12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
     finalString = ""
     j = 0
     #voice = 0
@@ -45,7 +45,7 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
 
                             # inversion and prev chord root not needed for LilyPond
 
-                            # TO DO: pickup needed for LilyPond but not for chorale
+                            # TO DO: distance needed for LilyPond to prevent voice crossing
 
                             # beat not needed for LilyPond
 

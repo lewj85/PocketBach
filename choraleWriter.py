@@ -5,12 +5,12 @@ import createLily as cl
 import speciesCP as scp
 import random
 import os
-import time
-from shutil import copyfile
+#import time
+#from shutil import copyfile
 
 
-# main() function
-def main():
+# choraleWriter() function
+def choraleWriter():
 
     # initialize variables
     key = 'C'
@@ -66,7 +66,7 @@ def main():
     # y dimensions:
     #   1. notes in current chord
     #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
     noteMTX = [[0 for y in range(12)] for x in range(16)]  # hard-coded to 16 chords/measures
 
     # create a list of the note matrices
@@ -133,7 +133,7 @@ def main():
     # y dimensions:
     #   1. notes in current chord
     #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
     # fill in the chords:
     for j in range(4, 8):
         noteMTX[j][4] = chordArray[j]                       # chord root
@@ -161,7 +161,7 @@ def main():
     # y dimensions:
     #   1. notes in current chord
     #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
     # fill in the chords:
     for j in range(8, 12):
         noteMTX[j][4] = chordArray[j]                       # chord root
@@ -217,7 +217,7 @@ def main():
     # y dimensions:
     #   1. notes in current chord
     #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
     # fill in the chords:
     for j in range(12, 16):
         noteMTX[j][4] = chordArray[j]                       # chord root
@@ -251,7 +251,6 @@ def main():
     #time.sleep(3)
 
 
-# call main()
-if __name__ == "__main__":
-    print('Chorale Writer - by Jesse Lew')
-    main()
+# call it
+print('Chorale Writer - by Jesse Lew')
+choraleWriter()

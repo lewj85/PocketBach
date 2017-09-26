@@ -22,7 +22,7 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
 
     # for reference:
     # 12 note data types: pitch, duration, direction, interval, chord root,
-    #   7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+    #   7th chord, tonality, inversion, prev chord root, distance, beat, measure
 
     # generate random number - PocketBach's soul...
     num1 = random.random()

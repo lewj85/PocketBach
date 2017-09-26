@@ -1,15 +1,16 @@
-import getNextChord as gnc
+import getNextNote as gnn
 import numToPitch as ntp
 import orchestrate as orch
 import createLily as cl
-import speciesCP as scp
+import getRhythm as gr
+import numpy as np
 import random
-import os
+#import os
 
 # https://en.wikipedia.org/wiki/Fugue#Musical_outline
 
 # fugueWriter(noteMTX) function takes arguments from the recorded melody
-def fugueWriter(key = 'C', major = 1, timesig = [4,4], noteMTX = []):
+def fugueWriter(subjectMTX=[], key = 'C', major = 1, timesig = [4,4]):
 
     # initialize variables
     chordArray = []
@@ -18,12 +19,56 @@ def fugueWriter(key = 'C', major = 1, timesig = [4,4], noteMTX = []):
     measures = 32
     maxVoices = 3
 
+
     #####################################################################
     # CREATE MEASURES 1-2 - Tonic (I)
     # Soprano - rest
     # Alto - Subject
     # Bass - rest
     #####################################################################
+    # if no user-generated melody is provided, make one up
+    try:
+        subjectMTX
+    except NameError:
+        subjectMTX = np.array([('0', '0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)],
+                          dtype=[('pitch', 'S5'), ('duration', 'S5'), ('direction', 'i4'),
+                                 ('interval', 'i4'), ('chordRoot', 'i4'), ('seventhChord', 'i4'),
+                                 ('tonality', 'i4'), ('inversion', 'i4'), ('prevRoot', 'i4'),
+                                 ('distance', 'i4'), ('beat', 'i4'), ('measure', 'i4')])
+        subjectMTX = np.expand_dims(subjectMTX, 0)  # add the 3rd dimension as new 1st dimension
+        copyMTX = subjectMTX  # copy for tacking on one at a time
+        for i in range(subjectMTX.shape[0] - 1):  # tack on one more voice - will create 3x16x12 or 4x16x12
+            subjectMTX = np.concatenate((subjectMTX, copyMTX), 0)
+        newNote = subjectMTX  # now we can use np.concatenate([subjectMTX, newNote],1) to add a new note
+
+        # for easy reference:
+        #   12 note data types: pitch, duration, direction, interval, chord root,
+        #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
+
+        # get rhythms
+        r1 = gr.getRhythm()  # get 1st measure
+        r2 = gr.getRhythm()  # get 2nd measure
+
+        # add them to the matrix, as well as note data
+        # NOTE: we automatically write for a I-IV subject
+        for i in range(len(r1)):
+            if i > 0:
+                np.concatenate([subjectMTX, newNote], 1)  # add a new note
+            subjectMTX[1][i][1] = r1[i]     # duration
+            subjectMTX[1][i][4] = 1         # chordRoot
+            #subjectMTX[1][i][10] = ?        # beat
+            subjectMTX[1][i][11] = 1        # measure
+        for i in range(len(r2)):
+            np.concatenate([subjectMTX, newNote], 1)  # add a new note
+            subjectMTX[1][i][1] = r1[i]     # duration
+            subjectMTX[1][i][4] = 4         # chordRoot
+            subjectMTX[1][i][8] = 1         # prevRoot
+            # subjectMTX[1][i][10] = ?       # beat
+            subjectMTX[1][i][11] = 2        # measure
+
+        # make up notes for them, in the alto
+        for i in range(subjectMTX.shape[1]):
+            subjectMTX[1][i][0] = gnn.getNextNote()  # need params
 
 
 
@@ -33,6 +78,7 @@ def fugueWriter(key = 'C', major = 1, timesig = [4,4], noteMTX = []):
     # Alto - Counter-Subject 1
     # Bass - rest
     #####################################################################
+    # use same rhythms as subject
 
 
 

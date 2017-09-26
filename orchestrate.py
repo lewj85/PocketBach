@@ -12,7 +12,7 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
     # x = time (16 chords)
     # y = note (12 note and chord data)
     #   12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
     # z = voice (3 voices)
     #   0 = bass, 1 = alto/tenor, 2 = soprano
 
@@ -28,7 +28,7 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
                         dtype=[('pitch','S5'),('duration','S5'),('direction','i4'),
                         ('interval', 'i4'), ('chordRoot', 'i4'), ('seventhChord', 'i4'),
                         ('tonality', 'i4'), ('inversion', 'i4'), ('prevRoot', 'i4'),
-                        ('pickup', 'i4'), ('beat', 'i4'), ('measure', 'i4')])
+                        ('distance', 'i4'), ('beat', 'i4'), ('measure', 'i4')])
     for i in range(4):  # only 4 because finalMTX doubles in size each time, so 2^4 = 16
         finalMTX = np.concatenate((finalMTX, finalMTX),0)
     finalMTX = np.expand_dims(finalMTX, 0)  # add the 3rd dimension as new 1st dimension
@@ -178,7 +178,7 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
             attempts = 0  # reset
             # set all columns for i-th row of finalMTX using noteMTX
             #   12 note data types: pitch, duration, direction, interval, chord root,
-            #       7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+            #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
             for voice in range(3):
                 finalMTX[voice][i][1] = chordsPerMeasure    # duration
 
@@ -226,7 +226,7 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
                 finalMTX[voice][i][7] = noteMTX[i][7]                       # inversion
 
                 finalMTX[voice][i][8] = noteMTX[i-1][4]                     # prev chord root
-                finalMTX[voice][i][9] = 0                                   # pickup, none in bass
+                finalMTX[voice][i][9] = 0                                   # distance, none in bass
                 finalMTX[voice][i][10] = noteMTX[i][10]                     # beat
                 finalMTX[voice][i][11] = noteMTX[i][11]                     # measure
 

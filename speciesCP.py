@@ -133,12 +133,12 @@ def fifthSpecies(finalMTX):
                         dtype=[('pitch', 'S5'), ('duration', 'S5'), ('direction', 'i4'),
                                ('interval', 'i4'), ('chordRoot', 'i4'), ('seventhChord', 'i4'),
                                ('tonality', 'i4'), ('inversion', 'i4'), ('prevRoot', 'i4'),
-                               ('pickup', 'i4'), ('beat', 'i4'), ('measure', 'i4')])
+                               ('distance', 'i4'), ('beat', 'i4'), ('measure', 'i4')])
     newMTX = np.expand_dims(newMTX, 0)  # add the 3rd dimension as new 1st dimension
     copyMTX = newMTX  # copy for tacking on one at a time
     for i in range(finalMTX.shape[0]-1):  # tack on one more voice - will create 3x16x12 or 4x16x12
         newMTX = np.concatenate((newMTX, copyMTX), 0)
-    newNote = newMTX  # now we can use np.concatenate([newMTX, newMeasure],1) to add a new note
+    newNote = newMTX  # now we can use np.concatenate([newMTX, newNote],1) to add a new note
 
     prevj = 0
     for i in range(finalMTX[0][0][-1]):
@@ -149,7 +149,7 @@ def fifthSpecies(finalMTX):
             # fill all appropriate columns of the soprano
             # for reference:
             # 12 note data types: pitch, duration, direction, interval, chord root,
-            #   7th chord, tonality, inversion, prev chord root, pickup, beat, measure
+            #   7th chord, tonality, inversion, prev chord root, distance, beat, measure
             for m in range(4,12):
                 newMTX[finalMTX.shape[0]-1][i][m] = finalMTX[finalMTX.shape[0]-1][i][m]  # instead of hardwiring voice 2
 
