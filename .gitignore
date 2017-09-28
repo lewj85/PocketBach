@@ -99,4 +99,6 @@ site
 .mypy_cache
 
 # other files
-hooktheoryLogin.txt
+.log
+.ly
+.pdf

@@ -1,3 +1,4 @@
+import makeMatrix as mm
 import getNextNote as gnn
 import numToPitch as ntp
 import orchestrate as orch
@@ -30,15 +31,7 @@ def fugueWriter(subjectMTX=[], key = 'C', major = 1, timesig = [4,4]):
     try:
         subjectMTX
     except NameError:
-        subjectMTX = np.array([('0', '0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)],
-                          dtype=[('pitch', 'S5'), ('duration', 'S5'), ('direction', 'i4'),
-                                 ('interval', 'i4'), ('chordRoot', 'i4'), ('seventhChord', 'i4'),
-                                 ('tonality', 'i4'), ('inversion', 'i4'), ('prevRoot', 'i4'),
-                                 ('distance', 'i4'), ('beat', 'i4'), ('measure', 'i4')])
-        subjectMTX = np.expand_dims(subjectMTX, 0)  # add the 3rd dimension as new 1st dimension
-        copyMTX = subjectMTX  # copy for tacking on one at a time
-        for i in range(subjectMTX.shape[0] - 1):  # tack on one more voice - will create 3x16x12 or 4x16x12
-            subjectMTX = np.concatenate((subjectMTX, copyMTX), 0)
+        subjectMTX = mm.makeMatrix(maxVoices)
         newNote = subjectMTX  # now we can use np.concatenate([subjectMTX, newNote],1) to add a new note
 
         # for easy reference:

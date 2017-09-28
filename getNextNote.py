@@ -295,3 +295,31 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
 
     #print(chordVec)
     return nextNote
+
+
+ # in the chorale we want just 1 note, but in the fugue we want an array to match rhythmArr
+def getNextNoteArr(rhythmArr, destinationChord, intervalPatternsUsed):
+    arrayOfNotes = []
+    notesNeeded = 0
+    nextNote = ''
+    for i in rhythmArr:
+        if i != '2~' and i != '4~':
+            notesNeeded += 1
+
+    # need either destinationChord or destinationPitch
+    # assuming destinationChord for now
+    for n in range(notesNeeded):
+        # figure out the destinationPitch (getNextNote()? chord harmonization is less important)
+        # get interval between currentPitch and destinationPitch
+        # determine beat based on rhythmArr to know if you want harmonic/non-harmonic tones
+        # first look for intervalPatternsUsed to see if you can re-use them
+        # next, look for common patterns, like linear motion, appoggiaturas, cambiatas, anticipations
+        # TO DO: decide if you want advanced non-chord tones like suspensions, this isn't a priority
+        # if no patterns, just move semi-linearly toward the destinationPitch
+
+        # TO DO: assign nextNote
+
+        arrayOfNotes.append(nextNote)
+
+    return arrayOfNotes
+

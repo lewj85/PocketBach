@@ -2,6 +2,7 @@
 
 import numpy as np
 import random
+import makeMatrix as mm
 import getNextNote as gnn
 import defineChord as dc
 import pitchToNum as ptn
@@ -21,27 +22,13 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
     #finalMTX.fill(0)                # fill it with 0s, this will make everything an int though...
     #finalMTX.shape = (16, 12, 3)    # define dimensions
 
-    # NOTE: THE NEW WAY OF DOING THIS USES STRUCTS TO ALLOW MULTIPLE TYPES INTO THE MATRIX.
-    #       this 'removes' the note data dimension, though it can still be accessed with finalMTX[voice][measure][note data]
-    # TO DO: swap the dimensions from [measure][note data][voice] to [voice][measure][note data]
-    finalMTX = np.array([('0', '0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)],
-                        dtype=[('pitch','S5'),('duration','S5'),('direction','i4'),
-                        ('interval', 'i4'), ('chordRoot', 'i4'), ('seventhChord', 'i4'),
-                        ('tonality', 'i4'), ('inversion', 'i4'), ('prevRoot', 'i4'),
-                        ('distance', 'i4'), ('beat', 'i4'), ('measure', 'i4')])
-    for i in range(4):  # only 4 because finalMTX doubles in size each time, so 2^4 = 16
-        finalMTX = np.concatenate((finalMTX, finalMTX),0)
-    finalMTX = np.expand_dims(finalMTX, 0)  # add the 3rd dimension as new 1st dimension
-    copyMTX = finalMTX  # copy for tacking on later
-    finalMTX = np.concatenate((finalMTX, finalMTX),0)  # create more voices
-                                                       # NOTE: i tried making it the 3rd but it won't work...
-    finalMTX = np.concatenate((finalMTX, copyMTX),0)   # tack on one more 16x12 grid to make it 3x16x12
-                                                       # NOTE: can't use (finalMTX, finalMTX) or it will double to 4x16x12
-    # debugging
-    # print(finalMTX.shape)
-    # finalMTX[2][15][11] = 42
-    # print(finalMTX)
-    # print("Testing:", finalMTX[2][15][11])
+    # NOTE: THE NEW WAY OF DOING THIS USES LISTS TO ALLOW MULTIPLE TYPES INTO THE MATRIX.
+    #       this 'removes' the note data dimension, though it can still be accessed with finalMTX[voice][note][data]
+    finalMTX = mm.makeMatrix(maxVoices)
+    newNote = finalMTX
+    for i in range(measures - 1):
+        finalMTX = np.concatenate((finalMTX, newNote), 1)  # add 15 blank notes, for 16 total
+    #print(finalMTX.shape)
 
     ################################################################
     # initialize the first chord
