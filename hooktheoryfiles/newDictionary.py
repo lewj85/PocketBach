@@ -1,4 +1,3 @@
-import io
 import json
 
 oldData = open('hooktheoryData.json', 'r')
@@ -7,15 +6,22 @@ oldData.close()
 #print(oldStr)
 
 oldJson = json.loads(oldStr)
-print(oldJson[155])
-print(oldJson[155]["child_path"])
-print(len(oldJson))
+#print(oldJson[155])
+# {'chord_ID': '464', 'chord_HTML': 'IV<sup>6</sup><sub>4</sub>', 'probability': 0.003, 'child_path': '3,464'}
+#print(oldJson[155]["child_path"])
+# 3,464
+#print(len(oldJson))
+# 8646
 
-newDict = {}
-newDict["child_path"] = {}
+
+# NOTE: THE NEW DICTIONARY DOES NOT GIVE PERCENTAGES FOR FIRST CHORDS
+#   it only returns probabilities for chords after the first!!!!
+#   another way to put it: a child_path must exist
+
+newDict = dict()
 
 for i in oldJson:
-    print(i)
+    #print(i)
     if i != None:
         if ',' in i["child_path"]:
             newKey = i["child_path"]
@@ -25,10 +31,20 @@ for i in oldJson:
             print(newKey2)
 
             newData = i["probability"]
-            # add the new
+            # if the child_path doesn't exist yet, add it as a new dictionary
+            if not(newKey2 in newDict):
+                newDict[newKey2] = dict()
+            # then we can add key:value pairs to it
             newDict[newKey2][chordKey] = newData
 
 
+fileNew = open('hooktheoryData2.json', 'w')
+json.dump(newDict, fileNew)
+fileNew.close()
 
-#newData = open('hooktheoryData2.json', 'w')
-
+# check to see if it's working
+fileCheck = open('hooktheoryData2.json', 'r')
+checkStr = fileCheck.read()
+fileCheck.close()
+jsonCheck = json.loads(checkStr)
+print(jsonCheck["7,6,7,6"])
