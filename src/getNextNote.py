@@ -29,7 +29,13 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
     #print(num1)
 
     # track chord tones
-    chordVec = dc.defineChord(key, major, currentRoot, seventh, tonality, inversion)
+    chordData = dc.defineChord(key, major, currentRoot, seventh, tonality, inversion)
+    # if there's a problem defining a chord above, just use a I-chord
+    if chordData == -1:
+        chordVec = ['c','e','g']
+    else:
+        chordVec = chordData[0]
+        #inversion = chordData[1]  # we already know this!
     #print(chordVec)
 
 

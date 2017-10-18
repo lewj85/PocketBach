@@ -22,7 +22,7 @@ newDict = dict()
 
 for i in oldJson:
     #print(i)
-    if i != None:
+    if i is not None:
         if ',' in i["child_path"]:
             newKey = i["child_path"]
             chordKey = newKey[newKey.rindex(',')+1:]  # save the last chord

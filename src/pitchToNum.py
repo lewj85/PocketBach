@@ -10,5 +10,5 @@ def pitchToNum(key='C', pitch='r'):
             'e': '3',
             'f': '4',
             'g': '5'
-        }.get(pitch, '0')  # find 'pitch' in dictionary above, otherwise default to 0 so we know there's an error
+        }.get(pitch, '-1')  # find 'pitch' in dictionary above, otherwise default to -1 so we know there's an error
                             # could also use }[pitch] if no default needed

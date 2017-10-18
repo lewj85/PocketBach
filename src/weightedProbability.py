@@ -8,21 +8,30 @@ def weightedProbability(keyStr):
     num1 = random.random()
 
     # extract the json data
-    filename = "/hooktheoryfiles/hooktheoryData2.json"
+    filename = "../data/hooktheoryfiles/hooktheoryData2.json"
     f = open(filename, 'r')
-    newDict = dict()
-    json.dump(newDict, f)
+    checkStr = f.read()
     f.close()
+    newDict = json.loads(checkStr)
+    #print(newDict["7,6,7,6"])
 
     probs = newDict[keyStr]
+    print(probs)
 
     for i in probs:
+        #print('num1 is '+str(num1)+'. checking '+i+'.')
         # if num1 < first key's value return key
-        if num1 <= i["probability"]:
-            return i.key
+        if num1 <= probs[i]:
+            #print('returning '+i)
+            return i
         # else subtract that key's value from num1
         else:
-            num1 -= i["probability"]
+            num1 -= probs[i]
 
-    # shouldn't make it this far, but if there's a problem, just return '1'
-    return '1'
+    # if there's a problem, return -1 so we know
+    return -1
+
+
+# tests
+#weightedProbability('1')
+#weightedProbability('7,6,7,6')

@@ -4,7 +4,7 @@ import numpy as np
 import random
 import makeMatrix as mm
 import getNextNote as gnn
-import defineChord as dc
+#import defineChord as dc  # commented out, no longer needed
 import pitchToNum as ptn
 import numToPitch as ntp
 
