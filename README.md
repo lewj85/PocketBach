@@ -24,7 +24,7 @@ $ aplay melody.wav
 
 **Hooktheory API Data Extractor** - Complete
 
-**Data Parser** - *Incomplete*
+**Data Parser** - Complete
 
 **Chorale Writer** - Complete
 

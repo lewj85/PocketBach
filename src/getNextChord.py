@@ -2,9 +2,49 @@
 # it makes use of the random() function when there are multiple options.
 # NOTE: rearrange if statements so destination is outer if-else
 
+import weightedProbability as wp
+import defineChord as dc
 import random
 
-def getNextChord(chordsRemaining, destination, previousChord):
+def getNextChord(chordsRemaining, destination, chordArray):
+    ###############################################################
+    # NEW HOOKTHEORY WAY
+    ###############################################################
+    # try to get a chord using weightedProbability
+    # NOTE: if we fail (if the chord isn't one of the ones in defineChord), newChord will be set to -1
+    attempts = 5
+    found = 0
+    print(chordArray)
+    while attempts and not found:
+        attempts -= 1
+        if len(chordArray) == 1:
+            keyStr = str(chordArray[0])
+        elif len(chordArray) == 2:
+            keyStr = str(chordArray[0])+','+str(chordArray[1])
+        elif len(chordArray) == 3:
+            keyStr = str(chordArray[-3])+','+str(chordArray[-2])+','+str(chordArray[-1])
+        elif len(chordArray) > 3:
+            keyStr = str(chordArray[-4])+','+str(chordArray[-3])+','+str(chordArray[-2])+','+str(chordArray[-1])
+
+        print('keyStr is '+keyStr)
+        newChord = wp.weightedProbability(keyStr)
+        print('newChord is '+str(newChord))
+        # make sure it's a chord we allow!!!
+        found = dc.defineChord('C', 1, 1, 0, 0, 0, newChord)
+        #print('found is '+str(found))
+
+        # if we allow it, return it along with the inversion, which is in found[1]
+        if found:
+            return [int(newChord), found[1]]
+
+
+    # if we don't return a value in the above while loop, just do it manually with hard-coded weights
+    print('failed to getNextChord via weightedProbability. doing it manually.')
+
+    ###############################################################
+    # OLD HARD-CODING WAY
+    ###############################################################
+    previousChord = chordArray[-1]
     inversion = 0
     # NOTE: use actual data to derive percentages based on each composer's preferences
     #   pass these preferences as parameters

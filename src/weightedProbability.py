@@ -16,17 +16,17 @@ def weightedProbability(keyStr):
     #print(newDict["7,6,7,6"])
 
     probs = newDict[keyStr]
-    print(probs)
+    #print(probs)
 
-    for i in probs:
+    for chord in probs:
         #print('num1 is '+str(num1)+'. checking '+i+'.')
         # if num1 < first key's value return key
-        if num1 <= probs[i]:
+        if num1 <= probs[chord]:
             #print('returning '+i)
-            return i
+            return chord
         # else subtract that key's value from num1
         else:
-            num1 -= probs[i]
+            num1 -= probs[chord]
 
     # if there's a problem, return -1 so we know
     return -1

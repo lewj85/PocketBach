@@ -49,7 +49,7 @@ def choraleWriter():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray)
         chordArray.append(nextChord[0])
         # if nextChord[1] == 1:
         #     firstInversionLocations.append(i+2)
@@ -115,7 +115,7 @@ def choraleWriter():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray)
         chordArray.append(nextChord[0])
         # if nextChord[1] == 1:
         #     firstInversionLocations.append(i+6)  # NOTE: not i+5 because we start with a non-inversion on measure 5
@@ -195,7 +195,7 @@ def choraleWriter():
         # 1. the number of remaining chords, found by (chordsNeeded - i)
         # 2. the destination chord
         # 3. the previous chord, found by chordArray[-1]
-        nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray[-1])
+        nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray)
         chordArray.append(nextChord[0])
         # NOTE: NO INVERSIONS FOR LAST 4 MEASURES EXCEPT FOR POSSIBLE I64-V-I
         if len(chordArray) == 14 and nextChord[0] == 1 and nextChord[1] == 2:
