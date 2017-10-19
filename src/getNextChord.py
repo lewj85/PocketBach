@@ -14,7 +14,7 @@ def getNextChord(chordsRemaining, destination, chordArray):
     # NOTE: if we fail (if the chord isn't one of the ones in defineChord), newChord will be set to -1
     attempts = 5
     found = 0
-    print(chordArray)
+    #print(chordArray)
     while attempts and not found:
         attempts -= 1
         if len(chordArray) == 1:
@@ -26,24 +26,29 @@ def getNextChord(chordsRemaining, destination, chordArray):
         elif len(chordArray) > 3:
             keyStr = str(chordArray[-4])+','+str(chordArray[-3])+','+str(chordArray[-2])+','+str(chordArray[-1])
 
-        print('keyStr is '+keyStr)
+        #print('keyStr is '+keyStr)
         newChord = wp.weightedProbability(keyStr)
-        print('newChord is '+str(newChord))
-        # make sure it's a chord we allow!!!
-        found = dc.defineChord('C', 1, 1, 0, 0, 0, newChord)
-        #print('found is '+str(found))
+        #print('newChord is '+str(newChord))
+        # if we found a chord
+        if newChord:
+            # make sure it's a chord we allow!!!
+            found = dc.defineChord('C', 1, 1, 0, 0, 0, newChord)
+            #print('found is '+str(found))
 
         # if we allow it, return it along with the inversion, which is in found[1]
+        # NOTE: before turning it into an int, pull out the first index with [0]
+        # NOTE: this will remove the possibility of 7th chords...
+        # TODO: fix the issue in the above NOTES - need to allow 7th chords
         if found:
-            return [int(newChord), found[1]]
+            return [int(newChord[0]), found[1]]
 
-
-    # if we don't return a value in the above while loop, just do it manually with hard-coded weights
-    print('failed to getNextChord via weightedProbability. doing it manually.')
 
     ###############################################################
     # OLD HARD-CODING WAY
     ###############################################################
+    # if we don't return a value in the above while loop, just do it manually with hard-coded weights
+    print('failed to getNextChord via weightedProbability. doing it manually.')
+
     previousChord = chordArray[-1]
     inversion = 0
     # NOTE: use actual data to derive percentages based on each composer's preferences

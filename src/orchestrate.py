@@ -159,7 +159,7 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
             if i < 0: # just in case we go back too far or get caught in a loop, start at measure 2
                 i = 0
                 attempts = 0
-            print("Attempt #" + str(attempts) + ". Rewriting measure " + str(i + 1) + ".")
+            #print("Attempt #" + str(attempts) + ". Rewriting measure " + str(i + 1) + ".")
 
         else:
             attempts = 0  # reset

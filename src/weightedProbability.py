@@ -15,8 +15,13 @@ def weightedProbability(keyStr):
     newDict = json.loads(checkStr)
     #print(newDict["7,6,7,6"])
 
-    probs = newDict[keyStr]
+    # need to remove any inversions from the keyStr so
+
+    probs = newDict.get(keyStr,0)
     #print(probs)
+
+    if not probs:
+        return 0
 
     for chord in probs:
         #print('num1 is '+str(num1)+'. checking '+i+'.')
@@ -27,9 +32,6 @@ def weightedProbability(keyStr):
         # else subtract that key's value from num1
         else:
             num1 -= probs[chord]
-
-    # if there's a problem, return -1 so we know
-    return -1
 
 
 # tests
