@@ -28,7 +28,7 @@ def getNextChord(chordsRemaining, destination, chordArray):
 
         #print('keyStr is '+keyStr)
         newChord = wp.weightedProbability(keyStr)
-        #print('newChord is '+str(newChord))
+        print('newChord is '+str(newChord))
         # if we found a chord
         if newChord:
             # make sure it's a chord we allow!!!
@@ -37,10 +37,17 @@ def getNextChord(chordsRemaining, destination, chordArray):
 
         # if we allow it, return it along with the inversion, which is in found[1]
         # NOTE: before turning it into an int, pull out the first index with [0]
-        # NOTE: this will remove the possibility of 7th chords...
-        # TODO: fix the issue in the above NOTES - need to allow 7th chords
+        # NOTE: this will only work for keys with single-index roots (ie. not for 'cs' or 'css')
         if found:
-            return [int(newChord[0]), found[1]]
+            #if found[1]:
+            #    print('found an inversion')
+            #if found[2]:
+            #    print('found a 7th chord')
+            #if found[3]:
+            #    print('found a secondary dominant')
+            return [int(newChord[0]), found[1], found[2], found[3]]
+        else:
+            print('chord not found')
 
 
     ###############################################################

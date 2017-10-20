@@ -235,6 +235,7 @@ def choraleWriter():
     finalMTX = orch.orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices)
     # print(noteMTX)
     #print(finalMTX)
+    print(chordArray)
 
     # create .ly files for each species
     cl.createLily(key, major, finalMTX, measures, maxVoices, 1)  # first species
