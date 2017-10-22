@@ -64,8 +64,8 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4])):  # NOTE: took sub
             # subjectMTX[0][i][10] = ?       # TO DO: beat
             subjectMTX[0][i][11] = 2        # measure
 
-        # make up notes for them, in the alto
-        pitches = gnn.getNextNoteArr()  # need params
+        # make up notes for them
+        pitches = gnn.getNextNoteArr()  # TODO: need params
         for i in range(subjectMTX.shape[1]):
             subjectMTX[0][i][0] = pitches[i]
 
@@ -79,12 +79,13 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4])):  # NOTE: took sub
     print(type(subjectMTX))
     print(subjectMTX.shape)
 
-    # fill finalMTX's Alto with subjectMTX's values
+    # fill finalMTX with subjectMTX's values
     for i in range(subjectMTX.shape[1]):
         for j in range(maxVoices):
             for k in range(12):
-                if j != 1:
-                    finalMTX[j][i][k] = subjectMTX[0][i][k]
+                # only transfer the alto
+                if j == 1:
+                    finalMTX[1][i][k] = subjectMTX[0][i][k]
                     if subjectMTX[0][i][11] == 2:
                         finalMTX[j][i][8] = 1       # prevRoot
 

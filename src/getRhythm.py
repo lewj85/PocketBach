@@ -11,7 +11,8 @@ def getRhythm(finalMTX, measure, measures, timeSig, voice=0, maxVoices=3, choral
         if choraleOrFugue == 0:  # if a chorale
             num1 = random.random()
             # pick a random (common) rhythm
-            # TO DO: fill this section
+            randRhythm(timeSig, 0, 1)
+            # TODO: fill this section
             pass
 
         else:  # if a fugue
@@ -146,7 +147,7 @@ def similarRhythm(oldRhythm):
     # NOTE: must put spaces after commas in keys!!! I tested this.
     choices = {
         "['1']": [['1'],['2','2'],['2~','4','4']],
-        "['2', '2']": [['2','2'],['2~','4','4'],['2','4','4']]
+        "['2','2']": [['2','2'],['2~','4','4'],['2','4','4']]
         # TO DO: add more keys and similar rhythms
     }.get(str(oldRhythm),[oldRhythm,])  # NOTE: we have to default to [oldRhythm,] instead of just oldRhythm
                                         #   or indexing below will cause an error
