@@ -46,8 +46,23 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
         else:
             noteArray[-1][1] = rhythms[0]
 
-        # get notes for the rhythms
-        gn.getNotes(noteArray, rhythms, destArr[i+1], chords[i], numOfNotes)
+        # update numOfNotes needed for getNotes() below
+        # pop the first 1 (or 2 if there's a tie) rhythms off the list
+        if '~' in rhythms[0]:
+            noteArray.append([noteArray[-1][0], rhythms[1]])
+            numOfNotes -= 2
+            rhythms.pop(0)
+            rhythms.pop(0)
+        else:
+            numOfNotes -= 1
+            rhythms.pop(0)
+
+        print('new rhythms : '+ str(rhythms))
+
+        # get notes for the remaining rhythms
+        # NOTE: check to see if rhythms isn't empty because it could just be a whole note
+        if rhythms:
+            gn.getNotes(noteArray, rhythms, destArr[i+1], chords[i], numOfNotes)
 
         # finally, tack on the next destination to start the next measure with a default rhythm of
         # NOTE: this will add the final destination to noteArray, meaning this will start an extra measure!
