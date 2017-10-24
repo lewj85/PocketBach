@@ -36,24 +36,34 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
         numOfNotes == 1: repeat (+0), anticipation (+1/-1), escape tone (+1/-1), leap and resolve by step (destination - noteArray[-1][0])
         """
         # if the numOfNotes is the same as the distToDest, just move straight for it
-        if numOfNotes == distToDestUp:
+        if numOfNotes + 1 == distToDestUp:
             nextNote = noteArray[-1][0] + 1
-            for i in range(numOfNotes):
+            for i in range(len(rhythms)):
                 if nextNote == 8:
                     nextNote = 1
-                noteArray.append([nextNote, rhythms[i]])
-                nextNote += 1
-        elif numOfNotes == distToDestDown:
+                if '~' not in noteArray[-1][1]:
+                    noteArray.append([nextNote, rhythms[i]])
+                    nextNote += 1
+                else:
+                    noteArray.append([noteArray[-1][0], rhythms[i]])
+        elif numOfNotes + 1 == distToDestDown:
             # same as above in other direction
             nextNote = noteArray[-1][0] - 1
-            for i in range(numOfNotes):
+            for i in range(len(rhythms)):
                 if nextNote == 0:
                     nextNote = 7
-                noteArray.append([nextNote, rhythms[i]])
-                nextNote -= 1
+                if '~' not in noteArray[-1][1]:
+                    noteArray.append([nextNote, rhythms[i]])
+                    nextNote -= 1
+                else:
+                    noteArray.append([noteArray[-1][0], rhythms[i]])
+        else:
+            print('numOfNotes != distToDestUp/Down, so try something else')
+            for i in range(len(rhythms)):
+                noteArray.append([noteArray[-1][0], rhythms[i]])
     else:
         # otherwise gotta get creative
         # TODO: replace the first parameter below with actual pitch choices
-        for i in range(numOfNotes):
+        for i in range(len(rhythms)):
             noteArray.append([noteArray[-1][0], rhythms[i]])
 

@@ -44,6 +44,7 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
             noteArray.append([destArr[0], rhythms[0]])
         # otherwise set the last value in noteArray with a real rhythm because it has a default whole note!
         else:
+            print('changing default rhythm '+str(noteArray[-1][1]+' to '+str(rhythms[0])))
             noteArray[-1][1] = rhythms[0]
 
         # update numOfNotes needed for getNotes() below
@@ -66,7 +67,10 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
 
         # finally, tack on the next destination to start the next measure with a default rhythm of
         # NOTE: this will add the final destination to noteArray, meaning this will start an extra measure!
-    noteArray.append([destArr[i+1], 1])
+        noteArray.append([destArr[i+1], '1'])
+
+        # for next loop
+        measure += 1
 
     print(noteArray)
 
