@@ -21,7 +21,7 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
     # count the number of non-tied rhythms
     counter = 0
     for i in range(len(rhythms)):
-        if '~' not in rhythms[i]:
+        if '~' not in rhythms[i][0]:
             counter += 1
 
     print('counter : '+str(counter)+', numOfNotes : '+str(numOfNotes))
@@ -42,10 +42,10 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
                 if nextNote == 8:
                     nextNote = 1
                 if '~' not in noteArray[-1][1]:
-                    noteArray.append([nextNote, rhythms[i]])
+                    noteArray.append([nextNote, rhythms[i][0]])
                     nextNote += 1
                 else:
-                    noteArray.append([noteArray[-1][0], rhythms[i]])
+                    noteArray.append([noteArray[-1][0], rhythms[i][0]])
         elif numOfNotes + 1 == distToDestDown:
             # same as above in other direction
             nextNote = noteArray[-1][0] - 1
@@ -53,17 +53,17 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
                 if nextNote == 0:
                     nextNote = 7
                 if '~' not in noteArray[-1][1]:
-                    noteArray.append([nextNote, rhythms[i]])
+                    noteArray.append([nextNote, rhythms[i][0]])
                     nextNote -= 1
                 else:
-                    noteArray.append([noteArray[-1][0], rhythms[i]])
+                    noteArray.append([noteArray[-1][0], rhythms[i][0]])
         else:
             print('numOfNotes != distToDestUp/Down, so try something else')
             for i in range(len(rhythms)):
-                noteArray.append([noteArray[-1][0], rhythms[i]])
+                noteArray.append([noteArray[-1][0], rhythms[i][0]])
     else:
         # otherwise gotta get creative
         # TODO: replace the first parameter below with actual pitch choices
         for i in range(len(rhythms)):
-            noteArray.append([noteArray[-1][0], rhythms[i]])
+            noteArray.append([noteArray[-1][0], rhythms[i][0]])
 

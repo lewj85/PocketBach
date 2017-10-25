@@ -41,15 +41,15 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
 
         # if first measure, add the first note and first rhythm
         if measure == 1:
-            noteArray.append([destArr[0], rhythms[0]])
+            noteArray.append([destArr[0], rhythms[0][0]])
         # otherwise set the last value in noteArray with a real rhythm because it has a default whole note!
         else:
-            print('changing default rhythm '+str(noteArray[-1][1]+' to '+str(rhythms[0])))
-            noteArray[-1][1] = rhythms[0]
+            print('changing default rhythm '+str(noteArray[-1][1]+' to '+str(rhythms[0][0])))
+            noteArray[-1][1] = rhythms[0][0]
 
         # update numOfNotes needed for getNotes() below
         # pop the first 1 (or 2 if there's a tie) rhythms off the list
-        if '~' in rhythms[0]:
+        if '~' in rhythms[0][0]:
             noteArray.append([noteArray[-1][0], rhythms[1]])
             numOfNotes -= 2
             rhythms.pop(0)

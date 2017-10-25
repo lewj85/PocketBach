@@ -186,7 +186,34 @@ def randRhythm(timeSig, interval = 0, common = 0, numOfNotes = 0):
 
 
     index = random.randint(0,len(choices)-1)
-    return choices[index]
+
+    # add beat numbers and downbeat bools to each value before returning list
+    final = addBeatData(choices[index])
+
+    return final
+
+
+def addBeatData(rhythms):
+    newRhythms = []
+    total = 0
+    # first convert to decimals with dictionary
+    for i in rhythms:
+        value = {
+            '1': 4,
+            '2~': 3,
+            '2': 2,
+            '4~': 1.5,
+            '4': 1,
+            '8~': 0.75,
+            '8': 0.5,
+            '16': 0.25
+        }.get(i, -1)
+        downbeat = 0
+        if total == int(total):
+            downbeat = 1
+        newRhythms.append([i, int(total)+1, downbeat])
+        total += value
+    return newRhythms
 
 
 def similarRhythm(oldRhythm):
