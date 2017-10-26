@@ -4,7 +4,8 @@ import random
 def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
 
     # get chord tones for strong beats, label as localDestinations
-    localDestinations = dc.defineChord('C', 1, chord)
+    [localDestinations,a,b,c] = dc.defineChord('C', 1, chord)
+    #print(localDestinations)
 
     # store notes needed to destination
     distToDestUp = 0
@@ -16,7 +17,7 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
         if note == 8:
             note = 1
     distToDestDown = (7 - distToDestUp) % 7  # NOTE: % 7 is in case distToDestUp is 0
-    print('note is : '+str(noteArray[-1][0])+', dest : '+str(destination)+', distUp is : '+str(distToDestUp)+', distDown is : '+str(distToDestDown))
+    #print('note is : '+str(noteArray[-1][0])+', dest : '+str(destination)+', distUp is : '+str(distToDestUp)+', distDown is : '+str(distToDestDown))
 
     # count the number of non-tied rhythms
     counter = 0
@@ -24,10 +25,10 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
         if '~' not in rhythms[i][0]:
             counter += 1
 
-    print('counter : '+str(counter)+', numOfNotes : '+str(numOfNotes))
+    #print('counter : '+str(counter)+', numOfNotes : '+str(numOfNotes))
     # can stick to common patterns if the number of notes and rhythms match
     if counter == numOfNotes:
-        print('same number of rhythms as notes')
+        print('rhythm counter DOES match random numOfNotes generated: ' + str(counter) + ',' + str(numOfNotes))
 
         # TODO: can add suspensions and ornaments like appoggiaturas and trills later
         """
@@ -59,11 +60,36 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
                     noteArray.append([noteArray[-1][0], rhythms[i][0]])
         else:
             print('numOfNotes != distToDestUp/Down, so try something else')
-            for i in range(len(rhythms)):
-                noteArray.append([noteArray[-1][0], rhythms[i][0]])
+            useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes)
     else:
         # otherwise gotta get creative
-        # TODO: replace the first parameter below with actual pitch choices
-        for i in range(len(rhythms)):
+        print('rhythm counter does NOT match random numOfNotes generated: ' + str(counter) + ',' + str(numOfNotes))
+        useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes)
+
+
+def useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes):
+    i = 0
+    while i < numOfNotes:  # don't use a for-loop because we may increment i more than once per loop
+        print('writing for ' + str(rhythms[i][0]))  # if this throws an error it's probably because we use
+                                                    # a counter in getNotes() above rather than numOfNotes
+                                                    # to deal with tied notes...
+
+        currentNote = noteArray[-1][0]
+
+        # if: look ahead to find accented downbeats - use passing tones, neighbor tones, repeats, to get to localDestinations
+
+        # elif none, then look for numNote:distance patterns - ie. cambiatas, anticipation, repeats
+
+        # elif none, then pick a random motion - ie. escape tone, leap and resolve by step
+
+
+        # TODO: REMOVE THIS PLACEHOLDER
+        noteArray.append([noteArray[-1][0], rhythms[i][0]])
+        # tie to the next note
+        if '~' in noteArray[-1][1]:
+            i += 1
             noteArray.append([noteArray[-1][0], rhythms[i][0]])
 
+
+        # increment index
+        i += 1

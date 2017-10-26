@@ -36,21 +36,28 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
         # first get rhythms based on interval to destination and numOfNotes
         # NOTE: kinda weird to consider rhythms before pitch!
         interval = max([destArr[i], destArr[i+1]]) - min([destArr[i], destArr[i+1]])
+
+        # NOTE: THESE LINES ENCOURAGE LINEAR MOVEMENT > RANDOM RHYTHMS
+        if interval > 4:
+            interval -= 7
+        #print('interval is '+str(interval))
+
         rhythms = gr.randRhythm(timeSig, interval, 0, numOfNotes)
-        print('rhythms : '+str(rhythms))
+        #print('rhythms : '+str(rhythms))
+        print([index[0] for index in rhythms])
 
         # if first measure, add the first note and first rhythm
         if measure == 1:
             noteArray.append([destArr[0], rhythms[0][0]])
         # otherwise set the last value in noteArray with a real rhythm because it has a default whole note!
         else:
-            print('changing default rhythm '+str(noteArray[-1][1]+' to '+str(rhythms[0][0])))
+            #print('changing default rhythm '+str(noteArray[-1][1]+' to '+str(rhythms[0][0])))
             noteArray[-1][1] = rhythms[0][0]
 
         # update numOfNotes needed for getNotes() below
         # pop the first 1 (or 2 if there's a tie) rhythms off the list
         if '~' in rhythms[0][0]:
-            noteArray.append([noteArray[-1][0], rhythms[1]])
+            noteArray.append([noteArray[-1][0], rhythms[1][0]])
             numOfNotes -= 2
             rhythms.pop(0)
             rhythms.pop(0)
@@ -58,7 +65,7 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
             numOfNotes -= 1
             rhythms.pop(0)
 
-        print('new rhythms : '+ str(rhythms))
+        #print('new rhythms : '+ str(rhythms))
 
         # get notes for the remaining rhythms
         # NOTE: check to see if rhythms isn't empty because it could just be a whole note
@@ -73,6 +80,7 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
         measure += 1
 
     print(noteArray)
+
 
 # debugging
 writeSubject()
