@@ -58,12 +58,9 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
         # pop the first 1 (or 2 if there's a tie) rhythms off the list
         if '~' in rhythms[0][0]:
             noteArray.append([noteArray[-1][0], rhythms[1][0]])
-            numOfNotes -= 2
-            rhythms.pop(0)
-            rhythms.pop(0)
-        else:
-            numOfNotes -= 1
-            rhythms.pop(0)
+            rhythms.pop(0)  # extra
+        rhythms.pop(0)  # not extra, happens no matter what
+        numOfNotes -= 1
 
         #print('new rhythms : '+ str(rhythms))
 
