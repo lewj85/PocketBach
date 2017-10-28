@@ -1,18 +1,14 @@
 import makeMatrix as mm
-import getNextNote as gnn
-import numToPitch as ntp
-import orchestrate as orch
 import createLily as cl
-import getRhythm as gr
 import writeSubject as ws
 import numpy as np
 import random
-#import os
+import os
 
 # https://en.wikipedia.org/wiki/Fugue#Musical_outline
 
-# fugueWriter(noteMTX) function takes arguments from the recorded melody
-def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=[]):
+# fugueWriter() function takes arguments from the recorded melody
+def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=None):
 
     # initialize variables
     chordArray = []
@@ -20,6 +16,14 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=[]):
     beatsPerMeasure = 4
     measures = 32
     maxVoices = 3
+    #print(subjectMTX)
+
+
+
+    # create finalMTX
+    finalMTX = mm.makeMatrix(maxVoices)
+    # NOTE: newNote here is a 1-voice matrix. it will change below to contain additional voices
+    newNote = mm.makeMatrix(3)  # now we can use finalMTX = np.concatenate([finalMTX, newNote],1) to add a new note
 
 
     #####################################################################
@@ -31,20 +35,22 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=[]):
     #####################################################################
 
     # NOTE: newNote here is a 1-voice matrix. it will change below to contain additional voices
-    newNote = mm.makeMatrix(1)  # now we can use np.concatenate([subjectMTX, newNote],1) to add a new note
+    newNoteSub = mm.makeMatrix(1)  # now we can use subjectMTX = np.concatenate([subjectMTX, newNoteSub],1) to add a new note
 
     # if no user-generated melody is provided, make one up
-    if not subjectMTX:
+    if subjectMTX is None:
         subjectMTX = mm.makeMatrix(1)
+        #print(subjectMTX.shape)
 
         # pick from default harmonies: I-I, I-IV, I-V
         # NOTE: all move to a V chord in the 3rd measure
         firstChords = [[1,1,5],[1,4,5],[1,5,5]]
-        chordChoices = random.choose(firstChords)
+        chordChoices = random.choice(firstChords)
+        print('chords for measures 1-3 are : '+str(chordChoices))
 
         # get notes and rhythms
         noteArray = ws.writeSubject(chordChoices)
-
+        print(noteArray)
 
         # for easy reference:
         #   12 note data types: pitch, duration, direction, interval, chord root,
@@ -52,44 +58,49 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=[]):
 
         # add data to the matrix
         for i in range(len(noteArray)):
-            np.concatenate([subjectMTX, newNote], 1)  # add a new note
+            if i > 0:  # NOTE: the first note is created and defaulted already
+                subjectMTX = np.concatenate([subjectMTX, newNoteSub], 1)  # add a new note
+            #print(subjectMTX.shape)
             subjectMTX[0][i][0] = noteArray[i][0]     # pitch
             subjectMTX[0][i][1] = noteArray[i][1]     # duration
-            subjectMTX[0][i][4] = 4         # chordRoot
-            subjectMTX[0][i][8] = 1         # prevRoot
+            subjectMTX[0][i][4] = chordChoices[noteArray[i][2]-1]     # chordRoot
+            if noteArray[i][2] == 1:
+                subjectMTX[0][i][8] = 0
+            else:
+                subjectMTX[0][i][8] = chordChoices[noteArray[i][2]-2] # prevRoot
             # subjectMTX[0][i][10] = ?       # TODO: beat
-            subjectMTX[0][i][11] = 2        # measure
+            subjectMTX[0][i][11] = noteArray[i][2]    # measure
 
-        # make up notes for them
-        pitches = gnn.getNextNoteArr()  # TODO: need params
-        for i in range(subjectMTX.shape[1]):
-            subjectMTX[0][i][0] = pitches[i]
 
-    # if we got subjectMTX as a param but it has only 2 dimensions, give it a third
-    if len(subjectMTX.shape) == 2:
-        subjectMTX = np.expand_dims(subjectMTX, 0)  # add the 3rd dimension as new 1st dimension
+    # # if we got subjectMTX as a param but it has only 2 dimensions, give it a third
+    # if len(subjectMTX.shape) == 2:
+    #     subjectMTX = np.expand_dims(subjectMTX, 0)  # add the 3rd dimension as new 1st dimension
 
-    # create finalMTX
-    finalMTX = mm.makeMatrix(maxVoices)
-
-    print(type(subjectMTX))
-    print(subjectMTX.shape)
+    #print('subject matrix is:')
+    #print(subjectMTX)
+    #print(subjectMTX.shape)
 
     # fill finalMTX with subjectMTX's values
-    for i in range(subjectMTX.shape[1]):
-        for j in range(maxVoices):
-            for k in range(12):
-                # only transfer the alto
-                if j == 1:
-                    finalMTX[1][i][k] = subjectMTX[0][i][k]
-                    if subjectMTX[0][i][11] == 2:
-                        finalMTX[j][i][8] = 1       # prevRoot
+    i = 1
+    for j in range(subjectMTX.shape[1]):
+        if j > 0:  # NOTE: the first note is created and defaulted already
+            finalMTX = np.concatenate((finalMTX, newNote), 1)
+        for k in [0,1,2,3,9,10]:  # NOTE: fill only pitch, duration, direction, and distance in alto
+            finalMTX[i][j][k] = subjectMTX[0][j][k]
+    for i in range(maxVoices):
+        for j in range(subjectMTX.shape[1]):
+            for k in [4,5,6,7,8,11]:  # fill the rest for all voices
+                finalMTX[i][j][k] = subjectMTX[0][j][k]
+
 
     finalMTX[0][0][0] = 'r'  # pitch (rest)
     finalMTX[0][0][1] = '1'  # duration
     finalMTX[2][0][0] = 'r'  # pitch (rest)
     finalMTX[2][0][1] = '1'  # duration
 
+    # free memory and let us re-use variable names
+    del subjectMTX
+    del noteArray
 
     #####################################################################
     # CREATE MEASURES 3-4 - Dominant (V)
@@ -106,19 +117,20 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=[]):
     #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
 
     # use same rhythms as subject for Answer
-    notes = finalMTX.shape[1]
-    for i in range(notes, notes*2):
-        np.concatenate([finalMTX, newNote], 1)
-        finalMTX[2][i][1] = subjectMTX[0][i][1]             # duration
-        finalMTX[2][i][2] = subjectMTX[0][i][2]             # direction
-        finalMTX[2][i][4] = 5                               # chordRoot
-        finalMTX[2][i][8] = subjectMTX[0][i - notes][8]     # prevChordRoot
-        finalMTX[2][i][10] = subjectMTX[0][i - notes][10]   # beat
-        finalMTX[2][i][11] = subjectMTX[0][i - notes][11]   # measure
+    # notes = finalMTX.shape[1]
+    # for i in range(notes, notes*2):
+    #     np.concatenate([finalMTX, newNote], 1)
+    #     finalMTX[2][i][1] = subjectMTX[0][i][1]             # duration
+    #     finalMTX[2][i][2] = subjectMTX[0][i][2]             # direction
+    #     finalMTX[2][i][4] = 5                               # chordRoot
+    #     finalMTX[2][i][8] = subjectMTX[0][i - notes][8]     # prevChordRoot
+    #     finalMTX[2][i][10] = subjectMTX[0][i - notes][10]   # beat
+    #     finalMTX[2][i][11] = subjectMTX[0][i - notes][11]   # measure
 
     # get pitches that fit the new harmony
     # NOTE: interval and distance(+4) will be the same
 
+    print('finalMTX is:')
     print(finalMTX)
 
 
@@ -239,6 +251,24 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=[]):
     #####################################################################
 
 
-# call it
+
+    #####################################################################
+    # CREATE FILES: .ly, .mxl
+    #####################################################################
+    cl.createLily(key, major, finalMTX, measures, maxVoices)
+    # cl.createLily(key, major, finalMTX, measures, maxVoices, 2)  # second species
+    # TO DO: add other species
+    # not using regex so don't need this anymore, keeping for legacy
+    # copyfile('newScore.ly','newScore2.ly')
+
+
+    # create the pdf score
+    print("Creating .pdf file(s) with LilyPond...")
+    filename = 'Fugue.ly'
+    os.system(filename)
+    # time.sleep(3)
+
+
+# debugging
 print('Fugue Writer - by Jesse Lew')
 fugueWriter()

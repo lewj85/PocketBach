@@ -21,7 +21,7 @@ def writeSubject(chordsList = None, noteArray = None, measures = 2, measure = 1,
         # starting pitches are 1, 3, or 5 with different weights
         options = [1,1,1,3,5,5]
         # pick a random index from start[] list
-        start = options[random.randint(0,5)]
+        start = random.choice(options)
     else:
         start = noteArray[-1][0]
 
@@ -56,7 +56,7 @@ def writeSubject(chordsList = None, noteArray = None, measures = 2, measure = 1,
 
         # if first measure, add the first note and first rhythm
         if measure == 1:
-            noteArray.append([destArr[0], rhythms[0][0]])
+            noteArray.append([destArr[0], rhythms[0][0], measure])
         # otherwise set the last value in noteArray with a real rhythm because it has a default whole note!
         else:
             #print('changing default rhythm '+str(noteArray[-1][1]+' to '+str(rhythms[0][0])))
@@ -65,7 +65,7 @@ def writeSubject(chordsList = None, noteArray = None, measures = 2, measure = 1,
         # update numOfNotes needed for getNotes() below
         # pop the first 1 (or 2 if there's a tie) rhythms off the list
         if '~' in rhythms[0][0]:
-            noteArray.append([noteArray[-1][0], rhythms[1][0]])
+            noteArray.append([noteArray[-1][0], rhythms[1][0], measure])
             rhythms.pop(0)  # extra
         rhythms.pop(0)  # not extra, happens no matter what
         numOfNotes -= 1
@@ -75,18 +75,18 @@ def writeSubject(chordsList = None, noteArray = None, measures = 2, measure = 1,
         # get notes for the remaining rhythms
         # NOTE: check to see if rhythms isn't empty because it could just be a whole note
         if rhythms:
-            gn.getNotes(noteArray, rhythms, destArr[i+1], chordsList[i], numOfNotes)
+            gn.getNotes(noteArray, rhythms, destArr[i+1], chordsList[i], numOfNotes, measure)
 
         # finally, tack on the next destination to start the next measure with a default rhythm of
         # NOTE: this will add the final destination to noteArray, meaning this will start an extra measure!
-        noteArray.append([destArr[i+1], '1'])
+        noteArray.append([destArr[i+1], '1', measure+1])
 
         # for next loop
         measure += 1
 
-    print(noteArray)
+    #print(noteArray)
     return noteArray
 
 
 # debugging
-writeSubject()
+#writeSubject()

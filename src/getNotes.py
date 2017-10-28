@@ -1,7 +1,7 @@
 import defineChord as dc
 import random
 
-def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
+def getNotes(noteArray, rhythms, destination, chord, numOfNotes, measure):
 
     # get chord tones for strong beats, label as localDestinations
     [localDestinations,a,b,c] = dc.defineChord('C', 1, chord)
@@ -43,10 +43,10 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
                 if nextNote == 8:
                     nextNote = 1
                 if '~' not in noteArray[-1][1]:
-                    noteArray.append([nextNote, rhythms[i][0]])
+                    noteArray.append([nextNote, rhythms[i][0], measure])
                     nextNote += 1
                 else:
-                    noteArray.append([noteArray[-1][0], rhythms[i][0]])
+                    noteArray.append([noteArray[-1][0], rhythms[i][0], measure])
         elif numOfNotes + 1 == distToDestDown:
             # same as above in other direction
             nextNote = noteArray[-1][0] - 1
@@ -54,23 +54,23 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
                 if nextNote == 0:
                     nextNote = 7
                 if '~' not in noteArray[-1][1]:
-                    noteArray.append([nextNote, rhythms[i][0]])
+                    noteArray.append([nextNote, rhythms[i][0], measure])
                     nextNote -= 1
                 else:
-                    noteArray.append([noteArray[-1][0], rhythms[i][0]])
+                    noteArray.append([noteArray[-1][0], rhythms[i][0], measure])
         else:
             print('numOfNotes != distToDestUp/Down, so try something else')
-            useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes)
+            useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes, measure)
     else:
         # otherwise gotta get creative
         print('rhythm counter does NOT match random numOfNotes generated: ' + str(counter) + ',' + str(numOfNotes))
-        useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes)
+        useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes, measure)
 
 
-def useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes):
+def useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes, measure):
     i = 0
     while i < len(rhythms):  # don't use a for-loop because we may increment i more than once per loop
-        print('writing for ' + str(rhythms[i][0]))  # if this throws an error it's probably because we use
+        #print('writing for ' + str(rhythms[i][0]))  # if this throws an error it's probably because we use
                                                     # a counter in getNotes() above rather than numOfNotes
                                                     # to deal with tied notes...
 
@@ -84,11 +84,11 @@ def useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes
 
 
         # TODO: REMOVE THIS PLACEHOLDER
-        noteArray.append([noteArray[-1][0], rhythms[i][0]])
+        noteArray.append([noteArray[-1][0], rhythms[i][0], measure])
         # tie to the next note
         if '~' in noteArray[-1][1]:
             i += 1
-            noteArray.append([noteArray[-1][0], rhythms[i][0]])
+            noteArray.append([noteArray[-1][0], rhythms[i][0], measure])
 
 
         # increment index

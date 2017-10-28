@@ -23,7 +23,17 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
             while j < totalNotes and finalMTX[voice][j][11] == i:
                 # NOTE: for different species, some notes in the matrix will have the same measure but pitch = '0'
                 #   so we have to check for these and increment j instead of adding anything to the string
-                if int(finalMTX[voice][j][0]) != 0:
+                if finalMTX[voice][j][0] == b'r':
+                    finalString += 'r'
+                    if '~' in str(finalMTX[voice][j][1]):
+                        # print(finalMTX[voice][j][1])
+                        # print(finalMTX[voice][j][1][0:-1])
+                        finalString += str(int(finalMTX[voice][j][1][0:-1]))
+                        finalString += '~'
+                    else:
+                        finalString += str(int(finalMTX[voice][j][1]))
+                    finalString += " "
+                elif int(finalMTX[voice][j][0]) != 0:
                     if key == 'C':
                         if major == 1:
                             # pitch
@@ -34,7 +44,13 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
 
                             # duration optional for repeated durations, but we will be using it
                             # TO DO: fix this to take timesig param and calculate/convert durations properly
-                            finalString += str(int(finalMTX[voice][j][1])) # was printing '1' instead of 1, so converted to int and back to string!
+                            if '~' in str(finalMTX[voice][j][1]):
+                                # print(finalMTX[voice][j][1])
+                                # print(finalMTX[voice][j][1][0:-1])
+                                finalString += str(int(finalMTX[voice][j][1][0:-1]))
+                                finalString += '~'
+                            else:
+                                finalString += str(int(finalMTX[voice][j][1]))  # was printing '1' instead of 1, so converted to int and back to string!
                             #print(finalString)
 
                             # TO DO: direction only needs to check if > 4 for "'" or < -4 for ","
