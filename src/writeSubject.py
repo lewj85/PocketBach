@@ -4,12 +4,20 @@ import getNotes as gn
 import pitchToNum as ptn
 import random
 
-# TODO: use real data to find number of notes per measure ('melodic density') and weights for rhythms.
+# TODO: use real data to find number of notes per measure ('melodic density') and weights for rhythms
 #       ignoring weights for now
 
-def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([]), measure=1, measures = 2, chords = list([1,4,5])):
+def writeSubject(chordsList = None, noteArray = None, measures = 2, measure = 1, key = 'C', major = 1, timeSig = None):
 
-    if measure == 1:
+    # avoid mutable defaults since we'll be calling writeSubject often
+    if chordsList is None:
+        chordsList = [1,4,5]  # default to I-IV-V because why not
+    if noteArray is None:
+        noteArray = []
+    if timeSig is None:
+        timeSig = [4,4]
+
+    if measure == 1 and chordsList[0] == 1:
         # starting pitches are 1, 3, or 5 with different weights
         options = [1,1,1,3,5,5]
         # pick a random index from start[] list
@@ -19,8 +27,8 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
 
     # pick random destinations for the following measures
     destArr = [start]
-    for i in range(1, len(chords)):  # NOTE: starts at 1, not 0, because we manually added the current known pitch
-        options = dc.defineChord('C', 1, chords[i])
+    for i in range(1, len(chordsList)):  # NOTE: starts at 1, not 0, because we manually added the current known pitch
+        options = dc.defineChord('C', 1, chordsList[i])
         #print(options)
         num1 = random.randint(0,len(options[0])-1)
         destArr.append(int(ptn.pitchToNum('C',options[0][num1])))
@@ -67,7 +75,7 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
         # get notes for the remaining rhythms
         # NOTE: check to see if rhythms isn't empty because it could just be a whole note
         if rhythms:
-            gn.getNotes(noteArray, rhythms, destArr[i+1], chords[i], numOfNotes)
+            gn.getNotes(noteArray, rhythms, destArr[i+1], chordsList[i], numOfNotes)
 
         # finally, tack on the next destination to start the next measure with a default rhythm of
         # NOTE: this will add the final destination to noteArray, meaning this will start an extra measure!
@@ -77,6 +85,7 @@ def writeSubject(key = 'C', major = 1, timeSig = list([4,4]), noteArray=list([])
         measure += 1
 
     print(noteArray)
+    return noteArray
 
 
 # debugging

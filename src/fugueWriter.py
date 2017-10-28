@@ -4,6 +4,7 @@ import numToPitch as ntp
 import orchestrate as orch
 import createLily as cl
 import getRhythm as gr
+import writeSubject as ws
 import numpy as np
 import random
 #import os
@@ -11,8 +12,7 @@ import random
 # https://en.wikipedia.org/wiki/Fugue#Musical_outline
 
 # fugueWriter(noteMTX) function takes arguments from the recorded melody
-def fugueWriter(key = 'C', major = 1, timesig = list([4, 4])):  # NOTE: took subjectMTX out of params
-                                                                # TO DO: re-add subjectMTX
+def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=[]):
 
     # initialize variables
     chordArray = []
@@ -24,7 +24,7 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4])):  # NOTE: took sub
 
     #####################################################################
     # CREATE MEASURES 1-2 - Tonic (I)
-    # NOTE: default harmonies set to I-IV
+    # NOTE: default harmonies pick from: I-I, I-IV, I-V
     # Soprano - rest
     # Alto - Subject
     # Bass - rest
@@ -34,34 +34,30 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4])):  # NOTE: took sub
     newNote = mm.makeMatrix(1)  # now we can use np.concatenate([subjectMTX, newNote],1) to add a new note
 
     # if no user-generated melody is provided, make one up
-    try:
-        subjectMTX  # NOTE: took subjectMTX out of params temporarily
-    except NameError:
+    if not subjectMTX:
         subjectMTX = mm.makeMatrix(1)
+
+        # pick from default harmonies: I-I, I-IV, I-V
+        # NOTE: all move to a V chord in the 3rd measure
+        firstChords = [[1,1,5],[1,4,5],[1,5,5]]
+        chordChoices = random.choose(firstChords)
+
+        # get notes and rhythms
+        noteArray = ws.writeSubject(chordChoices)
+
 
         # for easy reference:
         #   12 note data types: pitch, duration, direction, interval, chord root,
         #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
 
-        # get rhythms
-        r1 = gr.getRhythm()  # get 1st measure
-        r2 = gr.getRhythm()  # get 2nd measure
-
-        # add them to the matrix, as well as note data
-        # NOTE: we automatically write for a I-IV subject
-        for i in range(len(r1)):
-            if i > 0:
-                np.concatenate([subjectMTX, newNote], 1)  # add a new note
-            subjectMTX[0][i][1] = r1[i]     # duration
-            subjectMTX[0][i][4] = 1         # chordRoot
-            #subjectMTX[0][i][10] = ?        # TO DO: beat
-            subjectMTX[0][i][11] = 1        # measure
-        for i in range(len(r2)):
+        # add data to the matrix
+        for i in range(len(noteArray)):
             np.concatenate([subjectMTX, newNote], 1)  # add a new note
-            subjectMTX[0][i][1] = r1[i]     # duration
+            subjectMTX[0][i][0] = noteArray[i][0]     # pitch
+            subjectMTX[0][i][1] = noteArray[i][1]     # duration
             subjectMTX[0][i][4] = 4         # chordRoot
             subjectMTX[0][i][8] = 1         # prevRoot
-            # subjectMTX[0][i][10] = ?       # TO DO: beat
+            # subjectMTX[0][i][10] = ?       # TODO: beat
             subjectMTX[0][i][11] = 2        # measure
 
         # make up notes for them

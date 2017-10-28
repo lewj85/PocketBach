@@ -69,7 +69,7 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes):
 
 def useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes):
     i = 0
-    while i < numOfNotes:  # don't use a for-loop because we may increment i more than once per loop
+    while i < len(rhythms):  # don't use a for-loop because we may increment i more than once per loop
         print('writing for ' + str(rhythms[i][0]))  # if this throws an error it's probably because we use
                                                     # a counter in getNotes() above rather than numOfNotes
                                                     # to deal with tied notes...
