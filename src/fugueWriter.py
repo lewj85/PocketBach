@@ -48,8 +48,11 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=None):
         chordChoices = random.choice(firstChords)
         print('chords for measures 1-3 are : '+str(chordChoices))
 
+        #debugging
+        #chordChoices = [1,2,3,4,5]
+
         # get notes and rhythms
-        noteArray = ws.writeSubject(chordChoices)
+        noteArray = ws.writeSubject(chordChoices, None, len(chordChoices)-1)
         print(noteArray)
 
         # for easy reference:

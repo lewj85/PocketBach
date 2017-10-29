@@ -16,6 +16,7 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
     for i in range(1, measures + 1):
         # for each voice
         for voice in range(maxVoices - 1, -1, -1):
+            """TODO: remove the prevj trick because it won't work when we squish voices together. see the TODO below too."""
             prevj = j  # store old j value to reset for each voice
             # while you haven't reached the end of the piece yet AND you're still on the current measure
             #   add each note to the current line (voice) in the string
@@ -23,7 +24,13 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
             while j < totalNotes and finalMTX[voice][j][11] == i:
                 # NOTE: for different species, some notes in the matrix will have the same measure but pitch = '0'
                 #   so we have to check for these and increment j instead of adding anything to the string
-                if finalMTX[voice][j][0] == b'r':
+                if finalMTX[voice][j][0] == b'r' or finalMTX[voice][j][0] == b'0':
+                    ####################################################################
+                    """ TODO: because every voice has a different number of notes in each measure, some voices will have
+                    b'0' in their pitch indices. we don't want to overwrite their actual pitches with rests, so change the
+                    "or finalMTX[voice][j][0] == b'0'" above or add an if-statement to make sure we haven't already finished
+                    writing the current measure's pitches for the current voice!"""
+                    ####################################################################
                     finalString += 'r'
                     if '~' in str(finalMTX[voice][j][1]):
                         # print(finalMTX[voice][j][1])
