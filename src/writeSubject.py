@@ -11,7 +11,7 @@ def writeSubject(chordsList = None, noteArray = None, measures = 2, measure = 1,
 
     # avoid mutable defaults since we'll be calling writeSubject often
     if chordsList is None:
-        chordsList = [1,4,5]  # default to I-IV-V because why not
+        chordsList = [1,4,5]  # default to I-IV-V
     if noteArray is None:
         noteArray = []
     if timeSig is None:

@@ -1,6 +1,7 @@
 import makeMatrix as mm
 import createLily as cl
 import writeSubject as ws
+import writeCountersubject as wc
 import numpy as np
 import random
 import os
@@ -84,26 +85,25 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=None):
     #print(subjectMTX.shape)
 
     # fill finalMTX with subjectMTX's values
-    i = 1
     for j in range(subjectMTX.shape[1]):
         if j > 0:  # NOTE: the first note is created and defaulted already
             finalMTX = np.concatenate((finalMTX, newNote), 1)
         for k in [0,1,2,3,9,10]:  # NOTE: fill only pitch, duration, direction, and distance in alto
-            finalMTX[i][j][k] = subjectMTX[0][j][k]
+            finalMTX[1][j][k] = subjectMTX[0][j][k]
     for i in range(maxVoices):
         for j in range(subjectMTX.shape[1]):
             for k in [4,5,6,7,8,11]:  # fill the rest for all voices
                 finalMTX[i][j][k] = subjectMTX[0][j][k]
 
 
-    finalMTX[0][0][0] = 'r'  # pitch (rest)
-    finalMTX[0][0][1] = '1'  # duration
-    finalMTX[2][0][0] = 'r'  # pitch (rest)
-    finalMTX[2][0][1] = '1'  # duration
+    # finalMTX[0][0][0] = 'r'  # pitch (rest)
+    # finalMTX[0][0][1] = '1'  # duration
+    # finalMTX[2][0][0] = 'r'  # pitch (rest)
+    # finalMTX[2][0][1] = '1'  # duration
 
     # free memory and let us re-use variable names
     del subjectMTX
-    del noteArray
+    #del noteArray
 
     #####################################################################
     # CREATE MEASURES 3-4 - Dominant (V)
@@ -114,6 +114,11 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=None):
     #####################################################################
 
     newNote = mm.makeMatrix(maxVoices)  # now we can use np.concatenate([finalMTX, newNote],1) to add a new note
+
+    # use noteArray above to create a countersubject - TODO: create noteArray if a subjectMTX was passed above
+    #noteArray2 = wc.writeCountersubject([finalMTX[1][0][4]+4, finalMTX[1][-2][4]+4], noteArray)  # NOTE: -2 because -1 has 3rd measure whole note
+
+
 
     # for easy reference:
     #   12 note data types: pitch, duration, direction, interval, chord root,
@@ -139,6 +144,7 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=None):
 
     #####################################################################
     # CREATE MEASURE 5
+    # NOTE: default harmonies set to ii-V, each with a half-note
     # Soprano - Codetta
     # Alto - Codetta
     # Bass - rest

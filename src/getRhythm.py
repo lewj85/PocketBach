@@ -43,7 +43,11 @@ def getRhythm(finalMTX, measure, measures, timeSig, voice=0, maxVoices=3, choral
     return rhythmArr
 
 
-def randRhythm(timeSig, interval = 0, common = 0, numOfNotes = 0):
+def randRhythm(timeSig = None, interval = 0, common = 0, numOfNotes = 0):
+
+    if timeSig is None:
+        timeSig = [4,4]
+
     choices = []
     num1 = random.random()
     if timeSig == [4,4]:
@@ -167,13 +171,8 @@ def randRhythm(timeSig, interval = 0, common = 0, numOfNotes = 0):
                                ['8', '8', '8', '8', '2'], ['8', '8', '8', '8', '4~', '8', '8'], ['8', '8', '8', '8', '4', '4'],
                                ['8', '8', '8', '8', '4', '8', '8'], ['8', '8', '8', '8', '8', '8', '4'], ['8', '8', '8', '8', '8', '8', '8', '8']]
 
-
-    index = random.randint(0,len(choices)-1)
-
     # add beat numbers and downbeat bools to each value before returning list
-    final = addBeatData(choices[index])
-
-    return final
+    return addBeatData(random.choice(choices))
 
 
 def addBeatData(rhythms):
