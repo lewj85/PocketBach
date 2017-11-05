@@ -32,6 +32,7 @@ def writeSubject(chordsList = None, noteArray = None, measures = 2, measure = 1,
         #print(options)
         num1 = random.randint(0,len(options[0])-1)
         destArr.append(int(ptn.pitchToNum('C',options[0][num1])))
+    print('chordsList: ' + str(chordsList))
     print('destArr : '+str(destArr))
 
     # for each measure
@@ -84,9 +85,9 @@ def writeSubject(chordsList = None, noteArray = None, measures = 2, measure = 1,
         # for next loop
         measure += 1
 
-    #print(noteArray)
+    print(noteArray)
     return noteArray
 
 
 # debugging
-#writeSubject()
+writeSubject()

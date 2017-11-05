@@ -1,4 +1,4 @@
-"""defineChord() returns lists of strings containing pitches for the requested chord"""
+"""defineChord() returns a list of data: [[pitches for the requested chord], inversion, 7th chord, secondary dominant]"""
 
 """
 major: 1 = major, 0 = minor

@@ -47,7 +47,7 @@ class Note(Chord):
 
 
 
-class Motif:
+class Cell:
 
     def __init__(self, noteArray):
         self.noteArray = noteArray              # [Note] array: contains Notes with data (ie. rhythms)
@@ -59,7 +59,8 @@ class Motif:
 
 class Measure(Music):
 
-    def __init__(self, timesig, beatsPerMeasure, beatChordPairs):
-        Music.timesig = timesig                 # [int, int] array: can redefine timesig in each measure
+    def __init__(self, key, major, timesig, beatsPerMeasure, beatChordPairs):
+        Music.__init__(self, key, major, timesig)
+        self.timesig = timesig                  # [int, int] array: can redefine timesig in each measure
         self.beatsPerMeasure = beatsPerMeasure  # int: represents compound beats in measure (ie. 6/8 = 2)
         self.beatChordPairs = beatChordPairs    # [int, Chord] array: matches each chord in measure to its non-compound beat

@@ -1,11 +1,15 @@
 import defineChord as dc
+import pitchToNum as ptn
 import random
 
+
+# calls itself recursively for composing Cells if it can't move linearly
+# if it can't move linearly to smaller Cell destinations, it
 def getNotes(noteArray, rhythms, destination, chord, numOfNotes, measure):
 
     # get chord tones for strong beats, label as localDestinations
-    [localDestinations,a,b,c] = dc.defineChord('C', 1, chord)
-    #print(localDestinations)
+    localDestinations,a,b,c = dc.defineChord('C', 1, chord)
+    print('localDestinations are ' + str(localDestinations))
 
     # store notes needed to destination
     distToDestUp = 0
@@ -26,9 +30,33 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes, measure):
             counter += 1
 
     #print('counter : '+str(counter)+', numOfNotes : '+str(numOfNotes))
-    # can stick to common patterns if the number of notes and rhythms match
-    if counter == numOfNotes:
-        print('rhythm counter DOES match random numOfNotes generated: ' + str(counter) + ',' + str(numOfNotes))
+
+    # if the numOfNotes is the same as the distToDest, just move straight for it
+    if numOfNotes + 1 == distToDestUp:
+        print('numOfNotes == distToDestUp. moving linearly.')
+        nextNote = noteArray[-1][0] + 1
+        for i in range(len(rhythms)):
+            if nextNote == 8:
+                nextNote = 1
+            if '~' not in noteArray[-1][1]:
+                noteArray.append([nextNote, rhythms[i][0], measure])
+                nextNote += 1
+            else:
+                noteArray.append([noteArray[-1][0], rhythms[i][0], measure])
+    elif numOfNotes + 1 == distToDestDown:
+        print('numOfNotes == distToDestDown. moving linearly.')
+        # same as above in other direction
+        nextNote = noteArray[-1][0] - 1
+        for i in range(len(rhythms)):
+            if nextNote == 0:
+                nextNote = 7
+            if '~' not in noteArray[-1][1]:
+                noteArray.append([nextNote, rhythms[i][0], measure])
+                nextNote -= 1
+            else:
+                noteArray.append([noteArray[-1][0], rhythms[i][0], measure])
+    else:
+        print('numOfNotes != distToDestUp/Down, so try something else')
 
         # TODO: can add suspensions and ornaments like appoggiaturas and trills later
         """
@@ -36,60 +64,32 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes, measure):
         COMMON PATTERNS FOR numOfNotes != counter: anticipation, escape tone, leap and resolve by step, accented passing tones
         numOfNotes == 1: repeat (+0), anticipation (+1/-1), escape tone (+1/-1), leap and resolve by step (destination - noteArray[-1][0])
         """
-        # if the numOfNotes is the same as the distToDest, just move straight for it
-        if numOfNotes + 1 == distToDestUp:
-            nextNote = noteArray[-1][0] + 1
-            for i in range(len(rhythms)):
-                if nextNote == 8:
-                    nextNote = 1
-                if '~' not in noteArray[-1][1]:
-                    noteArray.append([nextNote, rhythms[i][0], measure])
-                    nextNote += 1
-                else:
-                    noteArray.append([noteArray[-1][0], rhythms[i][0], measure])
-        elif numOfNotes + 1 == distToDestDown:
-            # same as above in other direction
-            nextNote = noteArray[-1][0] - 1
-            for i in range(len(rhythms)):
-                if nextNote == 0:
-                    nextNote = 7
-                if '~' not in noteArray[-1][1]:
-                    noteArray.append([nextNote, rhythms[i][0], measure])
-                    nextNote -= 1
-                else:
-                    noteArray.append([noteArray[-1][0], rhythms[i][0], measure])
-        else:
-            print('numOfNotes != distToDestUp/Down, so try something else')
-            useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes, measure)
-    else:
-        # otherwise gotta get creative
-        print('rhythm counter does NOT match random numOfNotes generated: ' + str(counter) + ',' + str(numOfNotes))
-        useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes, measure)
+        # check for common patterns
+        # 1. REPEATED DESTINATIONS
+        if distToDestUp == 0 or distToDestDown == 0:
+            print('repeated destination. options: randomize, repeat, up down, down up, up up down down, down down up up, up down up down, down up down up')
+            pass
+
+        # 2. DESTINATION IS 1 STEP AWAY
+        elif distToDestUp == 1:
+            print('distToDestUp = 1. options: randomize, up, up up down, up down up, down up up, others?')
+        elif distToDestDown == 1:
+            print('distToDestDown = 1. options: randomize, cambiata, down, up down down, down up down, others?')
+            pass
+
+        # 3. DESTINATION IS 2 STEPS AWAY
 
 
-def useLocalDests(noteArray, rhythms, localDestinations, destination, numOfNotes, measure):
-    i = 0
-    while i < len(rhythms):  # don't use a for-loop because we may increment i more than once per loop
-        #print('writing for ' + str(rhythms[i][0]))  # if this throws an error it's probably because we use
-                                                    # a counter in getNotes() above rather than numOfNotes
-                                                    # to deal with tied notes...
-
-        currentNote = noteArray[-1][0]
-
-        # if: look ahead to find accented downbeats - use passing tones, neighbor tones, repeats, to get to localDestinations
-
-        # elif none, then look for numNote:distance patterns - ie. cambiatas, anticipation, repeats
-
-        # elif none, then pick a random motion - ie. escape tone, leap and resolve by step
 
 
-        # TODO: REMOVE THIS PLACEHOLDER
-        noteArray.append([noteArray[-1][0], rhythms[i][0], measure])
-        # tie to the next note
-        if '~' in noteArray[-1][1]:
-            i += 1
-            noteArray.append([noteArray[-1][0], rhythms[i][0], measure])
+        else: # otherwise if no patterns found, use localDestinations instead and call getNotes() recursively on a smaller number of notes with shorter destinations
+            # TODO: the recursion in the comment above
+            j = 0
+            while j < len(rhythms):  # don't use a for-loop because we may increment i more than once per loop
+                noteArray.append([noteArray[-1][0], rhythms[j][0], measure])
+                # tie to the next note
+                if '~' in noteArray[-1][1]:
+                    j += 1
+                    noteArray.append([noteArray[-1][0], rhythms[j][0], measure])
+                j += 1
 
-
-        # increment index
-        i += 1
