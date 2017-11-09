@@ -20,7 +20,7 @@ def getNotes(noteArray, rhythms, destination, chord, numOfNotes, measure):
         # wrap around
         if note == 8:
             note = 1
-    distToDestDown = (7 - distToDestUp) % 7  # NOTE: % 7 is in case distToDestUp is 0
+    distToDestDown = 7 - distToDestUp
     #print('note is : '+str(noteArray[-1][0])+', dest : '+str(destination)+', distUp is : '+str(distToDestUp)+', distDown is : '+str(distToDestDown))
 
     # count the number of non-tied rhythms
