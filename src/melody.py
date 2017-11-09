@@ -1,35 +1,73 @@
 import random
+import defineChord as dc
 
-# Can be any number of beats, but must be over ONE chord - anything from a 2-beat cell to an 8-beat phrase
-def getNotes(currentChord, nextChord, beats, start = None, destination = None, previousCells = None, key = None, timesig = None):
 
-    if not key:
-        key = 'C'
+#######################################################################
+# getNotes()
+#######################################################################
+# calls defineChord(), getRhythms()
+# returns notes, rhythms
+
+# NOTES:
+# can pass it any number of beats, but they must be over ONE chord
+# useful for 2-beat cells as well as 4-beat phrases
+# uses previousCell for episodes to match intervals/rhythms - if previousCell is None, it will create the first cell of the episode
+
+def getNotes(currentChord, nextChord, beats, start = None, destination = None, episode = False, previousCell = None, key = 'C', major = True, timesig = None):
+
     if not timesig:
         timesig = [4,4]
 
     # any measure where a voice first enters or re-enters after a rest
     if not start:
-        options = dc.defineChord(key, 1, currentChord)
+        options = dc.defineChord(key, major, currentChord)
         # pick a random index from options
         start = random.choice(options[0])
 
     if not destination:
         # pick a random destination
-        options = dc.defineChord(key, 1, nextChord)
+        options = dc.defineChord(key, major, nextChord)
+
+    notes = []
+
+    #######################################################################
+    # FOR NON-EPISODES
+    #######################################################################
+
+    if not episode:
+
+        # call getRhythms to generate rhythms - this is now our number of notes needed
+        rhythms = getRhythms(beats, timesig)
+        print(rhythms)
+
+
+    #######################################################################
+    # FOR EPISODES
+    #######################################################################
+
+    else:
+
+        # if previousCell is None, it's the first cell of the episode
+        if not previousCell:
+            rhythms = getRhythms(beats, timesig)
+
+        # otherwise try to match intervals/rhythms from previousCell
+        else:
+            rhythms = previousCell[1]
+            pass
+
+    return notes, rhythms
 
 
 
-def createEpisodeCell(chordsOverBeats, start = None, destination = None, episodeCell = None):
-    pass
+#######################################################################
+# getRhythms()
+#######################################################################
+# calls nothing
+# returns rhythms
 
-
-
-def alterPhraseToFitNewChord(phrase, newChord):
-    # can either change pitches or rhythms, such as turning 1 quarter note into 2 eights to arrive at a destination 1 away
-    pass
-
-
+# NOTES:
+# generates beats randomly using random.choice() until the beat total matches totalBeats parameter
 
 def getRhythms(totalBeats, timesig = None):
 
@@ -77,9 +115,10 @@ def getRhythms(totalBeats, timesig = None):
             total -= optionsDict[rhythms[-1][0]]
             rhythms.pop()
 
-    print(total)
-
+    #print(total)
+    #print(rhythms)
     return rhythms
 
-#print(getRhythms(2))
-#print(getRhythms(4))
+
+# debugging
+getNotes(1, 4, 4)
