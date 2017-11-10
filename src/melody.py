@@ -79,7 +79,7 @@ def getNotes(currentChord, nextChord, beats, start = None, destination = None, e
         elif len(rhythms) == distToDestDown and distToDestDown < 5:
             print('numOfNotes == distToDestDown. moving linearly.')
             # same as above in other direction
-            nextNote = start - 1
+            nextNote = int(start)
             for note in rhythms:
                 if nextNote == 0:
                     nextNote = 7
