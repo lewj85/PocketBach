@@ -24,8 +24,7 @@ on the subject of scope, consider if you really want to write music more than C 
 """
 
 
-# TODO move dictKey to first parameter location so the rest are optional
-def defineChord(key = 'C', major = 1, root = 1, seventh = 0, tonality = 0, inversion = 0, dictKey = ''):
+def defineChord(dictKey = '', root = 1, seventh = 0, tonality = 0, inversion = 0, key = 'C', major = 1):
 
     # if we don't have a dictKey passed to us, create one
     if not dictKey:
