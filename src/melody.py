@@ -74,10 +74,9 @@ def getRhythms(totalBeats, timesig = None):
     if not timesig:
         timesig = [4,4]
 
-    # NOTE: removed whole notes
-    optionsArr = [['2.', 3], ['2', 2], ['4.', 1.5], ['4', 1], ['8.', 0.75], ['8', 0.5], ['16', 0.25]]
+    # NOTE: removed whole notes and dotted half notes
+    optionsArr = [['2', 2], ['4.', 1.5], ['4', 1], ['8.', 0.75], ['8', 0.5], ['16', 0.25]]
     optionsDict = {
-        '2.': 3,
         '2': 2,
         '4.': 1.5,
         '4': 1,
@@ -97,11 +96,14 @@ def getRhythms(totalBeats, timesig = None):
         if total == 0 or total == 2:
             accented = 1
         if rhythms:
-            if rhythms[-1][0] == '4.' or (rhythms[-1][0] == '8' and not downbeat):
+            # remove certain rhythmic options based on previous rhythm selected
+            if rhythms[-1][0] == '4.':  # must be an 8th
+                rhythms.append(['8', int(total) + 1, downbeat, accented])
+            elif rhythms[-1][0] == '8' and not downbeat:  # only allow 8th and 16ths
                 rhythms.append(random.choice([['8', int(total) + 1, downbeat, accented], ['16', int(total) + 1, downbeat, accented]]))
-            elif rhythms[-1][0] == '8.' or (rhythms[-1][0] == '16' and not downbeat):
+            elif rhythms[-1][0] == '8.' or (rhythms[-1][0] == '16' and not downbeat):  # must be a 16th
                 rhythms.append(['16', int(total)+1, downbeat, accented])
-            elif not accented:
+            elif not accented:  # remove half note and dotted rhythms
                 rhythms.append(random.choice([['4', int(total) + 1, downbeat, accented], ['8', int(total) + 1, downbeat, accented], ['16', int(total) + 1, downbeat, accented]]))
             else:
                 rhythms.append([random.choice(optionsArr)[0], int(total) + 1, downbeat, accented])
@@ -114,6 +116,13 @@ def getRhythms(totalBeats, timesig = None):
         if total > totalBeats:
             total -= optionsDict[rhythms[-1][0]]
             rhythms.pop()
+
+        # force 'rhythmic diversity' by rewriting measures
+        onlyRhythms = [a for a,b,c,d in rhythms]
+        if onlyRhythms.count('2') > 1 or onlyRhythms.count('4') > 3 or onlyRhythms.count('8') > 4 or onlyRhythms.count('16') > 6:
+            rhythms = []
+            total = 0
+
 
     #print(total)
     #print(rhythms)
