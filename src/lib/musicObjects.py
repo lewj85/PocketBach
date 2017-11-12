@@ -1,6 +1,6 @@
 """Class definitions for musical objects"""
 
-import defineChord as dc
+from lib import defineChord as dc
 
 """
 Matrix = [voice][measure][Cell]

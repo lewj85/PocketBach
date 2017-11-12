@@ -23,20 +23,28 @@ def fugueWriter(subjectMTX=None, key = 'C', major = 1, timesig = None):
     maxVoices = 3
     #print(subjectMTX)
 
-    newMusic = mo.Music()
-    newChord = mo.Chord(newMusic.key, newMusic.major, newMusic.timesig, 1)
-    newNote1 = mo.Note(newChord.key, newChord.major, newChord.timesig, newChord.root, newChord.tonality, newChord.seventh, newChord.inversion, newChord.secondary, newChord.secondaryRoot, 'f', 55, '8', 0)
-    newNote2 = mo.Note(newChord.key, newChord.major, newChord.timesig, newChord.root, newChord.tonality, newChord.seventh, newChord.inversion, newChord.secondary, newChord.secondaryRoot, 'g', 56, '8', 0)
-    newCell = mo.Cell(newChord,[1],[newNote1,newNote2])
+
+    # DEBUGGING
+    # newMusic = mo.Music()
+    # newChord = mo.Chord(newMusic.key, newMusic.major, newMusic.timesig, 1)
+    # newNote1 = mo.Note(newChord.key, newChord.major, newChord.timesig, newChord.root, newChord.tonality, newChord.seventh, newChord.inversion, newChord.secondary, newChord.secondaryRoot, 'f', 55, '8', 0)
+    # newNote2 = mo.Note(newChord.key, newChord.major, newChord.timesig, newChord.root, newChord.tonality, newChord.seventh, newChord.inversion, newChord.secondary, newChord.secondaryRoot, 'g', 56, '8', 0)
+    # newCell = mo.Cell(newChord,[1],[newNote1,newNote2])
+    #
+    # # create finalMTX - a 2D array of 2D arrays (lists) of Cells - because each measure can hold 1-4 Cells
+    # finalMTX = np.empty((maxVoices, measures), dtype=object)
+    #
+    # finalMTX[0][0] = [newCell]
+    # finalMTX[0][0].append(newCell)
+    #
+    # print(finalMTX)
+    # print(finalMTX[0][0][0].notes[0].pitch)
+    # print(finalMTX[0][0][0].notes[1].pitch)
+
 
     # create finalMTX - a 2D array of 2D arrays (lists) of Cells - because each measure can hold 1-4 Cells
     finalMTX = np.empty((maxVoices, measures), dtype=object)
 
-
-    finalMTX[0][0] = [newCell]
-    finalMTX[0][0].append(newCell)
-
-    print(finalMTX)
 
     #####################################################################
     # CREATE MEASURES 1-2 - Tonic (I)
@@ -46,13 +54,10 @@ def fugueWriter(subjectMTX=None, key = 'C', major = 1, timesig = None):
     # Bass - rest
     #####################################################################
 
-    # NOTE: newNote here is a 1-voice matrix. it will change below to contain additional voices
-    newNoteSub = mm.makeMatrix(1)  # now we can use subjectMTX = np.concatenate([subjectMTX, newNoteSub],1) to add a new note
-
     # if no user-generated melody is provided, make one up
     if subjectMTX is None:
-        subjectMTX = mm.makeMatrix(1)
-        #print(subjectMTX.shape)
+        # NOTE: 2 measures
+        finalMTX = np.empty((maxVoices, 2), dtype=object)
 
         # pick from default harmonies: I-I, I-IV, I-V
         # NOTE: all move to a V chord in the 3rd measure

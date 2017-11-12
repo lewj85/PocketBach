@@ -65,6 +65,9 @@ docs_build
 # PyBuilder
 target
 
+# PyCharm binaries
+.pyc
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
