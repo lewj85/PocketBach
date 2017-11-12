@@ -1,8 +1,8 @@
-import getNextChord as gnc
-import numToPitch as ntp
-import orchestrate as orch
-import createLily as cl
-import speciesCP as scp
+from lib import getNextChord as gnc
+from lib import numToPitch as ntp
+from lib import orchestrate as orch
+from lib import createLily as cl
+from lib import speciesCP as scp
 import random
 import os
 #import time

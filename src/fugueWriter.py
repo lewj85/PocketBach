@@ -1,7 +1,8 @@
-import makeMatrix as mm
-import createLily as cl
-import writeSubject as ws
-import writeCountersubject as wc
+#from lib import makeMatrix as mm
+#from lib import createLily as cl
+#from lib import getNotes as gn
+#from lib import writeCountersubject as wc
+from lib import musicObjects as mo
 import numpy as np
 import random
 import os
@@ -9,7 +10,10 @@ import os
 # https://en.wikipedia.org/wiki/Fugue#Musical_outline
 
 # fugueWriter() function takes arguments from the recorded melody
-def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=None):
+def fugueWriter(subjectMTX=None, key = 'C', major = 1, timesig = None):
+
+    if not timesig:
+        timesig = [4,4]
 
     # initialize variables
     chordArray = []
@@ -19,13 +23,20 @@ def fugueWriter(key = 'C', major = 1, timesig = list([4, 4]), subjectMTX=None):
     maxVoices = 3
     #print(subjectMTX)
 
+    newMusic = mo.Music()
+    newChord = mo.Chord(newMusic.key, newMusic.major, newMusic.timesig, 1)
+    newNote1 = mo.Note(newChord.key, newChord.major, newChord.timesig, newChord.root, newChord.tonality, newChord.seventh, newChord.inversion, newChord.secondary, newChord.secondaryRoot, 'f', 55, '8', 0)
+    newNote2 = mo.Note(newChord.key, newChord.major, newChord.timesig, newChord.root, newChord.tonality, newChord.seventh, newChord.inversion, newChord.secondary, newChord.secondaryRoot, 'g', 56, '8', 0)
+    newCell = mo.Cell(newChord,[1],[newNote1,newNote2])
+
+    # create finalMTX - a 2D array of 2D arrays (lists) of Cells - because each measure can hold 1-4 Cells
+    finalMTX = np.empty((maxVoices, measures), dtype=object)
 
 
-    # create finalMTX
-    finalMTX = mm.makeMatrix(maxVoices)
-    # NOTE: newNote here is a 1-voice matrix. it will change below to contain additional voices
-    newNote = mm.makeMatrix(3)  # now we can use finalMTX = np.concatenate([finalMTX, newNote],1) to add a new note
+    finalMTX[0][0] = [newCell]
+    finalMTX[0][0].append(newCell)
 
+    print(finalMTX)
 
     #####################################################################
     # CREATE MEASURES 1-2 - Tonic (I)
