@@ -1,6 +1,6 @@
 """Class definitions for musical objects"""
 
-from lib import defineChord as dc
+import defineChord as dc
 
 """
 Matrix = [voice][measure][Cell]
@@ -65,7 +65,8 @@ class Note(Chord):
 
 class Cell:
 
-    def __init__(self, chord, beats, notes):
+    def __init__(self, chord, beats, notes, destination):
         self.chord = chord                      # Chord class: see definition above
         self.beats = beats                      # [int] array: contains the beats that this cell covers, ie. [1, 2], max size is 1 measure
         self.notes = notes                      # [Note] array: see Note definition above, contains data including pitch and rhythm
+        self.destination = destination          # string: holds next pitch so we know where to start the next Cell

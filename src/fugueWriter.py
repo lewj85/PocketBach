@@ -1,8 +1,9 @@
 #from lib import makeMatrix as mm
 #from lib import createLily as cl
-#from lib import getNotes as gn
+from lib import getNotes as gn
 #from lib import writeCountersubject as wc
 from lib import musicObjects as mo
+from lib import distanceToTonal as dtt
 import numpy as np
 import random
 import os
@@ -57,7 +58,7 @@ def fugueWriter(subjectMTX=None, key = 'C', major = 1, timesig = None):
     # if no user-generated melody is provided, make one up
     if subjectMTX is None:
         # NOTE: 2 measures
-        finalMTX = np.empty((maxVoices, 2), dtype=object)
+        subjectMTX = np.empty((maxVoices, 2), dtype=object)
 
         # pick from default harmonies: I-I, I-IV, I-V
         # NOTE: all move to a V chord in the 3rd measure
@@ -68,54 +69,15 @@ def fugueWriter(subjectMTX=None, key = 'C', major = 1, timesig = None):
         #debugging
         #chordChoices = [1,2,3,4,5]
 
-        # get notes and rhythms
-        noteArray = ws.writeSubject(chordChoices, None, len(chordChoices)-1)
-        print(noteArray)
 
-        # for easy reference:
-        #   12 note data types: pitch, duration, direction, interval, chord root,
-        #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
-
-        # add data to the matrix
-        for i in range(len(noteArray)):
-            if i > 0:  # NOTE: the first note is created and defaulted already
-                subjectMTX = np.concatenate([subjectMTX, newNoteSub], 1)  # add a new note
-            #print(subjectMTX.shape)
-            subjectMTX[0][i][0] = noteArray[i][0]     # pitch
-            subjectMTX[0][i][1] = noteArray[i][1]     # duration
-            subjectMTX[0][i][4] = chordChoices[noteArray[i][2]-1]     # chordRoot
-            if noteArray[i][2] == 1:
-                subjectMTX[0][i][8] = 0
-            else:
-                subjectMTX[0][i][8] = chordChoices[noteArray[i][2]-2] # prevRoot
-            # subjectMTX[0][i][10] = ?       # TODO: beat
-            subjectMTX[0][i][11] = noteArray[i][2]    # measure
+        # get notes, rhythms, and destination
+        notes, destination = gn.getNotes(chordChoices[0], chordChoices[1], [1,2,3,4])
+        newCell = mo.Cell(newChord, notes)
+        finalMTX[0][0] = []
 
 
-    # # if we got subjectMTX as a param but it has only 2 dimensions, give it a third
-    # if len(subjectMTX.shape) == 2:
-    #     subjectMTX = np.expand_dims(subjectMTX, 0)  # add the 3rd dimension as new 1st dimension
-
-    #print('subject matrix is:')
-    #print(subjectMTX)
-    #print(subjectMTX.shape)
-
-    # fill finalMTX with subjectMTX's values
-    for j in range(subjectMTX.shape[1]):
-        if j > 0:  # NOTE: the first note is created and defaulted already
-            finalMTX = np.concatenate((finalMTX, newNote), 1)
-        for k in [0,1,2,3,9,10]:  # NOTE: fill only pitch, duration, direction, and distance in alto
-            finalMTX[1][j][k] = subjectMTX[0][j][k]
-    for i in range(maxVoices):
-        for j in range(subjectMTX.shape[1]):
-            for k in [4,5,6,7,8,11]:  # fill the rest for all voices
-                finalMTX[i][j][k] = subjectMTX[0][j][k]
 
 
-    # finalMTX[0][0][0] = 'r'  # pitch (rest)
-    # finalMTX[0][0][1] = '1'  # duration
-    # finalMTX[2][0][0] = 'r'  # pitch (rest)
-    # finalMTX[2][0][1] = '1'  # duration
 
     # free memory and let us re-use variable names
     del subjectMTX

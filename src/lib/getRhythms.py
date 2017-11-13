@@ -1,3 +1,5 @@
+import random
+
 #######################################################################
 # getRhythms()
 #######################################################################
@@ -6,8 +8,11 @@
 
 # NOTES:
 # generates beats randomly using random.choice() until the beat total matches totalBeats parameter
+# TODO: currently assumes the first beat in beatsArr is an accented beat
 
-def getRhythms(totalBeats, timesig = None):
+def getRhythms(beatsArr, timesig = None):
+
+    totalBeats = len(beatsArr)
 
     if not timesig:
         timesig = [4,4]

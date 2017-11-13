@@ -1,21 +1,23 @@
-import random
 import defineChord as dc
 import pitchToNum as ptn
 import getRhythms as gr
-
+import musicObjects as mo
+import distanceToTonal as dtt
+import tonalToDistance as ttd
+import random
 
 #######################################################################
 # getNotes()
 #######################################################################
 # calls defineChord(), getRhythms()
-# returns notes, rhythms, destination
+# returns [Note class array], int  --->  notes, destination
 
 # NOTES:
 # can pass it any number of beats, but they must be over ONE chord
 # useful for 2-beat cells as well as 4-beat phrases
 # uses previousCell for episodes to match intervals/rhythms - if previousCell is None, it will create the first cell of the episode
 
-def getNotes(currentChord, nextChord, beats, start = None, destination = None, episode = False, rhythms = None, key = 'C', major = True, timesig = None):
+def getNotes(currentChord, nextChord, beats, start = None, destination = None, voice = 0, episode = False, rhythms = None, key = 'C', major = True, timesig = None):
 
     if not timesig:
         timesig = [4,4]
@@ -28,6 +30,17 @@ def getNotes(currentChord, nextChord, beats, start = None, destination = None, e
         options = dc.defineChord(None, currentChord)
         start = ptn.pitchToNum(random.choice(options[0]))
 
+        # pick a distance based on voice
+        startDistance = ttd.tonalToDistance(start, voice)
+
+    else:
+
+        # store distance
+        startDistance = int(start)
+
+        # convert start to 0-7
+        start = ptn.pitchToNum(dtt.distanceToTonal(startDistance))
+
 
     if not destination:
 
@@ -35,26 +48,23 @@ def getNotes(currentChord, nextChord, beats, start = None, destination = None, e
         options = dc.defineChord(None, nextChord)
         destination = ptn.pitchToNum(random.choice(options[0]))
 
-        # TODO: direction and distance are important to prevent voice crossing. pass voice as param and pick destination's '88-value'.
-        #    this will set a direction for use below, so remove distToUp and distToDown below.
+        # pick a distance based on voice
+        destDistance = ttd.tonalToDistance(destination, voice)
 
 
     notes = []
 
 
-    # store distance to destination both up and down
-    distToDestUp = 0
-    note = int(start)
-    while note != destination:
-        distToDestUp += 1
-        note += 1
-        # wrap around
-        if note == 8:
-            note = 1
-    distToDestDown = 7 - distToDestUp
+    # calculate distance and direction
+    distance = abs(start - destination)
+    if startDistance < destDistance:
+        direction = 1
+    elif startDistance == destDistance:
+        direction = 0
+    else:
+        direction = -1
 
-
-    print('start: ' + str(start) + '\tdestination: ' + str(destination) + '\tdistToDestUp: ' + str(distToDestUp) + '\tdistToDestDown: ' + str(distToDestDown))
+    print('start: ' + str(start) + '\tdestination: ' + str(destination) + '\tdistance: ' + str(distance) + '\tdirection: ' + str(direction))
 
 
     #######################################################################
@@ -68,16 +78,16 @@ def getNotes(currentChord, nextChord, beats, start = None, destination = None, e
 
         # TODO: only give linear motion an 80% chance. 20% chance to move differently
         # if dist up or dist down is same as number of rhythms, and that distance is < 5
-        if len(rhythms) == distToDestUp and distToDestUp < 5:
-            print('numOfNotes == distToDestUp. moving linearly.')
+        if len(rhythms) == distance and direction > 1:
+            print('numOfNotes == distance up. moving linearly.')
             nextNote = int(start)
             for note in rhythms:
                 if nextNote == 8:
                     nextNote = 1
                 notes.append(nextNote)
                 nextNote += 1
-        elif len(rhythms) == distToDestDown and distToDestDown < 5:
-            print('numOfNotes == distToDestDown. moving linearly.')
+        elif len(rhythms) == distance and direction < 1:
+            print('numOfNotes == distance down. moving linearly.')
             # same as above in other direction
             nextNote = int(start)
             for note in rhythms:
@@ -110,11 +120,22 @@ def getNotes(currentChord, nextChord, beats, start = None, destination = None, e
     print(notes)
     print(rhythms)
     print(destination)
-    return notes, rhythms, destination
+
+    # convert notes and rhythms to Note classes
+    newNotes = []
+    for i in range(len(notes)):
+        tied = (rhythms[i][-1] == '.')
+        newNotes.append(mo.Note(key, major, timesig, currentChord, 0, 0, 0, False, None, notes[i], ttd.tonalToDistance(notes[i]), rhythms[i], tied))
+
+    return newNotes, destination
 
 
 # debugging
-notes, rhythms, destination = getNotes(1, 4, 4)
-notes, rhythms, destination = getNotes(4, 5, 2, destination)
-notes, rhythms, destination = getNotes(5, 1, 2, destination)
-print(destination)
+notes, destination = getNotes(1, 4, range(4))
+allNotes = []
+allNotes.append(notes)
+notes, destination = getNotes(4, 5, range(2), destination)
+allNotes.append(notes)
+notes, destination = getNotes(5, 1, range(2), destination)
+allNotes.append(notes)
+print(allNotes)
