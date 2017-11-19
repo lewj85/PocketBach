@@ -1,23 +1,23 @@
-import defineChord as dc
-import pitchToNum as ptn
-import getRhythms as gr
-import musicObjects as mo
-import distanceToTonal as dtt
-import tonalToDistance as ttd
+from lib import defineChord as dc
+from lib import pitchToNum as ptn
+from lib import getRhythms as gr
+from lib import musicObjects as mo
+from lib import distanceToTonal as dtt
+from lib import tonalToDistance as ttd
 import random
 
 #######################################################################
 # getNotes()
 #######################################################################
 # calls defineChord(), getRhythms()
-# returns [Note class array], int  --->  notes, destination
+# returns notes, destination (of types: [Note class array], int)
 
 # NOTES:
 # can pass it any number of beats, but they must be over ONE chord
 # useful for 2-beat cells as well as 4-beat phrases
 # uses previousCell for episodes to match intervals/rhythms - if previousCell is None, it will create the first cell of the episode
 
-def getNotes(currentChord, nextChord, beats, start = None, destination = None, voice = 0, episode = False, rhythms = None, key = 'C', major = True, timesig = None):
+def getNotes(currentChord, nextChord, beatsArr, start = None, destination = None, voice = 0, episode = False, previousCell = None, key = 'C', major = True, timesig = None):
 
     if not timesig:
         timesig = [4,4]
@@ -74,7 +74,7 @@ def getNotes(currentChord, nextChord, beats, start = None, destination = None, v
     if not episode:
 
         # call getRhythms to generate rhythms - this is now our number of notes needed
-        rhythms = gr.getRhythms(beats, timesig)
+        rhythms = gr.getRhythms(beatsArr, timesig)
 
         # TODO: only give linear motion an 80% chance. 20% chance to move differently
         # if dist up or dist down is same as number of rhythms, and that distance is < 5
@@ -110,12 +110,11 @@ def getNotes(currentChord, nextChord, beats, start = None, destination = None, v
 
         # if previousCell is None, it's the first cell of the episode
         if not previousCell:
-            rhythms = gr.getRhythms(beats, timesig)
+            rhythms = gr.getRhythms(beatsArr, timesig)
 
         # otherwise try to match intervals/rhythms from previousCell
         else:
             rhythms = previousCell[1]
-            pass
 
     print(notes)
     print(rhythms)
@@ -131,11 +130,11 @@ def getNotes(currentChord, nextChord, beats, start = None, destination = None, v
 
 
 # debugging
-notes, destination = getNotes(1, 4, range(4))
-allNotes = []
-allNotes.append(notes)
-notes, destination = getNotes(4, 5, range(2), destination)
-allNotes.append(notes)
-notes, destination = getNotes(5, 1, range(2), destination)
-allNotes.append(notes)
-print(allNotes)
+# notes, destination = getNotes(1, 4, range(4))
+# allNotes = []
+# allNotes.append(notes)
+# notes, destination = getNotes(4, 5, range(2), destination)
+# allNotes.append(notes)
+# notes, destination = getNotes(5, 1, [2,3], destination)
+# allNotes.append(notes)
+# print(allNotes)

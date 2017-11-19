@@ -1,9 +1,10 @@
 """getNextNote() chooses the next note based on the previous note and current chord, returns an int (not a string)"""
 
+from lib import numToPitch as ntp
+from lib import pitchToNum as ptn
+from lib import defineChord as dc
 import random
-import numToPitch as ntp
-import pitchToNum as ptn
-import defineChord as dc
+
 
 def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices):
     # extract relevant data from matrices

@@ -1,4 +1,4 @@
-import numToPitch as ntp
+from lib import numToPitch as ntp
 from numpy import shape
 
 def matrixToLily(key, major, finalMTX, measures, maxVoices):

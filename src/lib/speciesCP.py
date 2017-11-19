@@ -19,9 +19,9 @@
 
 going with option #1 now that we can easily adjust the matrix for an unknown number of notes"""
 
+#from lib import getRhythm as gr  # commented out for fugueWriter debugging
 import random
 import numpy as np
-import getRhythm as gr
 #import re
 
 # NOTE: just as getNextChord has destination and chordsRemaining params, so should these

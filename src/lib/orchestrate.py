@@ -1,12 +1,11 @@
 # orchestrate() fleshes out all voices for a given chord matrix
 
+from lib import makeMatrix as mm
+from lib import getNextNote as gnn
+from lib import pitchToNum as ptn
+from lib import numToPitch as ntp
 import numpy as np
 import random
-import makeMatrix as mm
-import getNextNote as gnn
-#import defineChord as dc  # commented out, no longer needed
-import pitchToNum as ptn
-import numToPitch as ntp
 
 def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices):
     # 3 dimensional matrix finalMTX contains the fully orchestrated chorale

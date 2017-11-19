@@ -1,5 +1,5 @@
-import matrixToLily as mtl
-import speciesCP as scp
+from lib import matrixToLily as mtl
+from lib import speciesCP as scp
 
 def createLily(key, major, finalMTX, measures, maxVoices, scoreType=1):
 

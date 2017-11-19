@@ -8,7 +8,7 @@ import random
 
 # NOTES:
 # generates beats randomly using random.choice() until the beat total matches totalBeats parameter
-# TODO: currently assumes the first beat in beatsArr is an accented beat
+# TODO: currently assumes the first beat in beatsArr is an accented beat - fine for current scope
 
 def getRhythms(beatsArr, timesig = None):
 

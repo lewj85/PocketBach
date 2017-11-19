@@ -1,6 +1,6 @@
 """Class definitions for musical objects"""
 
-import defineChord as dc
+from lib import defineChord as dc
 
 """
 Matrix = [voice][measure][Cell]
@@ -10,32 +10,32 @@ for now, the matrix isn't broken into beats, cells are the smallest part, each c
 Class Hierarchy
 Music = key, major, timesig
     Chord = root, tonality, seventh, inversion, secondary, secondaryRoot
-        Note = pitch, distance, rhythm
+        Note = pitch, distance, rhythm, tied
 Cell = chord, beats, notes, rhythms
 """
 
 
 class Music:
 
-    def __init__(self, key = 'C', major = 1, timesig = None):
+    def __init__(self, key = 'C', major = True, timesig = None):
         self.key = key                          # int: represents number of sharps (positive) or flats (negative)
-        self.major = major                      # int: major = 1, minor = 0
+        self.major = major                      # boolean: True or False
+        self.timesig = timesig                  # [int, int] array: index 0 = beats, index 1 = rhythmic base value
         if timesig is None:
             self.timesig = [4,4]                # default is [4,4]
-        else:
-            self.timesig = timesig              # [int, int] array: index 0 = beats, index 1 = rhythmic base value
+
 
 
 
 class Chord(Music):
 
-    def __init__(self, key, major, timesig, root, tonality = 0, seventh = 0, inversion = 0, secondary = 0, secondaryRoot = 0):
+    def __init__(self, root, tonality = 0, seventh = False, inversion = 0, secondary = False, secondaryRoot = 0, key = 'C', major = True, timesig = None):
         Music.__init__(self, key, major, timesig)
-        self.root = root                        # int: chord root, represents Roman numeral number (key is irrelevant)
-        self.tonality = tonality                # int: represents moving from tonal triad up/down (ie. minor v to V = 1)
-        self.seventh = seventh                  # int: 0 = triad, 1 = 7th
+        self.root = root                        # int: chord root, represents Roman numeral number (key/accidentals are irrelevant)
+        self.tonality = tonality                # int: represents moving from tonal triad up/down (ie. minor v to V = 1, IV to minor iv = -1)
+        self.seventh = seventh                  # boolean: False = triad, True = 7th
         self.inversion = inversion              # int: 0 = None, 1 = 1st, 2 = 2nd, 3 = 3rd
-        self.secondary = secondary              # int: 0 = None, 1 = secondary
+        self.secondary = secondary              # boolean: False = no, True = secondary
         self.secondaryRoot = secondaryRoot      # int: 1-7, represents root of secondary (dominant) chord
 
     def getPitches(self):
@@ -45,12 +45,12 @@ class Chord(Music):
 
 class Note(Chord):
 
-    def __init__(self, key, major, timesig, root, tonality, seventh, inversion, secondary, secondaryRoot, pitch, distance, rhythm, tied = 0):
-        Chord.__init__(self, key, major, timesig, root, tonality, seventh, inversion, secondary, secondaryRoot)
+    def __init__(self, pitch, distance, rhythm, tied, root, tonality = 0, seventh = False, inversion = 0, secondary = False, secondaryRoot = 0, key = 'C', major = True, timesig = None):
+        Chord.__init__(self, root, tonality, seventh, inversion, secondary, secondaryRoot, key, major, timesig)
         self.pitch = pitch                      # string: lowercase char plus "s" for sharp, "f" for flat, "ss", or "ff"
         self.distance = distance                # int: 0-87, distance from lowest pitch "A0" = 0, "C8" = 87
         self.rhythm = rhythm                    # int: 1 = whole note, 2 = half, 4 = quarter, 8 = 8th, etc
-        self.tied = tied                        # int: 0 = not tied to next note, 1 = tied to next note
+        self.tied = tied                        # boolean: False = not tied to next note, True = tied to next note
 
     def inChord(self):
         return [chordPitch for chordPitch in self.getPitches()]       # inherited
@@ -65,8 +65,9 @@ class Note(Chord):
 
 class Cell:
 
-    def __init__(self, chord, beats, notes, destination):
+    def __init__(self, chord, beats, notes, nextChord, destination):
         self.chord = chord                      # Chord class: see definition above
         self.beats = beats                      # [int] array: contains the beats that this cell covers, ie. [1, 2], max size is 1 measure
         self.notes = notes                      # [Note] array: see Note definition above, contains data including pitch and rhythm
-        self.destination = destination          # string: holds next pitch so we know where to start the next Cell
+        self.nextChord = nextChord              # Chord class: the next chord so we know where to start the next Cell
+        self.destination = destination          # string: the next pitch so we know where to start the next Cell

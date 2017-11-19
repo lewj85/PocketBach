@@ -2,8 +2,8 @@
 # it makes use of the random() function when there are multiple options.
 # NOTE: rearrange if statements so destination is outer if-else
 
-import weightedProbability as wp
-import defineChord as dc
+from lib import weightedProbability as wp
+from lib import defineChord as dc
 import random
 
 def getNextChord(chordsRemaining, destination, chordArray):
