@@ -6,42 +6,44 @@ from lib import getNotes as gn
 from lib import pitchToNum as ptn
 from lib import numToPitch as ntp
 from lib import musicObjects as mo
+from lib import distanceToTonal as dtt
 from lib import tonalToDistance as ttd
 import random
 
 
+# params are mo.Cell, mo.Chord, mo.Chord
 # returns array of Note classes, destination pitch
 
-def transposeDiatonically(oldCell, newChord, newNextChord):
+def transposeDiatonically(oldCell, newChord, newNextChord, up = True):
 
     notes = []
-    down = False
 
     # first get distance between old chord and new chord
     # NOTE: may be negative
-    distanceBetween = oldCell.chord.root - newChord
+    distanceBetween = oldCell.chord.root - ptn.pitchToNum(newChord.root)
 
     # next check destination because it's possible/probable only transposition is needed
-    if oldCell.destination + ((distanceBetween - 1) % 7 + 1)  in newNextChord.getPitches()[0]:
+    destination = (ptn.pitchToNum(dtt.distanceToTonal(oldCell.destination)) + (distanceBetween - 1)) % 7 + 1
+    if ntp.numToPitch(destination) in newNextChord.getPitches()[0]:
 
-        for note in oldCell.notes:
+        for oldNote in oldCell.notes:
 
             # adjust pitch
-            newVal = (ptn.pitchToNum(note.pitch) + distanceBetween - 1) % 7 + 1
+            newVal = (ptn.pitchToNum(oldNote.pitch) + distanceBetween - 1) % 7 + 1
             newPitch = ntp.numToPitch(newVal)
 
             # adjust root
-            newRoot = (note.root + distanceBetween - 1) % 7 + 1
+            newRoot = (oldNote.root + distanceBetween - 1) % 7 + 1
 
             # adjust distance
             # TODO: think diatonically, consider minor keys, etc - use tonalToDistance()
-            newDistance = note.distance + ttd.tonalToDistance()
+            newDistance = oldNote.distance + distanceBetween
 
             # add everything else
-            notes.append(mo.Note(newPitch, newDistance, note.rhythm, note.tied, newRoot,
-                                 note.tonality, note.seventh, note.inversion,
-                                 note.secondary, note.secondaryRoot,
-                                 note.key, note.major, note.timesig))
+            notes.append(mo.Note(newPitch, newDistance, oldNote.rhythm, oldNote.tied, newRoot,
+                                 oldNote.tonality, oldNote.seventh, oldNote.inversion,
+                                 oldNote.secondary, oldNote.secondaryRoot,
+                                 oldNote.key, oldNote.major, oldNote.timesig))
 
     # if a destination doesn't match, find how far off we are
     else:

@@ -39,7 +39,7 @@ class Chord(Music):
         self.secondaryRoot = secondaryRoot      # int: 1-7, represents root of secondary (dominant) chord
 
     def getPitches(self):
-        return dc.defineChord(None, root, seventh, tonality, inversion, key, major)
+        return dc.defineChord(None, self.root, self.seventh, self.tonality, self.inversion, self.key, self.major)
 
 
 
@@ -53,7 +53,7 @@ class Note(Chord):
         self.tied = tied                        # boolean: False = not tied to next note, True = tied to next note
 
     def inChord(self):
-        return [chordPitch for chordPitch in self.getPitches()]       # inherited
+        return [chordPitch for chordPitch in self.getPitches()]       # inherited from Chord class
 
     def getIntervalFrom(self, note2):
         return self.distance - note2.distance
@@ -65,9 +65,10 @@ class Note(Chord):
 
 class Cell:
 
-    def __init__(self, chord, nextChord, beats, notes, destination):
+    def __init__(self, chord, nextChord, beats, notes, destination, voice):
         self.chord = chord                      # Chord class: see definition above
         self.nextChord = nextChord              # Chord class: the next chord so we know where to start the next Cell
         self.beats = beats                      # [int] array: contains the beats that this cell covers, ie. [1, 2], max size is 1 measure
         self.notes = notes                      # [Note] array: see Note definition above, contains data including pitch and rhythm
         self.destination = destination          # string: the next pitch so we know where to start the next Cell
+        self.voice = voice                      # int: 0 = bass, voice numbers ascend, ie. soprano = 2 in 3-voice harmony

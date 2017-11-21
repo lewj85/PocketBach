@@ -2,6 +2,7 @@ from lib import defineChord as dc
 from lib import pitchToNum as ptn
 from lib import getRhythms as gr
 from lib import musicObjects as mo
+from lib import numToPitch as ntp
 from lib import distanceToTonal as dtt
 from lib import tonalToDistance as ttd
 import random
@@ -9,8 +10,8 @@ import random
 #######################################################################
 # getNotes()
 #######################################################################
-# calls defineChord(), getRhythms()
 # returns notes, destination (of types: [Note class array], int)
+# NOTE: destination is the 'distance' from 0-87, not pitch 0-7
 
 # NOTES:
 # can pass it any number of beats, but they must be over ONE chord
@@ -25,31 +26,26 @@ def getNotes(currentChord, nextChord, beatsArr, start = None, destination = None
 
     # any measure where a voice first enters or re-enters after a rest and no start is specified
     if not start:
-
         # pick a random index from options
         options = dc.defineChord(None, currentChord)
         start = ptn.pitchToNum(random.choice(options[0]))
-
         # pick a distance based on voice
         startDistance = ttd.tonalToDistance(start, voice)
-
     else:
-
         # store distance
         startDistance = int(start)
-
         # convert start to 0-7
         start = ptn.pitchToNum(dtt.distanceToTonal(startDistance))
 
 
     if not destination:
-
         # pick a random destination
         options = dc.defineChord(None, nextChord)
         destination = ptn.pitchToNum(random.choice(options[0]))
-
         # pick a distance based on voice
         destDistance = ttd.tonalToDistance(destination, voice)
+    else:
+        destDistance = int(destination)
 
 
     notes = []
@@ -123,8 +119,10 @@ def getNotes(currentChord, nextChord, beatsArr, start = None, destination = None
     # convert notes and rhythms to Note classes
     newNotes = []
     for i in range(len(notes)):
-        tied = (rhythms[i][-1] == '.')
-        newNotes.append(mo.Note(key, major, timesig, currentChord, 0, 0, 0, False, None, notes[i], ttd.tonalToDistance(notes[i]), rhythms[i], tied))
+        tied = (rhythms[i][0][-1] == '.')
+        if tied:
+            rhythms[i][0] = rhythms[i][0][:-1]
+        newNotes.append(mo.Note(ntp.numToPitch(notes[i]), ttd.tonalToDistance(ntp.numToPitch(notes[i])), int(rhythms[i][0]), tied, currentChord, 0, 0, 0, False, None, key, major, timesig))
 
     return newNotes, destination
 

@@ -60,4 +60,4 @@ def tonalToDistance(tonal, voice = 0, key = 'C'):
     #     distance -= 12
 
     if key == 'C':
-        return distance + tonal
+        return distance + pitch

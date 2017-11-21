@@ -19,10 +19,23 @@ def fugueWriter(subjectMTX = None, music = None):
 
     # initialize variables
     measures = 32
-    maxVoices = 3
     beats1234 = [1, 2, 3, 4]
     beats12 = [1, 2]
     beats34 = [3, 4]
+    #maxVoices = 1
+    #while maxVoices != 3 and maxVoices != 4:
+    #    maxVoices = int(input("Enter 3 or 4 voices: "))
+    maxVoices = 3
+    if maxVoices == 3:
+        bass = 0
+        alto = 1
+        soprano = 2
+    else:
+        bass = 0
+        tenor = 1
+        alto = 2
+        soprano = 3
+
 
     # create finalMTX - a 2D array of 1D arrays (lists) of Cells - because each measure can hold 1-4 Cells
     finalMTX = np.empty((maxVoices, measures), dtype=object)
@@ -49,10 +62,10 @@ def fugueWriter(subjectMTX = None, music = None):
 
         # 1st measure
         notes, destinationAlto = gn.getNotes(destinationChords[0], destinationChords[1], beats1234)
-        subjectMTX[0][0] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationAlto)]
+        subjectMTX[0][0] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationAlto, alto)]
         # 2nd measure
         notes, destinationAlto = gn.getNotes(destinationChords[1], destinationChords[2], beats1234, destinationAlto)
-        subjectMTX[0][1] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationAlto)]
+        subjectMTX[0][1] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationAlto, alto)]
 
         # free memory
         del firstChords, notes
@@ -80,26 +93,43 @@ def fugueWriter(subjectMTX = None, music = None):
     # TODO: remove default V in measure 5 to create some randomness, such as ii-V, IV-V, vi-V
     # TODO: add for loop to allow for subjects longer than 2 measures
     destinationChords = [(finalMTX[1][0][0].chord.root + 3) % 7 + 1, (finalMTX[1][1][0].chord.root + 3) % 7 + 1, 5]
+    print('chords for measures 3-5 are : ' + str(destinationChords))
 
     # Alto - Countersubject
     # 3rd measure
     notes, destinationAlto = gn.getNotes(destinationChords[0], destinationChords[1], beats1234, destinationAlto)
-    finalMTX[1][2] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationAlto)]
+    finalMTX[1][2] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationAlto, alto)]
     # 4th measure
     notes, destinationAlto = gn.getNotes(destinationChords[1], destinationChords[2], beats1234, destinationAlto)
-    finalMTX[1][3] = [mo.Cell(mo.Chord(destinationChords[1]), beats1234, notes, destinationChords[2], destinationAlto)]
+    finalMTX[1][3] = [mo.Cell(mo.Chord(destinationChords[1]), beats1234, notes, destinationChords[2], destinationAlto, alto)]
 
     # Soprano - Answer
     # 3rd measure - get pitches that fit the new harmony
-    notes, destinationSoprano = td.transposeDiatonically(finalMTX[1][0], destinationChords[0], destinationChords[1])
-    finalMTX[2][2] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationSoprano)]
+    finalMTX[2][2] = []
+    for cell in finalMTX[1][0]:
+        notes, destinationSoprano = td.transposeDiatonically(cell, mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]))
+        finalMTX[2][2].append(mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationSoprano, soprano))
     # 4th measure - get pitches that fit the new harmony
-    notes, destinationSoprano = td.transposeDiatonically(finalMTX[1][1], destinationChords[1], destinationChords[2])
-    finalMTX[2][3] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationSoprano)]
+    finalMTX[2][3] = []
+    for cell in finalMTX[1][1]:
+        notes, destinationSoprano = td.transposeDiatonically(cell, mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]))
+        finalMTX[2][3].append(mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationSoprano, soprano))
 
 
-    print('finalMTX is:')
-    print(finalMTX)
+    #print('finalMTX is:')
+    #print(finalMTX)
+
+
+    for voice in range(maxVoices):
+        for measure in range(measures):
+            if finalMTX[voice][measure]:
+                #print(finalMTX[voice][measure])
+                for cell in finalMTX[voice][measure]:
+                    if cell:
+                        for note in cell.notes:
+                            if note:
+                                print(note.pitch)
+
 
 
     #####################################################################
