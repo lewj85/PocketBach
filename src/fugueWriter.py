@@ -4,7 +4,7 @@ from lib import musicObjects as mo
 from lib import pitchToNum as ptn
 from lib import defineChord as dc
 from lib import distanceToTonal as dtt
-from lib import writeAnswer as wa
+from lib import transposeDiatonically as td
 import numpy as np
 import random
 import os
@@ -24,26 +24,7 @@ def fugueWriter(subjectMTX = None, music = None):
     beats12 = [1, 2]
     beats34 = [3, 4]
 
-
-    # DEBUGGING
-    # music = mo.Music()
-    # newChord = mo.Chord(music.key, music.major, music.timesig, 1)
-    # newNote1 = mo.Note(newChord.key, newChord.major, newChord.timesig, newChord.root, newChord.tonality, newChord.seventh, newChord.inversion, newChord.secondary, newChord.secondaryRoot, 'f', 55, '8', 0)
-    # newNote2 = mo.Note(newChord.key, newChord.major, newChord.timesig, newChord.root, newChord.tonality, newChord.seventh, newChord.inversion, newChord.secondary, newChord.secondaryRoot, 'g', 56, '8', 0)
-    # newCell = mo.Cell(newChord,[1],[newNote1,newNote2])
-    #
-    # # create finalMTX - a 2D array of 2D arrays (lists) of Cells - because each measure can hold 1-4 Cells
-    # finalMTX = np.empty((maxVoices, measures), dtype=object)
-    #
-    # finalMTX[0][0] = [newCell]
-    # finalMTX[0][0].append(newCell)
-    #
-    # print(finalMTX)
-    # print(finalMTX[0][0][0].notes[0].pitch)
-    # print(finalMTX[0][0][0].notes[1].pitch)
-
-
-    # create finalMTX - a 2D array of 2D arrays (lists) of Cells - because each measure can hold 1-4 Cells
+    # create finalMTX - a 2D array of 1D arrays (lists) of Cells - because each measure can hold 1-4 Cells
     finalMTX = np.empty((maxVoices, measures), dtype=object)
 
 
@@ -71,7 +52,7 @@ def fugueWriter(subjectMTX = None, music = None):
         subjectMTX[0][0] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationAlto)]
         # 2nd measure
         notes, destinationAlto = gn.getNotes(destinationChords[1], destinationChords[2], beats1234, destinationAlto)
-        subjectMTX[0][1] = [mo.Cell(mo.Chord(destinationChords[1]), beats1234, notes, destinationChords[2], destinationAlto)]
+        subjectMTX[0][1] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationAlto)]
 
         # free memory
         del firstChords, notes
@@ -98,7 +79,7 @@ def fugueWriter(subjectMTX = None, music = None):
     # create destination pitches
     # TODO: remove default V in measure 5 to create some randomness, such as ii-V, IV-V, vi-V
     # TODO: add for loop to allow for subjects longer than 2 measures
-    destinationChords = [finalMTX[1][0][0].chord.root+4, finalMTX[1][1][0].chord.root+4, 5]
+    destinationChords = [(finalMTX[1][0][0].chord.root + 3) % 7 + 1, (finalMTX[1][1][0].chord.root + 3) % 7 + 1, 5]
 
     # Alto - Countersubject
     # 3rd measure
@@ -110,10 +91,10 @@ def fugueWriter(subjectMTX = None, music = None):
 
     # Soprano - Answer
     # 3rd measure - get pitches that fit the new harmony
-    notes, destinationSoprano = wa.writeAnswer(finalMTX[1][0], destinationChords[0])
+    notes, destinationSoprano = td.transposeDiatonically(finalMTX[1][0], destinationChords[0], destinationChords[1])
     finalMTX[2][2] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationSoprano)]
     # 4th measure - get pitches that fit the new harmony
-    notes, destinationSoprano = wa.writeAnswer(finalMTX[1][1], destinationChords[1])
+    notes, destinationSoprano = td.transposeDiatonically(finalMTX[1][1], destinationChords[1], destinationChords[2])
     finalMTX[2][3] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationSoprano)]
 
 

@@ -65,9 +65,9 @@ class Note(Chord):
 
 class Cell:
 
-    def __init__(self, chord, beats, notes, nextChord, destination):
+    def __init__(self, chord, nextChord, beats, notes, destination):
         self.chord = chord                      # Chord class: see definition above
+        self.nextChord = nextChord              # Chord class: the next chord so we know where to start the next Cell
         self.beats = beats                      # [int] array: contains the beats that this cell covers, ie. [1, 2], max size is 1 measure
         self.notes = notes                      # [Note] array: see Note definition above, contains data including pitch and rhythm
-        self.nextChord = nextChord              # Chord class: the next chord so we know where to start the next Cell
         self.destination = destination          # string: the next pitch so we know where to start the next Cell
