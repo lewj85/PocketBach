@@ -35,15 +35,22 @@ def getNotes(currentChord, nextChord, beatsArr, start = None, destination = None
         # store distance
         startDistance = int(start)
         # convert start to 0-7
-        start = ptn.pitchToNum(dtt.distanceToTonal(startDistance))
+        pitch = dtt.distanceToTonal(startDistance)
+        print('pitch is', pitch)
+        start = ptn.pitchToNum(pitch)
+        print('start is', start)
 
 
     if not destination:
         # pick a random destination
         options = dc.defineChord(None, nextChord)
-        destination = ptn.pitchToNum(random.choice(options[0]))
+        destination2 = random.choice(options[0])
         # pick a distance based on voice
-        destDistance = ttd.tonalToDistance(destination, voice)
+        destDistance = ttd.tonalToDistance(destination2, voice)
+        print('destDistance is', destDistance)
+        destination = ptn.pitchToNum(destination2)
+        print('destination, destination2:', destination, destination2)
+
     else:
         destDistance = int(destination)
 
@@ -112,9 +119,9 @@ def getNotes(currentChord, nextChord, beatsArr, start = None, destination = None
         else:
             rhythms = previousCell[1]
 
-    print(notes)
-    print(rhythms)
-    print(destination)
+    print('notes: ', notes)
+    print('rhythms: ', rhythms)
+    print('destination:', destination)
 
     # convert notes and rhythms to Note classes
     newNotes = []

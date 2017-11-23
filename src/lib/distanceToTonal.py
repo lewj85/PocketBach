@@ -1,5 +1,5 @@
 def distanceToTonal(distance, key = 'C'):
-    distance %= distance
+    distance %= 12
     if key == 'C':
         return {
             0 : 'a',
