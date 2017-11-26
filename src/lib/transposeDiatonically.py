@@ -7,7 +7,7 @@ from lib import pitchToNum as ptn
 from lib import numToPitch as ntp
 from lib import musicObjects as mo
 from lib import distanceToTonal as dtt
-from lib import tonalToDistance as ttd
+from lib import pitchToDistance as ptd
 import random
 
 
@@ -36,7 +36,7 @@ def transposeDiatonically(oldCell, newChord, newNextChord, up = True):
             newRoot = (oldNote.root + distanceBetween - 1) % 7 + 1
 
             # adjust distance
-            # TODO: think diatonically, consider minor keys, etc - use tonalToDistance()
+            # TODO: think diatonically, consider minor keys, etc - use pitchToDistance()
             newDistance = oldNote.distance + distanceBetween
 
             # add everything else

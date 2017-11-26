@@ -3,11 +3,12 @@ from lib import getNotes as gn
 from lib import musicObjects as mo
 from lib import pitchToNum as ptn
 from lib import defineChord as dc
+from lib import distanceToPitch as dtp
 from lib import distanceToTonal as dtt
 from lib import transposeDiatonically as td
 import numpy as np
 import random
-import os
+#import os
 
 # https://en.wikipedia.org/wiki/Fugue#Musical_outline
 
@@ -63,12 +64,14 @@ def fugueWriter(subjectMTX = None, music = None):
         # 1st measure
         print("*******************MEASURE 1 (alto)**********************")
         notes, destinationAlto = gn.getNotes(destinationChords[0], destinationChords[1], beats1234, None, None, alto)
-        print('dest is', destinationAlto)
+        print('notes:', notes)
+        print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
         subjectMTX[0][0] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationAlto, alto)]
         # 2nd measure
         print("*******************MEASURE 2 (alto)**********************")
         notes, destinationAlto = gn.getNotes(destinationChords[1], destinationChords[2], beats1234, destinationAlto, None, alto)
-        print('dest is', destinationAlto)
+        print('notes:', notes)
+        print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
         subjectMTX[0][1] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationAlto, alto)]
 
         # free memory
@@ -104,11 +107,13 @@ def fugueWriter(subjectMTX = None, music = None):
     print("*******************MEASURE 3 (alto)**********************")
     notes, destinationAlto = gn.getNotes(destinationChords[0], destinationChords[1], beats1234, destinationAlto, None, alto)
     print('notes:', notes)
-    print('destinationAlto:', destinationAlto)
+    print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
     finalMTX[1][2] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationAlto, alto)]
     # 4th measure
     print("*******************MEASURE 4 (alto)**********************")
     notes, destinationAlto = gn.getNotes(destinationChords[1], destinationChords[2], beats1234, destinationAlto, None, alto)
+    print('notes:', notes)
+    print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
     finalMTX[1][3] = [mo.Cell(mo.Chord(destinationChords[1]), beats1234, notes, destinationChords[2], destinationAlto, alto)]
 
     # Soprano - Answer
@@ -129,7 +134,7 @@ def fugueWriter(subjectMTX = None, music = None):
     #print('finalMTX is:')
     #print(finalMTX)
 
-
+    # debugging
     for voice in range(maxVoices):
         for measure in range(measures):
             if finalMTX[voice][measure]:
@@ -138,16 +143,6 @@ def fugueWriter(subjectMTX = None, music = None):
                     #print(cell)
                     if cell:
                         print(voice, measure, cell.notes)
-                        for note in cell.notes:
-                            #print(cell.notes)
-                            if note:
-                                #try:
-                                    #print(note.pitch)
-                                #except:
-                                    #print(finalMTX[voice][measure])
-                                pass
-
-
 
 
     #####################################################################
