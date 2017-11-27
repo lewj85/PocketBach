@@ -145,7 +145,14 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
         tied = (rhythms[i][0][-1] == '.')
         if tied:
             rhythms[i][0] = rhythms[i][0][:-1]
-        newNotes.append(mo.Note(ntp.numToPitch(notes[i]), ptd.pitchToDistance(ntp.numToPitch(notes[i])), int(rhythms[i][0]), tied, currentChord, 0, 0, 0, False, None, key, major, timesig))
+        ##########################################################################
+        # TODO: FIX DISTANCE BELOW! this is where you decide where to move
+        ##########################################################################
+        fixedDistance = ptd.pitchToDistance(ntp.numToPitch(notes[i]), voice)
+        if direction == -1:
+            # if voice == blah, check bounds so distance doesn't go too far
+            fixedDistance -= 12
+        newNotes.append(mo.Note(ntp.numToPitch(notes[i]), fixedDistance, int(rhythms[i][0]), tied, currentChord, 0, 0, 0, False, None, key, major, timesig))
 
     return newNotes, destinationDistance
 

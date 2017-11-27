@@ -20,9 +20,9 @@ def pitchToDistance(pitch, voice = 0, key = 'C'):
         'ef': 6,
         'e': 7,
         'f': 8,
-        'fs': -3,
-        'g': -2,
-        'gs': -1
+        'fs': 9,
+        'g': 10,
+        'gs': 11
     }.get(pitch, -1)
 
     # # C5 soprano
