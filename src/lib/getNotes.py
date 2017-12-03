@@ -88,87 +88,103 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
 
     if not episode:
 
-        # TODO: consider not using getRhythms in this way but rather using randRhythm from old getRhythm where numNotes is determined by distance
-        # call getRhythms to generate rhythms - this is now our number of notes needed
-        rhythms = gr.getRhythms(beatsArr, timesig)
-        lenR = len(rhythms)
+        num1 = random.random()
 
-        # TODO: only give linear motion an X% chance. (100-X)% chance to move differently
-        # if dist up or dist down is same as number of rhythms, and that distance is < 5
-        if lenR == distance and direction > 1:
-            print('numOfNotes == distance up. moving linearly.')
-            nextNote = int(startTonal)
-            for note in rhythms:
-                if nextNote == 8:
-                    nextNote = 1
-                notes.append(nextNote)
-                nextNote += 1
-        elif lenR == distance and direction < 1:
-            print('numOfNotes == distance down. moving linearly.')
-            # same as above in other direction
-            nextNote = int(startTonal)
-            for note in rhythms:
-                if nextNote == 0:
-                    nextNote = 7
-                notes.append(nextNote)
-                nextNote -= 1
+        #####################################################
+        # LINEAR MOTION
+        #####################################################
 
-        # if distance is NOT the same, do something else
-        # NOTE: i don't like this method, so commenting out for now
-        # # repeated pitch patterns
-        # elif abs(distance) == 0 and lenR % 2 == 0:
-        #     pass
-        # elif abs(distance) == 0 and lenR % 2 == 1:
-        #     pass
-        # # 2nd jump patterns
-        # elif abs(distance) == 1 and lenR % 2 == 0:
-        #     pass
-        # elif abs(distance) == 1 and lenR % 2 == 1:
-        #     pass
-        # # 3rd jump patterns
-        # elif abs(distance) == 2 and lenR % 2 == 0:
-        #     pass
-        # elif abs(distance) == 2 and lenR % 2 == 1:
-        #     pass
-        # # 4th jump patterns
-        # elif abs(distance) == 3 and lenR % 2 == 0:
-        #     pass
-        # elif abs(distance) == 3 and lenR % 2 == 1:
-        #     pass
-        # # 5th jump patterns
-        # elif abs(distance) == 4 and lenR % 2 == 0:
-        #     pass
-        # elif abs(distance) == 4 and lenR % 2 == 1:
-        #     pass
-        # # 6th jump patterns
-        # elif abs(distance) == 5 and lenR % 2 == 0:
-        #     pass
-        # elif abs(distance) == 5 and lenR % 2 == 1:
-        #     pass
-        # # 7th jump patterns
-        # elif abs(distance) == 6 and lenR % 2 == 0:
-        #     pass
-        # elif abs(distance) == 6 and lenR % 2 == 1:
-        #     pass
-        # # octave jump patterns
-        # elif abs(distance) == 7 and lenR % 2 == 0:
-        #     pass
-        # elif abs(distance) == 7 and lenR % 2 == 1:
-        #     pass
+        # 40% chance to move linearly - technically less if distance is out of range
+        # NOTE: tested these values with testGetRhythms.py
+        if num1 < 0.4 and ( (len(beatsArr) == 4 and distance > 2 and distance < 9) or (len(beatsArr) == 2 and distance > 0 and distance < 8) ):
+
+            # create rhythms with a length equal to distance
+            # TODO: update and reuse randRhythm() from old getRhythm.py rather than rely on while loop... wasted cycles
+            lenR = -1
+            while lenR != distance:
+                rhythms = gr.getRhythms(beatsArr, timesig)
+                lenR = len(rhythms)
+
+            # TODO: only give linear motion an X% chance. (100-X)% chance to move differently
+            # if dist up or dist down is same as number of rhythms, and that distance is < 5
+            if lenR == distance and direction > 1:
+                print('numOfNotes == distance up. moving linearly.')
+                nextNote = int(startTonal)
+                for note in rhythms:
+                    if nextNote == 8:
+                        nextNote = 1
+                    notes.append(nextNote)
+                    nextNote += 1
+            elif lenR == distance and direction < 1:
+                print('numOfNotes == distance down. moving linearly.')
+                # same as above in other direction
+                nextNote = int(startTonal)
+                for note in rhythms:
+                    if nextNote == 0:
+                        nextNote = 7
+                    notes.append(nextNote)
+                    nextNote -= 1
+
+        #####################################################
+        # COMMON PATTERNS
+        #####################################################
+
+        # elif num1 < 0.8
+
+            # # repeated pitch patterns
+            # elif abs(distance) == 0:
+            #     pass
+
+            # # 2nd jump patterns
+            # elif abs(distance) == 1:
+            #     pass
+
+            # # 3rd jump patterns
+            # elif abs(distance) == 2:
+            #     pass
+
+            # # 4th jump patterns
+            # elif abs(distance) == 3:
+            #     pass
+
+            # # 5th jump patterns
+            # elif abs(distance) == 4:
+            #     pass
+
+            # # 6th jump patterns
+            # elif abs(distance) == 5:
+            #     pass
+
+            # # 7th jump patterns
+            # elif abs(distance) == 6:
+            #     pass
+
+            # # octave jump patterns
+            # elif abs(distance) == 7:
+            #     pass
+
+        #####################################################
+        # MICRO-DESTINATION
+        #####################################################
+
         else:
+
+            # call getRhythms to generate rhythms - this is now our number of notes needed
+            rhythms = gr.getRhythms(beatsArr, timesig)
+            lenR = len(rhythms)
+
             # TODO: change this. don't just repeat.
-            #for note in rhythms:
-            #    notes.append(startTonal)
+            for note in rhythms:
+                notes.append(startTonal)
 
-            # check for accented beats after the first, create new micro-destinations
-            if len(beatsArr) > 2:
-                for r in rhythms[1:]:
-                    if r[-1]:  # if accented
-                        # find a new micro-dest with a distance between startDistance and destinationDistance
-                        # move linearly if possible
-                        # else move be step
-                        pass
-
+            # check for accented beats after the first rhythm, create new micro-destinations
+            # if len(beatsArr) > 2:
+            #     for r in rhythms[1:]:
+            #         if r[-1]:  # if accented
+            #             # find a new micro-dest with a distance between startDistance and destinationDistance
+            #             # move linearly if possible
+            #             # else move be step
+            #             pass
 
     #######################################################################
     # FOR EPISODES

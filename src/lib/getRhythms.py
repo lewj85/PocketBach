@@ -63,7 +63,7 @@ def getRhythms(beatsArr, timesig = None):
 
         # force 'rhythmic diversity' and rewrite measures with too many rhythms
         onlyRhythms = [a for a,b,c,d in rhythms]
-        if len(rhythms) > 7 or onlyRhythms.count('2') > 1 or onlyRhythms.count('4') > 3 or onlyRhythms.count('8') > 4 or onlyRhythms.count('16') > 6:
+        if len(rhythms) > 8 or onlyRhythms.count('2') > 1 or onlyRhythms.count('4') > 3 or onlyRhythms.count('8') > 5 or onlyRhythms.count('16') > 6:
             rhythms = []
             total = 0
 
