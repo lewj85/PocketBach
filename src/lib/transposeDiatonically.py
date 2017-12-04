@@ -47,6 +47,7 @@ def transposeDiatonically(oldCell, newChord, newNextChord, up = True):
 
     # if a destination doesn't match, find how far off we are
     else:
+        print('destination doesn\'t match. altering rhythms to reach correct destination.')
         pass
 
     return notes, destination

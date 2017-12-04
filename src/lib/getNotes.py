@@ -33,8 +33,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
         startTonal = ptn.pitchToNum(startPitch)
         # pick a distance based on voice
         startDistance = ptd.pitchToDistance(startPitch, voice)
-        print('startDistance is', startDistance)
-        print('start:', startTonal, startPitch)
+        print('start:', startTonal, startPitch, startDistance)
 
     # if we are given a start
     else:
@@ -42,8 +41,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
         # convert start to 0-7
         startPitch = dtp.distanceToPitch(startDistance)
         startTonal = ptn.pitchToNum(startPitch)
-        print('startDistance is', startDistance)
-        print('start:', startTonal, startPitch)
+        print('start:', startTonal, startPitch, startDistance)
 
 
     # if no destination given, make one
@@ -55,8 +53,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
         destinationTonal = ptn.pitchToNum(destinationPitch)
         # pick a distance based on voice
         destinationDistance = ptd.pitchToDistance(destinationPitch, voice)
-        print('destinationDistance is', destinationDistance)
-        print('destination:', destinationTonal, destinationPitch)
+        print('destination:', destinationTonal, destinationPitch, destinationDistance)
 
     # if we are given a destination
     else:
@@ -64,20 +61,22 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
         # convert destination to 0-7
         destinationPitch = dtp.distanceToPitch(destinationDistance)
         destinationTonal = ptn.pitchToNum(destinationPitch)
-        print('destinationDistance is', destinationDistance)
-        print('destination:', destinationTonal, destinationPitch)
+        print('destination:', destinationTonal, destinationPitch, destinationDistance)
 
 
     notes = []
 
     # calculate distance and direction
-    distance = abs(startTonal - destinationTonal)
-    if distance == 0:
+    if startDistance == destinationDistance:
         direction = 0
+        distance = 0
     elif startDistance < destinationDistance:
         direction = 1
+        distance = (destinationTonal - startTonal) % 7
     else:
         direction = -1
+        distance = (startTonal - destinationTonal) % 7
+
 
     print('start: ' + str(startTonal) + '\tdestination: ' + str(destinationTonal) + '\tdistance: ' + str(distance) + '\tdirection: ' + str(direction))
 
@@ -89,14 +88,16 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
     if not episode:
 
         num1 = random.random()
+        #print(num1)
 
         #####################################################
         # LINEAR MOTION
         #####################################################
 
-        # 40% chance to move linearly - technically less if distance is out of range
+        # TODO: find good percentage. starting high for debugging
+        # 80% chance to move linearly - technically less if distance is out of range
         # NOTE: tested these values with testGetRhythms.py
-        if num1 < 0.4 and ( (len(beatsArr) == 4 and distance > 2 and distance < 9) or (len(beatsArr) == 2 and distance > 0 and distance < 8) ):
+        if num1 < 0.8 and ( (len(beatsArr) == 4 and distance > 2 and distance < 9) or (len(beatsArr) == 2 and distance > 0 and distance < 8) ):
 
             # create rhythms with a length equal to distance
             # TODO: update and reuse randRhythm() from old getRhythm.py rather than rely on while loop... wasted cycles
@@ -105,18 +106,18 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
                 rhythms = gr.getRhythms(beatsArr, timesig)
                 lenR = len(rhythms)
 
+            #print('distance:', distance, '\tlenR:', lenR)
+
             # TODO: only give linear motion an X% chance. (100-X)% chance to move differently
             # if dist up or dist down is same as number of rhythms, and that distance is < 5
-            if lenR == distance and direction > 1:
-                print('numOfNotes == distance up. moving linearly.')
+            if lenR == distance and direction == 1:
                 nextNote = int(startTonal)
                 for note in rhythms:
                     if nextNote == 8:
                         nextNote = 1
                     notes.append(nextNote)
                     nextNote += 1
-            elif lenR == distance and direction < 1:
-                print('numOfNotes == distance down. moving linearly.')
+            elif lenR == distance and direction == -1:
                 # same as above in other direction
                 nextNote = int(startTonal)
                 for note in rhythms:
@@ -124,6 +125,9 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
                         nextNote = 7
                     notes.append(nextNote)
                     nextNote -= 1
+            else:
+                print('error under linear motion in getNotes.py')
+
 
         #####################################################
         # COMMON PATTERNS
@@ -191,6 +195,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
     #######################################################################
 
     else:
+        print('episode')
 
         # if previousCell is None, it's the first cell of the episode
         if not previousCell:
