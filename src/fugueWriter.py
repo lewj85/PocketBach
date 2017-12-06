@@ -1,5 +1,5 @@
 from lib import createLily as cl
-from lib import createMXL as cm
+from lib import createXML as cx
 from lib import getNotes as gn
 from lib import musicObjects as mo
 from lib import pitchToTonal as ptt
