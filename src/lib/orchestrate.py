@@ -2,8 +2,8 @@
 
 from lib import makeMatrix as mm
 from lib import getNextNote as gnn
-from lib import pitchToNum as ptn
-from lib import numToPitch as ntp
+from lib import pitchToTonal as ptt
+from lib import tonalToPitch as ttp
 import numpy as np
 import random
 
@@ -101,8 +101,8 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
         #chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6], finalMTX[0][i][0])
         #print(chordArr)
         #print(str(int(finalMTX[0][i][0])))
-        #print(ptn.pitchToNum(key, chordArr[0]))
-        #print(str(int(finalMTX[0][i][0])) == ptn.pitchToNum(key, chordArr[0]))
+        #print(ptt.pitchToTonal(key, chordArr[0]))
+        #print(str(int(finalMTX[0][i][0])) == ptt.pitchToTonal(key, chordArr[0]))
         # FOUND A BUG: after converting to structs, need to remove the "b'value'" from first 2 columns...
         # TO DO: CHORALEWRITER'S GETNEXTCHORD IS CURRENTLY DECIDING WHETHER OR NOT TO ADD INVERSIONS, BUT
         #       GETNEXTNOTE ABOVE REALLY OUGHT TO BE THE THING DECIDING IF THERE ARE INVERSIONS (except for 164 cadences)
@@ -200,11 +200,11 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
                 finalMTX[voice][i][6] = noteMTX[i][6]                       # tonality
 
                 # chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6], noteMTX[i][7])  # inversion
-                # if str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(key, chordArr[0]):
+                # if str(int(finalMTX[voice][i][0])) == ptt.pitchToTonal(key, chordArr[0]):
                 #     finalMTX[voice][i][7] = 0
-                # elif str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(key, chordArr[1]):
+                # elif str(int(finalMTX[voice][i][0])) == ptt.pitchToTonal(key, chordArr[1]):
                 #     finalMTX[voice][i][7] = 1
-                # elif str(int(finalMTX[voice][i][0])) == ptn.pitchToNum(key, chordArr[2]):
+                # elif str(int(finalMTX[voice][i][0])) == ptt.pitchToTonal(key, chordArr[2]):
                 #     finalMTX[voice][i][7] = 2
                 # else:
                 #     finalMTX[voice][i][7] = 3  # 7th chords have 3rd inversion

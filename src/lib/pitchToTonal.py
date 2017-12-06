@@ -1,5 +1,5 @@
 # translate pitch letters into pitch numbers based on key
-def pitchToNum(pitch='r', key='C'):
+def pitchToTonal(pitch='r', key='C'):
     if key == 'C':
         return {
             'r': 0,

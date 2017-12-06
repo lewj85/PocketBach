@@ -1,7 +1,8 @@
 from lib import createLily as cl
+from lib import createMXL as cm
 from lib import getNotes as gn
 from lib import musicObjects as mo
-from lib import pitchToNum as ptn
+from lib import pitchToTonal as ptt
 from lib import defineChord as dc
 from lib import distanceToPitch as dtp
 from lib import distanceToTonal as dtt

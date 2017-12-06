@@ -3,8 +3,8 @@
 from lib import getRhythms as gr
 from lib import defineChord as dc
 from lib import getNotes as gn
-from lib import pitchToNum as ptn
-from lib import numToPitch as ntp
+from lib import pitchToTonal as ptt
+from lib import tonalToPitch as ttp
 from lib import musicObjects as mo
 from lib import distanceToTonal as dtt
 from lib import pitchToDistance as ptd
@@ -20,17 +20,17 @@ def transposeDiatonically(oldCell, newChord, newNextChord, up = True):
 
     # first get distance between old chord and new chord
     # NOTE: may be negative
-    distanceBetween = oldCell.chord.root - ptn.pitchToNum(newChord.root)
+    distanceBetween = oldCell.chord.root - ptt.pitchToTonal(newChord.root)
 
     # next check destination because it's possible/probable only transposition is needed
-    destination = (ptn.pitchToNum(dtt.distanceToTonal(oldCell.destination)) + (distanceBetween - 1)) % 7 + 1
-    if ntp.numToPitch(destination) in newNextChord.getPitches()[0]:
+    destination = (ptt.pitchToTonal(dtt.distanceToTonal(oldCell.destination)) + (distanceBetween - 1)) % 7 + 1
+    if ttp.tonalToPitch(destination) in newNextChord.getPitches()[0]:
 
         for oldNote in oldCell.notes:
 
             # adjust pitch
-            newVal = (ptn.pitchToNum(oldNote.pitch) + distanceBetween - 1) % 7 + 1
-            newPitch = ntp.numToPitch(newVal)
+            newVal = (ptt.pitchToTonal(oldNote.pitch) + distanceBetween - 1) % 7 + 1
+            newPitch = ttp.tonalToPitch(newVal)
 
             # adjust root
             newRoot = (oldNote.root + distanceBetween - 1) % 7 + 1

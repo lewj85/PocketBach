@@ -2,7 +2,7 @@ from lib import defineChord as dc
 from lib import pitchToNum as ptn
 from lib import getRhythms as gr
 from lib import musicObjects as mo
-from lib import numToPitch as ntp
+from lib import tonalToPitch as ttp
 from lib import distanceToPitch as dtp
 from lib import distanceToTonal as dtt
 from lib import pitchToDistance as ptd
@@ -222,11 +222,11 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
         ##########################################################################
         # TODO: FIX DISTANCE BELOW! this is where you decide where to move
         ##########################################################################
-        fixedDistance = ptd.pitchToDistance(ntp.numToPitch(notes[i]), voice)
+        fixedDistance = ptd.pitchToDistance(ttp.tonalToPitch(notes[i]), voice)
         if direction == -1:
             # if voice == blah, check bounds so distance doesn't go too far
             fixedDistance -= 12
-        newNotes.append(mo.Note(ntp.numToPitch(notes[i]), fixedDistance, int(rhythms[i][0]), tied, currentChord, 0, 0, 0, False, None, key, major, timesig))
+        newNotes.append(mo.Note(ttp.tonalToPitch(notes[i]), fixedDistance, int(rhythms[i][0]), tied, currentChord, 0, 0, 0, False, None, key, major, timesig))
 
     return newNotes, destinationDistance
 

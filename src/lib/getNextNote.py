@@ -1,6 +1,6 @@
 """getNextNote() chooses the next note based on the previous note and current chord, returns an int (not a string)"""
 
-from lib import numToPitch as ntp
+from lib import tonalToPitch as ttp
 from lib import pitchToNum as ptn
 from lib import defineChord as dc
 import random
@@ -76,7 +76,7 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
         if num1 < 0.2:    # 20% chance to repeat bass note (technically less than 20%,
                             # because we check to see if prevNote is a chord tone)
             #print('staying the same')
-            if ntp.numToPitch(key, prevNote) in chordVec:  # repeat prevNote if you can
+            if ttp.tonalToPitch(key, prevNote) in chordVec:  # repeat prevNote if you can
                 nextNote = prevNote
             else:  # otherwise just go with root
                 nextNote = currentRoot
@@ -84,12 +84,12 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
                             # because we check to see if prevNote + 1 is a chord tone)
             #print('moving up')
             if prevNote == 7:  # if prevNote is 7, can't use prevNote + 1
-                if ntp.numToPitch(key, 1) in chordVec:
+                if ttp.tonalToPitch(key, 1) in chordVec:
                     nextNote = 1
                 else:  # otherwise just go with root
                     nextNote = currentRoot
             else:  # if prevNote isn't 7, can use prevNote + 1
-                if ntp.numToPitch(key, prevNote + 1) in chordVec:
+                if ttp.tonalToPitch(key, prevNote + 1) in chordVec:
                     nextNote = prevNote + 1
                 else:  # otherwise just go with root
                     nextNote = currentRoot
@@ -97,12 +97,12 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
                 # because we check to see if prevNote - 1 is a chord tone)
             #print('moving down')
             if prevNote == 1:  # if prevNote is 1, can't use prevNote - 1
-                if ntp.numToPitch(key, 7) in chordVec:
+                if ttp.tonalToPitch(key, 7) in chordVec:
                     nextNote = 7
                 else:  # otherwise just go with root
                     nextNote = currentRoot
             else:  # if prevNote isn't 1, can use prevNote - 1
-                if ntp.numToPitch(key, prevNote - 1) in chordVec:
+                if ttp.tonalToPitch(key, prevNote - 1) in chordVec:
                     nextNote = prevNote - 1
                 else:  # otherwise just go with root
                     nextNote = currentRoot
@@ -158,19 +158,19 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
         #   motion aren't equal... need to equalize
         if num1 < 0.83:         # 83% * 0.36 = 30% chance to move up or down
             if prevNote == 7:   # if prevNote is 7, can't use prevNote + 1
-                if ntp.numToPitch(key, 1) in chordVec:
+                if ttp.tonalToPitch(key, 1) in chordVec:
                     return 1
             else:  # if prevNote isn't 7, can use prevNote + 1
-                if ntp.numToPitch(key, prevNote + 1) in chordVec:
+                if ttp.tonalToPitch(key, prevNote + 1) in chordVec:
                     return prevNote + 1
             if prevNote == 1:  # if prevNote is 1, can't use prevNote - 1
-                if ntp.numToPitch(key, 7) in chordVec:
+                if ttp.tonalToPitch(key, 7) in chordVec:
                     return 7
             else:  # if prevNote isn't 1, can use prevNote - 1
-                if ntp.numToPitch(key, prevNote - 1) in chordVec:
+                if ttp.tonalToPitch(key, prevNote - 1) in chordVec:
                     return prevNote - 1
         else:      # 100% * 0.36 = 36% * 0.7 (30% less chance to make it through first if) = 25% chance to repeat note
-            if ntp.numToPitch(key, prevNote) in chordVec:
+            if ttp.tonalToPitch(key, prevNote) in chordVec:
                 return prevNote
 
         # there's a high chance the note will fall through the if-elifs above,
@@ -271,31 +271,31 @@ def getNextNote(key, major, noteMTX, finalMTX, index, measures, voice, maxVoices
 
         if num1 < 0.4:  # 40% chance to repeat note (technically less)
                         # because we check to see if prevNote is a chord tone)
-            if ntp.numToPitch(key, prevNote) in chordVec:
+            if ttp.tonalToPitch(key, prevNote) in chordVec:
                 nextNote = prevNote
             else:
                 nextNote = ptn.pitchToNum(key, chordVec[random.randint(0, len(chordVec) - 1)])
         elif num1 < 0.7:    # 30% chance to move up linearly (technically less than 30%,
                             # because we check to see if prevNote + 1 is a chord tone)
             if prevNote == 7:  # if prevNote is 7, can't use prevNote + 1
-                if ntp.numToPitch(key, 1) in chordVec:
+                if ttp.tonalToPitch(key, 1) in chordVec:
                     nextNote = 1
                 else:
                     nextNote = ptn.pitchToNum(key, chordVec[random.randint(0, len(chordVec) - 1)])
             else:  # if prevNote isn't 7, can use prevNote + 1
-                if ntp.numToPitch(key, prevNote + 1) in chordVec:
+                if ttp.tonalToPitch(key, prevNote + 1) in chordVec:
                     nextNote = prevNote + 1
                 else:
                     nextNote = ptn.pitchToNum(key, chordVec[random.randint(0, len(chordVec) - 1)])
         else:   # 30% chance to move down linearly (technically less than 30%,
                 # because we check to see if prevNote - 1 is a chord tone)
             if prevNote == 1:  # if prevNote is 1, can't use prevNote - 1
-                if ntp.numToPitch(key, 7) in chordVec:
+                if ttp.tonalToPitch(key, 7) in chordVec:
                     nextNote = 7
                 else:
                     nextNote = ptn.pitchToNum(key, chordVec[random.randint(0, len(chordVec) - 1)])
             else:  # if prevNote isn't 1, can use prevNote - 1
-                if ntp.numToPitch(key, prevNote - 1) in chordVec:
+                if ttp.tonalToPitch(key, prevNote - 1) in chordVec:
                     nextNote = prevNote - 1
                 else:
                     nextNote = ptn.pitchToNum(key, chordVec[random.randint(0, len(chordVec) - 1)])

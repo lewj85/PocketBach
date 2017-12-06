@@ -1,4 +1,4 @@
-from lib import numToPitch as ntp
+from lib import tonalToPitch as ttp
 from numpy import shape
 
 def matrixToLily(key, major, finalMTX, measures, maxVoices):
@@ -46,7 +46,7 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
                             # pitch
                             # NOTE: str.lower() no longer needed as they are now lowercase
                             # TO DO: add flats and sharps for secondary dominants
-                            finalString += ntp.numToPitch(key, int(finalMTX[voice][j][0]))
+                            finalString += ttp.tonalToPitch(key, int(finalMTX[voice][j][0]))
                             #print(finalString)
 
                             # duration optional for repeated durations, but we will be using it

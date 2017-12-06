@@ -1,5 +1,5 @@
 from lib import getNextChord as gnc
-from lib import numToPitch as ntp
+from lib import tonalToPitch as ttp
 from lib import orchestrate as orch
 from lib import createLily as cl
 from lib import speciesCP as scp
@@ -208,7 +208,7 @@ def choraleWriter():
     #print(chordArray)
     chordArray2 = []
     for c in range(len(chordArray)):
-        chordArray2.append(ntp.numToPitch(key, chordArray[c]))
+        chordArray2.append(ttp.tonalToPitch(key, chordArray[c]))
     #print(chordArray2)
 
 
