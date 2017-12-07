@@ -13,7 +13,6 @@ def createXML(key, major, finalMTX, measures, maxVoices):
             "\n      <part-abbreviation>Pno.</part-abbreviation>"
             "\n      <score-instrument id=\"P1-I1\">"
             "\n        <instrument-name>SmartMusic SoftSynth 1</instrument-name>"
-            "\n        <instrument-sound>keyboard.piano</instrument-sound>"
             "\n      </score-instrument>"
             "\n      <midi-instrument id=\"P1-I1\">"
             "\n        <midi-channel>1</midi-channel>"
@@ -29,7 +28,65 @@ def createXML(key, major, finalMTX, measures, maxVoices):
 
     for measure in range(measures):
 
-        # NOTE: if measure == 0: add things like <key>, <time>, etc
-        pass
+        for voice in range(maxVoices):
+
+            f.write("\n    <measure number=\"")
+            f.write(measure)
+            f.write("\">")
+
+            # first measure, add things like <key>, <time>, etc
+            if measure == 0:
+                f.write("\n      <attributes>"
+                        "\n        <divisions>4</divisions>"  # 4 divisions per quarter note
+                        "\n        <key>"
+                        "\n          <fifths>0</fifths>"
+                        "\n          <mode>major</mode>"
+                        "\n        </key>"
+                        "\n        <time>"
+                        "\n          <beats>4</beats>"
+                        "\n          <beat-type>4</beat-type>"
+                        "\n        </time>"
+                        "\n        <staves>2</staves>"
+                        "\n        <clef number=\"1\">"
+                        "\n          <sign>G</sign>"
+                        "\n          <line>2</line>"
+                        "\n        </clef>"
+                        "\n        <clef number=\"2\">"
+                        "\n          <sign>F</sign>"
+                        "\n          <line>4</line>"
+                        "\n        </clef>"
+                        "\n      </attributes>"
+                        "\n      <sound tempo=\"120\"/>")
+
+                # every measure
+                f.write("\n      <note>"
+                        "\n        <pitch>"
+                        "\n          <step>C</step>"
+                        "\n          <octave>4</octave>"
+                        "\n        </pitch>"
+                        "\n        <duration>")
+                f.write()  # converted note duration * 4 because divisions = 4
+                f.write("</duration>"
+                        "\n        <voice>")
+                f.write()  # voice 4 bass, 3 alto, 2 soprano? doublecheck this
+                f.write("</voice>"
+                        "\n        <type>half</type>"
+                        "\n        <staff>")
+                f.write()  # staff 1 for soprano and alto, staff 2 for bass
+                f.write("</staff>"
+                        "\n      </note>")
+
+                # backup to next voice in same measure:
+                if not the last voice:
+                    f.write("\n      <backup>"
+                            "\n        <duration>16</duration>"  # 16 = 4 beats*4 divisions
+                            "\n      </backup>")
+
+                # end of measure
+                f.write("\n</measure>"
+                        "\n<!--=======================================================-->")
+
+
+
 
 

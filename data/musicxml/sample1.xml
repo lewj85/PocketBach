@@ -22,16 +22,6 @@
   <!--=========================================================-->
   <part id="P1">
     <measure number="1">
-      <print>
-        <system-layout>
-          <system-margins>
-            <left-margin>82</left-margin>
-            <right-margin>0</right-margin>
-          </system-margins>
-          <top-system-distance>196</top-system-distance>
-        </system-layout>
-        <measure-numbering>none</measure-numbering>
-      </print>
       <attributes>
         <divisions>2</divisions>
         <key>
