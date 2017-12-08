@@ -3,6 +3,48 @@ def createXML(key, major, finalMTX, measures, maxVoices):
     filename = "Fugue.mxl"
     f = open(filename, 'w')
 
+    # converted note duration * 4 because divisions = 4
+    duration = {
+        '1': 16,
+        '2.': 12,
+        '2': 8,
+        '4.': 6,
+        '4': 4,
+        '8.': 3,
+        '8': 2,
+        '16': 1
+    }
+
+    # voice 4 bass, 3 alto, 2 soprano? doublecheck this
+    # staff 1 for soprano and alto, staff 2 for bass
+    if maxVoices == 3:
+        voices = {
+            0:4,
+            1:3,
+            2:2
+        }
+        staves = {
+            4:1,
+            3:2,
+            2:2
+        }
+    elif maxVoices == 4:
+        voices = {
+            0:4,
+            1:1, #?? check this...
+            2:3,
+            3:2
+        }
+        staves = {
+            4:1,
+            1:1, #?? check this...
+            3:2,
+            2:2
+        }
+    else:
+        print("error in createXML: maxVoices isn\'t 3 or 4...")
+
+
     f.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
             "\n<!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 3.0 Partwise//EN\" \"http://www.musicxml.org/dtds/partwise.dtd\">"
             "\n<score-partwise version=\"3.0\">"
@@ -59,22 +101,22 @@ def createXML(key, major, finalMTX, measures, maxVoices):
                         "\n      <sound tempo=\"120\"/>")
 
                 # every measure
-                f.write("\n      <note>"
-                        "\n        <pitch>"
-                        "\n          <step>C</step>"
-                        "\n          <octave>4</octave>"
-                        "\n        </pitch>"
-                        "\n        <duration>")
-                f.write()  # converted note duration * 4 because divisions = 4
-                f.write("</duration>"
-                        "\n        <voice>")
-                f.write()  # voice 4 bass, 3 alto, 2 soprano? doublecheck this
-                f.write("</voice>"
-                        "\n        <type>half</type>"
-                        "\n        <staff>")
-                f.write()  # staff 1 for soprano and alto, staff 2 for bass
-                f.write("</staff>"
-                        "\n      </note>")
+                for note in finalMTX[measure][voice].notes:
+                    f.write("\n      <note>"
+                            "\n        <pitch>"
+                            "\n          <step>C</step>"
+                            "\n          <octave>4</octave>"
+                            "\n        </pitch>"
+                            "\n        <duration>")
+
+                    f.write(str(duration.get(note.duration)))
+                    f.write("</duration>")
+
+                    f.write("\n        <voice>"+str(voices.get(voice))+"</voice>")
+                    f.write("\n        <type>half</type>")
+
+                    f.write("\n        <staff>"+str(staves.get(voice))+"</staff>")
+                    f.write("\n      </note>")
 
                 # backup to next voice in same measure:
                 if not the last voice:
