@@ -1,5 +1,5 @@
 from lib import defineChord as dc
-from lib import pitchToNum as ptn
+from lib import pitchToTonal as ptt
 from lib import getRhythms as gr
 from lib import musicObjects as mo
 from lib import tonalToPitch as ttp
@@ -30,7 +30,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
         # pick a random index from options
         options = dc.defineChord(None, currentChord)
         startPitch = random.choice(options[0])
-        startTonal = ptn.pitchToNum(startPitch)
+        startTonal = ptt.pitchToTonal(startPitch)
         # pick a distance based on voice
         startDistance = ptd.pitchToDistance(startPitch, voice)
         print('start:', startTonal, startPitch, startDistance)
@@ -40,7 +40,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
 
         # convert start to 0-7
         startPitch = dtp.distanceToPitch(startDistance)
-        startTonal = ptn.pitchToNum(startPitch)
+        startTonal = ptt.pitchToTonal(startPitch)
         print('start:', startTonal, startPitch, startDistance)
 
 
@@ -50,7 +50,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
         # pick a random destination
         options = dc.defineChord(None, nextChord)
         destinationPitch = random.choice(options[0])
-        destinationTonal = ptn.pitchToNum(destinationPitch)
+        destinationTonal = ptt.pitchToTonal(destinationPitch)
         # pick a distance based on voice
         destinationDistance = ptd.pitchToDistance(destinationPitch, voice)
         print('destination:', destinationTonal, destinationPitch, destinationDistance)
@@ -60,7 +60,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
 
         # convert destination to 0-7
         destinationPitch = dtp.distanceToPitch(destinationDistance)
-        destinationTonal = ptn.pitchToNum(destinationPitch)
+        destinationTonal = ptt.pitchToTonal(destinationPitch)
         print('destination:', destinationTonal, destinationPitch, destinationDistance)
 
 

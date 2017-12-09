@@ -1,48 +1,9 @@
-def createXML(key, major, finalMTX, measures, maxVoices):
+def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices):
 
-    filename = "Fugue.mxl"
+    if timesig is None:
+        timesig = [4,4]
+
     f = open(filename, 'w')
-
-    # converted note duration * 4 because divisions = 4
-    duration = {
-        '1': 16,
-        '2.': 12,
-        '2': 8,
-        '4.': 6,
-        '4': 4,
-        '8.': 3,
-        '8': 2,
-        '16': 1
-    }
-
-    # voice 4 bass, 3 alto, 2 soprano? doublecheck this
-    # staff 1 for soprano and alto, staff 2 for bass
-    if maxVoices == 3:
-        voices = {
-            0:4,
-            1:3,
-            2:2
-        }
-        staves = {
-            4:1,
-            3:2,
-            2:2
-        }
-    elif maxVoices == 4:
-        voices = {
-            0:4,
-            1:1, #?? check this...
-            2:3,
-            3:2
-        }
-        staves = {
-            4:1,
-            1:1, #?? check this...
-            3:2,
-            2:2
-        }
-    else:
-        print("error in createXML: maxVoices isn\'t 3 or 4...")
 
 
     f.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
@@ -65,29 +26,40 @@ def createXML(key, major, finalMTX, measures, maxVoices):
             "\n      </midi-instrument>"
             "\n    </score-part>"
             "\n  </part-list>"
-            "\n<!--=========================================================-->"
-            "\n<part id = \"P1\">")
+            "\n  <!--=========================================================-->"
+            "\n  <part id = \"P1\">")
 
     for measure in range(measures):
 
         for voice in range(maxVoices):
 
-            f.write("\n    <measure number=\"")
-            f.write(measure)
-            f.write("\">")
+            f.write("\n    <measure number=\""+str(measure)+"\">")
 
             # first measure, add things like <key>, <time>, etc
             if measure == 0:
                 f.write("\n      <attributes>"
                         "\n        <divisions>4</divisions>"  # 4 divisions per quarter note
-                        "\n        <key>"
-                        "\n          <fifths>0</fifths>"
-                        "\n          <mode>major</mode>"
-                        "\n        </key>"
-                        "\n        <time>"
-                        "\n          <beats>4</beats>"
-                        "\n          <beat-type>4</beat-type>"
-                        "\n        </time>"
+                        "\n        <key>")
+
+                # TODO: add other keys
+                sharpsflats = {
+                    'C1':0,
+                    'C0':-3
+                }
+                f.write("\n          <fifths>"+str(sharpsflats.get(str(str(key)+str(major))))+"</fifths>")
+
+                if major:
+                    majorN = "major"
+                else:
+                    majorN = "minor"
+                f.write("\n          <mode>"+majorN+"</mode>")
+                f.write("\n        </key>"
+                        "\n        <time>")
+
+                f.write("\n          <beats>"+str(timesig[0])+"</beats>")
+                f.write("\n          <beat-type>"+str(timesig[1])+"</beat-type>")
+
+                f.write("\n        </time>"
                         "\n        <staves>2</staves>"
                         "\n        <clef number=\"1\">"
                         "\n          <sign>G</sign>"
@@ -101,34 +73,87 @@ def createXML(key, major, finalMTX, measures, maxVoices):
                         "\n      <sound tempo=\"120\"/>")
 
                 # every measure
-                for note in finalMTX[measure][voice].notes:
-                    f.write("\n      <note>"
-                            "\n        <pitch>"
-                            "\n          <step>C</step>"
-                            "\n          <octave>4</octave>"
-                            "\n        </pitch>"
-                            "\n        <duration>")
+                for cell in finalMTX[measure][voice]:
+                    for note in cell.notes:
+                        f.write("\n      <note>"
+                                "\n        <pitch>"
+                                "\n          <step>C</step>"
+                                "\n          <octave>4</octave>"
+                                "\n        </pitch>")
 
-                    f.write(str(duration.get(note.duration)))
-                    f.write("</duration>")
+                        # converted note duration * 4 because divisions = 4
+                        duration = {
+                            '1': 16,
+                            '2.': 12,
+                            '2': 8,
+                            '4.': 6,
+                            '4': 4,
+                            '8.': 3,
+                            '8': 2,
+                            '16': 1
+                        }
+                        f.write("\n        <duration>"+str(duration.get(note.rhythm))+"</duration>")
 
-                    f.write("\n        <voice>"+str(voices.get(voice))+"</voice>")
-                    f.write("\n        <type>half</type>")
+                        # voice 4 bass, 3 alto, 2 soprano? doublecheck this
+                        # staff 1 for soprano and alto, staff 2 for bass
+                        if maxVoices == 3:
+                            voices = {
+                                0: 4,
+                                1: 3,
+                                2: 2
+                            }
+                            staves = {
+                                4: 1,
+                                3: 2,
+                                2: 2
+                            }
+                        elif maxVoices == 4:
+                            voices = {
+                                0: 4,
+                                1: 1,  # ?? check this...
+                                2: 3,
+                                3: 2
+                            }
+                            staves = {
+                                4: 1,
+                                1: 1,  # ?? check this...
+                                3: 2,
+                                2: 2
+                            }
+                        else:
+                            print("error in createXML: maxVoices isn\'t 3 or 4...")
+                        f.write("\n        <voice>"+str(voices.get(voice))+"</voice>")
 
-                    f.write("\n        <staff>"+str(staves.get(voice))+"</staff>")
-                    f.write("\n      </note>")
+                        noteName = {
+                            '1':'whole',
+                            '2.':'dotted-half',
+                            '2':'half',
+                            '4.':'dotted-quarter',
+                            '4':'quarter',
+                            '8.':'dotted-eighth',
+                            '8':'eighth',
+                            '16':'sixteenth'
+                        }
+                        f.write("\n        <type>"+noteName.get(note.rhythm)+"</type>")
+                        f.write("\n        <staff>"+str(staves.get(voice))+"</staff>")
+                        f.write("\n      </note>")
 
                 # backup to next voice in same measure:
-                if not the last voice:
+                if voice != maxVoices - 1:
                     f.write("\n      <backup>"
                             "\n        <duration>16</duration>"  # 16 = 4 beats*4 divisions
                             "\n      </backup>")
 
                 # end of measure
-                f.write("\n</measure>"
-                        "\n<!--=======================================================-->")
+                f.write("\n    </measure>")
+                if not (measure == measures - 1 and voice == maxVoices - 1):  # all measures and voices except the last
+                    f.write("\n    <!--=======================================================-->")
+
+        # last measure
+        if measure == measures - 1:
+            f.write("\n  </part>")
+            f.write("\n  <!--=========================================================-->")
+            f.write("\n</score-partwise>\n")
 
 
-
-
-
+    f.close()

@@ -281,9 +281,14 @@ def fugueWriter(subjectMTX = None, music = None):
 
     # create the pdf score
     print("Creating .pdf file(s) with LilyPond...")
-    filename = 'Fugue.ly'
+    filename = "Fugue.ly"
     #os.system(filename)  # commented out while fugueWriter is being written
     # time.sleep(3)
+
+    # create the xml file
+    print("Creating .xml file(s)...")
+    filename = "Fugue.xml"
+    cx.createXML(filename, music.key, music.major, music.timesig, finalMTX, measures, maxVoices)
 
 
 # debugging
