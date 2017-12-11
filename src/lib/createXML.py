@@ -69,6 +69,8 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
             start = 1
         elif instrument == "piano":
             start = 0
+        else:
+            print('error in createXML: no \'start\' value set')
 
         for voice in range(start, maxVoices):
 
@@ -122,8 +124,16 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
 
                         pitchName = note.pitch[0].upper()
                         f.write("\n          <step>" + pitchName + "</step>")
+                        if len(note.pitch) > 1:
+                            alterDict = {
+                                'f':-1,
+                                'ff':-2,
+                                's':1,
+                                'ss':2
+                            }
+                            f.write("\n          <alter>" + str(alterDict.get(note.pitch[1:])) + "</alter>")
 
-                        octave = (note.distance + 3) // 12 + 1
+                        octave = (note.distance + 10) // 12
                         f.write("\n          <octave>" + str(octave) + "</octave>")
 
                         f.write("\n        </pitch>")
@@ -270,8 +280,16 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
 
                         pitchName = note.pitch[0].upper()
                         f.write("\n          <step>" + pitchName + "</step>")
+                        if len(note.pitch) > 1:
+                            alterDict = {
+                                'f':-1,
+                                'ff':-2,
+                                's':1,
+                                'ss':2
+                            }
+                            f.write("\n          <alter>" + str(alterDict.get(note.pitch[1:])) + "</alter>")
 
-                        octave = (note.distance + 3) // 12 + 1
+                        octave = (note.distance + 10) // 12
                         f.write("\n          <octave>" + str(octave) + "</octave>")
 
                         f.write("\n        </pitch>")
