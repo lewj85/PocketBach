@@ -70,5 +70,5 @@ class Cell:
         self.nextChord = nextChord              # Chord class: the next chord so we know where to start the next Cell
         self.beats = beats                      # [int] array: contains the beats that this cell covers, ie. [1, 2], max size is 1 measure
         self.notes = notes                      # [Note] array: see Note definition above, contains data including pitch and rhythm
-        self.destination = destination          # string: the next pitch so we know where to start the next Cell
+        self.destination = destination          # int: 'distance' 0-87 of destination
         self.voice = voice                      # int: 0 = bass, voice numbers ascend, ie. soprano = 2 in 3-voice harmony

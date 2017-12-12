@@ -138,13 +138,19 @@ def fugueWriter(subjectMTX = None, music = None):
     print("*******************MEASURE 3 (soprano)**********************")
     finalMTX[2][2] = []
     for cell in finalMTX[0][1]:
-        notes, destinationSoprano = td.transposeDiatonically(cell, mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]))
+        # first find destination distance - destination of last cell in measure 2, alto
+        oldDestDistance = finalMTX[1][1][-1].destination
+        newDestDistance = # TODO: write a new function to convert old distance to new based on movement of tonal chord roots
+        notes, destinationSoprano = td.transposeDiatonically(cell, mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), newDestDistance)
         finalMTX[2][2].append(mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationSoprano, soprano))
     # 4th measure - get pitches that fit the new harmony
     print("*******************MEASURE 4 (soprano)**********************")
     finalMTX[3][2] = []
     for cell in finalMTX[1][1]:
-        notes, destinationSoprano = td.transposeDiatonically(cell, mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]))
+        # first find destination distance - destination of last cell in measure 2, alto
+        oldDestDistance = finalMTX[1][1][-1].destination
+        newDestDistance = # TODO: write a new function to convert old distance to new based on movement of tonal chord roots
+        notes, destinationSoprano = td.transposeDiatonically(cell, mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), newDestDistance)
         finalMTX[3][2].append(mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationSoprano, soprano))
 
 

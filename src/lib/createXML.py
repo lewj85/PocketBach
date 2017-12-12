@@ -363,12 +363,6 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                     else:
                         f.write("\n      </note>")
 
-            # backup to next voice in same measure:
-            if voice != maxVoices - 1:
-                f.write("\n      <backup>"
-                        "\n        <duration>16</duration>"  # 16 = 4 beats*4 divisions
-                        "\n      </backup>")
-
             # end of measure
             f.write("\n    </measure>")
             # last measure of each part vs end of any other measure
