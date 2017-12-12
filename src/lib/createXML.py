@@ -84,10 +84,10 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
 
                 # TODO: add other keys
                 sharpsflats = {
-                    'C1':0,
-                    'C0':-3
+                    'C1':'0',
+                    'C0':'-3'
                 }
-                f.write("\n          <fifths>"+str(sharpsflats.get(str(str(key)+str(major))))+"</fifths>")
+                f.write("\n          <fifths>" + sharpsflats.get(str(key)+str(int(major))) + "</fifths>")
 
                 if major:
                     majorN = "major"
@@ -116,11 +116,12 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
             # every measure
             for cell in finalMTX[measure][voice]:
                 for note in cell.notes:
+                    f.write("\n      <note>")
                     if note.pitch == 'r':
-                        f.write("\n      <rest>")
+                        f.write("\n        <rest/>")
                     else:
-                        f.write("\n      <note>"
-                                "\n        <pitch>")
+
+                        f.write("\n        <pitch>")
 
                         pitchName = note.pitch[0].upper()
                         f.write("\n          <step>" + pitchName + "</step>")
@@ -149,7 +150,10 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                         '8': 2,
                         '16': 1
                     }
-                    f.write("\n        <duration>"+str(duration.get(note.rhythm))+"</duration>")
+                    durKey = str(note.rhythm)
+                    if note.tied:
+                        durKey += '.'
+                    f.write("\n        <duration>"+str(duration.get(durKey))+"</duration>")
 
                     # voice 4 bass, 3 alto, 2 soprano? doublecheck this
                     # staff 1 for soprano and alto, staff 2 for bass
@@ -195,17 +199,14 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                         8:'eighth',
                         16:'16th'
                     }
-
-                    f.write("\n        <type>" + rhythmName.get(note.rhythm) + "</type>")
+                    if note.pitch != 'r':
+                        f.write("\n        <type>" + rhythmName.get(note.rhythm) + "</type>")
                     if note.tied:
                         f.write("\n        <dot/>")
 
                     f.write("\n        <staff>" + str(staves.get(voice)) + "</staff>")
 
-                    if note.pitch == 'r':
-                        f.write("\n      </rest>")
-                    else:
-                        f.write("\n      </note>")
+                    f.write("\n      </note>")
 
             # backup to next voice in same measure:
             if voice != maxVoices - 1:
@@ -243,7 +244,7 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                     'C1': 0,
                     'C0': -3
                 }
-                f.write("\n          <fifths>" + str(sharpsflats.get(str(str(key) + str(major)))) + "</fifths>")
+                f.write("\n          <fifths>" + sharpsflats.get(str(key) + str(int(major))) + "</fifths>")
 
                 if major:
                     majorN = "major"
@@ -272,11 +273,12 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
             # every measure
             for cell in finalMTX[measure][voice]:
                 for note in cell.notes:
+                    f.write("\n      <note>")
                     if note.pitch == 'r':
-                        f.write("\n      <rest>")
+                        f.write("\n        <rest/>")
                     else:
-                        f.write("\n      <note>"
-                                "\n        <pitch>")
+
+                        f.write("\n        <pitch>")
 
                         pitchName = note.pitch[0].upper()
                         f.write("\n          <step>" + pitchName + "</step>")
@@ -305,7 +307,10 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                         '8': 2,
                         '16': 1
                     }
-                    f.write("\n        <duration>" + str(duration.get(note.rhythm)) + "</duration>")
+                    durKey = str(note.rhythm)
+                    if note.tied:
+                        durKey += '.'
+                    f.write("\n        <duration>" + str(duration.get(durKey)) + "</duration>")
 
                     # voice 4 bass, 3 alto, 2 soprano? doublecheck this
                     # staff 1 for soprano and alto, staff 2 for bass
@@ -352,16 +357,14 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                         16: '16th'
                     }
 
-                    f.write("\n        <type>" + rhythmName.get(note.rhythm) + "</type>")
+                    if note.pitch != 'r':
+                        f.write("\n        <type>" + rhythmName.get(note.rhythm) + "</type>")
                     if note.tied:
                         f.write("\n        <dot/>")
 
                     f.write("\n        <staff>" + str(staves.get(voice)) + "</staff>")
 
-                    if note.pitch == 'r':
-                        f.write("\n      </rest>")
-                    else:
-                        f.write("\n      </note>")
+                    f.write("\n      </note>")
 
             # end of measure
             f.write("\n    </measure>")

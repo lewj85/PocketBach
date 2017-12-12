@@ -26,7 +26,6 @@ class Music:
 
 
 
-
 class Chord(Music):
 
     def __init__(self, root, tonality = 0, seventh = False, inversion = 0, secondary = False, secondaryRoot = 0, key = 'C', major = True, timesig = None):
@@ -36,7 +35,7 @@ class Chord(Music):
         self.seventh = seventh                  # boolean: False = triad, True = 7th
         self.inversion = inversion              # int: 0 = None, 1 = 1st, 2 = 2nd, 3 = 3rd
         self.secondary = secondary              # boolean: False = no, True = secondary
-        self.secondaryRoot = secondaryRoot      # int: 1-7, represents root of secondary (dominant) chord
+        self.secondaryRoot = secondaryRoot      # int: 1-7, represents Roman numeral number root of secondary (dominant) chord
 
     def getPitches(self):
         return dc.defineChord(None, self.root, self.seventh, self.tonality, self.inversion, self.key, self.major)

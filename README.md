@@ -30,7 +30,7 @@ $ aplay melody.wav
 
 **Fugue Writer** - *Incomplete*
 
-**MusicXML Converter** - *Incomplete*
+**MusicXML Converter** - Complete
 
 **LilyPond Converter** - Complete
 

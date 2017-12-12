@@ -6,7 +6,7 @@ from lib import pitchToTonal as ptt
 from lib import defineChord as dc
 from lib import distanceToPitch as dtp
 from lib import distanceToTonal as dtt
-from lib import transposeDiatonically as td
+from lib import transposeCellDiatonically as tcd
 import numpy as np
 import random
 #import os
@@ -138,21 +138,14 @@ def fugueWriter(subjectMTX = None, music = None):
     print("*******************MEASURE 3 (soprano)**********************")
     finalMTX[2][2] = []
     for cell in finalMTX[0][1]:
-        # first find destination distance - destination of last cell in measure 2, alto
-        oldDestDistance = finalMTX[1][1][-1].destination
-        newDestDistance = # TODO: write a new function to convert old distance to new based on movement of tonal chord roots
-        notes, destinationSoprano = td.transposeDiatonically(cell, mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), newDestDistance)
-        finalMTX[2][2].append(mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationSoprano, soprano))
+        # leaving direction and newDistance defaulted - letting it find the new distance
+        finalMTX[2][2].append(tcd.transposeCellDiatonically(cell, mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2])))
     # 4th measure - get pitches that fit the new harmony
     print("*******************MEASURE 4 (soprano)**********************")
     finalMTX[3][2] = []
     for cell in finalMTX[1][1]:
-        # first find destination distance - destination of last cell in measure 2, alto
-        oldDestDistance = finalMTX[1][1][-1].destination
-        newDestDistance = # TODO: write a new function to convert old distance to new based on movement of tonal chord roots
-        notes, destinationSoprano = td.transposeDiatonically(cell, mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), newDestDistance)
-        finalMTX[3][2].append(mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationSoprano, soprano))
-
+        # leaving direction and newDistance defaulted - letting it find the new distance
+        finalMTX[3][2].append(tcd.transposeCellDiatonically(cell, mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2])))
 
     #print('finalMTX is:')
     #print(finalMTX)

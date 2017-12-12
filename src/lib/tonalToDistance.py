@@ -1,11 +1,9 @@
 # TODO: think about how to fix this. perhaps take an extra param 0/1/-1 for normal/raised/lowered pitches
 #     consider scope before doing extra work. minor keys would definitely need this (V chords)
 
-# TODO: rename numToPitch and pitchToNum to "tonal" instead of "num" for consistency
-
 from lib import distanceToPitch as dtp
 
-def tonalToDistance(tonal, direction = 0, prevDist = None, voice = 0, key = 'C'):
+def tonalToDistance(tonal, direction = 0, prevDist = None, voice = 0, key = 'C', major = True):
 
     if prevDist is None:
         # middle C is 39
