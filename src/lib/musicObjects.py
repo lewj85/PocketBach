@@ -17,7 +17,7 @@ Cell = chord, beats, notes, rhythms
 
 class Music:
 
-    def __init__(self, key = 'C', major = True, timesig = None):
+    def __init__(self, key = 'c', major = True, timesig = None):
         self.key = key                          # int: represents number of sharps (positive) or flats (negative)
         self.major = major                      # boolean: True or False
         self.timesig = timesig                  # [int, int] array: index 0 = beats, index 1 = rhythmic base value
@@ -38,7 +38,7 @@ class Chord(Music):
         self.secondaryRoot = secondaryRoot      # int: 1-7, represents Roman numeral number root of secondary (dominant) chord
 
     def getPitches(self):
-        return dc.defineChord(None, self.root, self.seventh, self.tonality, self.inversion, self.key, self.major)
+        return dc.defineChord(self)[0]
 
 
 

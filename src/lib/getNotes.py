@@ -19,6 +19,7 @@ import random
 # useful for 2-beat cells as well as 4-beat cells
 # uses previousCell for episodes to match intervals/rhythms - if previousCell is None, it will create the first cell of the episode
 
+# currentChord and nextChord params are now mo.Chord objects
 def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinationDistance = None, voice = 0, episode = False, previousCell = None, key = 'C', major = True, timesig = None):
 
     if timesig is None:
@@ -226,7 +227,9 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
         if direction == -1:
             # if voice == blah, check bounds so distance doesn't go too far
             fixedDistance -= 12
-        newNotes.append(mo.Note(ttp.tonalToPitch(notes[i]), fixedDistance, int(rhythms[i][0]), tied, currentChord, 0, 0, 0, False, None, key, major, timesig))
+        newNotes.append(mo.Note(ttp.tonalToPitch(notes[i]), fixedDistance, int(rhythms[i][0]), tied, currentChord.root,
+                                currentChord.tonality, currentChord.seventh, currentChord.inversion, currentChord.secondary,
+                                currentChord.secondaryRoot, key, major, timesig))
 
     return newNotes, destinationDistance
 

@@ -24,52 +24,58 @@ on the subject of scope, consider if you really want to write music more than C 
 """
 
 
-def defineChord(dictKey = '', root = 1, seventh = 0, tonality = 0, inversion = 0, key = 'C', major = 1):
+def defineChord(ChordObject):
 
-    # if we don't have a dictKey passed to us, create one
-    if not dictKey:
-        # create the dictionary key by concatenating the params using Hooktheory's chord terminology
-        #   so we can complete searches in O(1) time
-        dictKey = ''
-        if tonality == 0:
-            dictKey += str(root)
-        elif tonality == -1:
-            dictKey += 'b'+str(root)
-        elif tonality == 1:
-            dictKey += '5'
-            secroot = root+3
-            if secroot > 7:  # check root is in range
-                secroot -= 7
-        elif tonality == 2:
+    key = ChordObject.key
+    major = ChordObject.major
+    root = ChordObject.root
+    seventh = ChordObject.seventh
+    tonality = ChordObject.tonality
+    inversion = ChordObject.inversion
+
+    # create the dictionary key by concatenating the params using Hooktheory's chord terminology
+    #   so we can complete searches in O(1) time
+    # TODO: fix tonality and secroot using ChordObject.secondaryRoot - consider scope of this project...
+    dictKey = ''
+    if tonality == 0:
+        dictKey += str(root)
+    elif tonality == -1:
+        dictKey += 'b'+str(root)
+    elif tonality == 1:
+        dictKey += '5'
+        secroot = root+3
+        if secroot > 7:  # check root is in range
+            secroot -= 7
+    elif tonality == 2:
+        dictKey += '7'
+        secroot = root+1
+        if secroot == 8:  # check root is in range
+            secroot = 1
+
+    if seventh == 0:
+        # if inversion == 0: don't do anything
+        if inversion == 1:
+            dictKey += '6'
+        elif inversion == 2:  # can't use 'else' because we skipped inversion == 0
+            dictKey += '64'
+    else:  # seventh == 1
+        if inversion == 0:
             dictKey += '7'
-            secroot = root+1
-            if secroot == 8:  # check root is in range
-                secroot = 1
+        elif inversion == 1:
+            dictKey += '65'
+        elif inversion == 2:
+            dictKey += '43'
+        else:  # inversion == 3
+            dictKey += '2'
 
-        if seventh == 0:
-            # if inversion == 0: don't do anything
-            if inversion == 1:
-                dictKey += '6'
-            elif inversion == 2:  # can't use 'else' because we skipped inversion == 0
-                dictKey += '64'
-        else:  # seventh == 1
-            if inversion == 0:
-                dictKey += '7'
-            elif inversion == 1:
-                dictKey += '65'
-            elif inversion == 2:
-                dictKey += '43'
-            else:  # inversion == 3
-                dictKey += '2'
-
-        if tonality > 0:
-            dictKey += '/'+str(secroot)
+    if tonality > 0:
+        dictKey += '/'+str(secroot)
 
 
     # TODO: fix the chordArr adjustments in getNextNote.py to account for inversions being added
 
-    if key == 'C':
-        if major == 1:
+    if key == 'c':
+        if major is True:
             # returns [notes in chord, inversion, 7th chord, secondary dominant]
             return {
                 # tonal chords
@@ -210,8 +216,8 @@ def defineChord(dictKey = '', root = 1, seventh = 0, tonality = 0, inversion = 0
                 # '743/7': [['e', 'gs', 'as', 'cs'],2,1,1],
                 # '72/7': [['gs', 'as', 'cs', 'e'],3,1,1]
             }.get(dictKey, 0)
-        elif major == 0:
+        elif major is False:
             pass
 
-    #print('should not see this...')
+    print('error in defineChord.py - dictionary did not return values')
     return 0

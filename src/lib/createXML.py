@@ -82,10 +82,29 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                         "\n        <divisions>4</divisions>"  # 4 divisions per quarter note
                         "\n        <key>")
 
-                # TODO: add other keys
                 sharpsflats = {
-                    'C1':'0',
-                    'C0':'-3'
+                    'c1': '0',
+                    'a0': '0',
+                    'g1': '1',
+                    'e0': '1',
+                    'd1': '2',
+                    'b0': '2',
+                    'a1': '3',
+                    'fs0': '3',
+                    'e1': '4',
+                    'cs0': '4',
+                    'b1': '5',
+                    'fs1': '6',
+                    'df1': '-5',
+                    'bf0': '-5',
+                    'af1': '-4',
+                    'ff0': '-4',
+                    'ef1': '-3',
+                    'c0': '-3',
+                    'bf1': '-2',
+                    'g0': '-2',
+                    'f1': '-1',
+                    'd0': '-1'
                 }
                 f.write("\n          <fifths>" + sharpsflats.get(str(key)+str(int(major))) + "</fifths>")
 
@@ -239,10 +258,29 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                         "\n        <divisions>4</divisions>"  # 4 divisions per quarter note
                         "\n        <key>")
 
-                # TODO: add other keys
                 sharpsflats = {
-                    'C1': 0,
-                    'C0': -3
+                    'c1': '0',
+                    'a0': '0',
+                    'g1': '1',
+                    'e0': '1',
+                    'd1': '2',
+                    'b0': '2',
+                    'a1': '3',
+                    'fs0': '3',
+                    'e1': '4',
+                    'cs0': '4',
+                    'b1': '5',
+                    'fs1': '6',
+                    'df1': '-5',
+                    'bf0': '-5',
+                    'af1': '-4',
+                    'ff0': '-4',
+                    'ef1': '-3',
+                    'c0': '-3',
+                    'bf1': '-2',
+                    'g0': '-2',
+                    'f1': '-1',
+                    'd0': '-1'
                 }
                 f.write("\n          <fifths>" + sharpsflats.get(str(key) + str(int(major))) + "</fifths>")
 
