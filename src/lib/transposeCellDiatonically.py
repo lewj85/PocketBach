@@ -1,16 +1,9 @@
 """transposeCellDiatonically() transposes a Cell object passed to it diatonically (not chromatically)"""
 
-#from lib import getRhythms as gr
-#from lib import defineChord as dc
-#from lib import getNotes as gn
 from lib import pitchToTonal as ptt
 from lib import tonalToPitch as ttp
 from lib import musicObjects as mo
-#from lib import distanceToTonal as dtt
-#from lib import pitchToDistance as ptd
 from lib import transposeDistance as td
-import random
-
 
 # params are mo.Cell, mo.Chord, mo.Chord
 # returns array of Note classes, destination pitch
