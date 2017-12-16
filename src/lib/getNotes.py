@@ -20,7 +20,7 @@ import random
 # uses previousCell for episodes to match intervals/rhythms - if previousCell is None, it will create the first cell of the episode
 
 # currentChord and nextChord params are now mo.Chord objects
-def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinationDistance = None, voice = 0, episode = False, previousCell = None, key = 'C', major = True, timesig = None):
+def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinationDistance = None, voice = 0, episode = False, previousCell = None, key = 'c', major = True, timesig = None):
 
     if timesig is None:
         timesig = [4,4]
@@ -29,7 +29,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
     if not startDistance:
 
         # pick a random index from options
-        options = dc.defineChord(None, currentChord)
+        options = dc.defineChord(currentChord)
         startPitch = random.choice(options[0])
         startTonal = ptt.pitchToTonal(startPitch)
         # pick a distance based on voice
@@ -49,7 +49,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
     if not destinationDistance:
 
         # pick a random destination
-        options = dc.defineChord(None, nextChord)
+        options = dc.defineChord(nextChord)
         destinationPitch = random.choice(options[0])
         destinationTonal = ptt.pitchToTonal(destinationPitch)
         # pick a distance based on voice

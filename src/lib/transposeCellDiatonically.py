@@ -14,14 +14,16 @@ def transposeCellDiatonically(oldCell, newChord, newNextChord, direction = 1, ne
     notes = []
 
     # set up
-    if newDestinationDistance is not None:
+    if newDestinationDistance is not None and newDestinationDistance != 88:
         if oldCell.destination < newDestinationDistance:
             direction = 1
         else:
             direction = -1
-    else:
+    # don't make this an else to the above if because we need to set a correct direction for transposeDistance
+    if newDestinationDistance is None:
         # set a new destination distance based on the old cell's destination
         newDestinationDistance = td.transposeDistance(oldCell.destination, oldCell.chord, newChord, direction)
+        print("newDestinationDistance", newDestinationDistance)
         #newDestinationTonal = dtt.distanceToTonal(newDestinationDistance)
 
     # first get distance between old chord and new chord
@@ -30,17 +32,18 @@ def transposeCellDiatonically(oldCell, newChord, newNextChord, direction = 1, ne
         distanceBetweenTonal += 7
     elif direction == -1 and distanceBetweenTonal > 0:
         distanceBetweenTonal -= 7
+    print(distanceBetweenTonal)
 
     for oldNote in oldCell.notes:
 
         # adjust pitch
         newVal = (ptt.pitchToTonal(oldNote.pitch) + distanceBetweenTonal - 1) % 7 + 1  # TODO: doublecheck the -1 and +1
         newPitch = ttp.tonalToPitch(newVal)
-        print('transposing:', oldNote.pitch, '--->', newPitch, newVal)
-
         # adjust distance
         # TODO: think diatonically, consider minor keys, etc - use pitchToDistance()
         newDistance = td.transposeDistance(oldNote.distance, oldCell.chord, newChord, direction)
+
+        print('transposing:', oldNote.pitch, ptt.pitchToTonal(oldNote.pitch), oldNote.distance, '--->', newPitch, newVal, newDistance)
 
         # add everything else
         notes.append(mo.Note(newPitch, newDistance, oldNote.rhythm, oldNote.tied, newChord.root,

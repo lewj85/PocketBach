@@ -32,6 +32,7 @@ def defineChord(ChordObject):
     seventh = ChordObject.seventh
     tonality = ChordObject.tonality
     inversion = ChordObject.inversion
+    secroot = ChordObject.secondaryRoot
 
     # create the dictionary key by concatenating the params using Hooktheory's chord terminology
     #   so we can complete searches in O(1) time
@@ -41,9 +42,9 @@ def defineChord(ChordObject):
         dictKey += str(root)
     elif tonality == -1:
         dictKey += 'b'+str(root)
-    elif tonality == 1:
+    elif secroot:
         dictKey += '5'
-        secroot = root+3
+        secroot = root+3  # TODO: fix this...
         if secroot > 7:  # check root is in range
             secroot -= 7
     elif tonality == 2:
@@ -71,6 +72,7 @@ def defineChord(ChordObject):
     if tonality > 0:
         dictKey += '/'+str(secroot)
 
+    print("dictKey", dictKey)
 
     # TODO: fix the chordArr adjustments in getNextNote.py to account for inversions being added
 

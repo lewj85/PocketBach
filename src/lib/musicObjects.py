@@ -28,7 +28,7 @@ class Music:
 
 class Chord(Music):
 
-    def __init__(self, root, tonality = 0, seventh = False, inversion = 0, secondary = False, secondaryRoot = 0, key = 'C', major = True, timesig = None):
+    def __init__(self, root, tonality = 0, seventh = False, inversion = 0, secondary = False, secondaryRoot = 0, key = 'c', major = True, timesig = None):
         Music.__init__(self, key, major, timesig)
         self.root = root                        # int: chord root, represents Roman numeral number (key/accidentals are irrelevant)
         self.tonality = tonality                # int: represents moving from tonal triad up/down (ie. minor v to V = 1, IV to minor iv = -1)
@@ -44,7 +44,7 @@ class Chord(Music):
 
 class Note(Chord):
 
-    def __init__(self, pitch, distance, rhythm, tied, root, tonality = 0, seventh = False, inversion = 0, secondary = False, secondaryRoot = 0, key = 'C', major = True, timesig = None):
+    def __init__(self, pitch, distance, rhythm, tied, root, tonality = 0, seventh = False, inversion = 0, secondary = False, secondaryRoot = 0, key = 'c', major = True, timesig = None):
         Chord.__init__(self, root, tonality, seventh, inversion, secondary, secondaryRoot, key, major, timesig)
         self.pitch = pitch                      # string: lowercase char plus "s" for sharp, "f" for flat, "ss", or "ff" - 'r' for rest
         self.distance = distance                # int: 0-88, distance from lowest pitch "A0" = 0, "C8" = 87, rest = 88

@@ -18,13 +18,13 @@ import random
 # fugueWriter() function takes arguments from the recorded melody
 def fugueWriter(subjectMTX = None, music = None):
 
-    # # debugging
-    # a = mo.Note('e', 43, 2, False, 1)
-    # b = mo.Note('g', 41, 2, False, 1)
-    # c = mo.Cell(mo.Chord(1), mo.Chord(5), [1, 2, 3, 4], [a, b], 39, 2)
-    # d = tcd.transposeCellDiatonically(c, mo.Chord(5), mo.Chord(2))
-    # for x in d.notes:
-    #     print(x.pitch, x.distance)
+    # debugging
+    a = mo.Note('e', 43, 2, False, 1)
+    b = mo.Note('g', 46, 2, False, 1)
+    c = mo.Cell(mo.Chord(1), mo.Chord(5), [1, 2, 3, 4], [a, b], 39, 2)
+    d = tcd.transposeCellDiatonically(c, mo.Chord(2), mo.Chord(6))
+    for x in d.notes:
+        print(x.pitch, x.distance, d.destination)
 
 
     if music is None:
