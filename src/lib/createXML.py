@@ -59,7 +59,7 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                 "\n    </score-part>"
                 "\n  </part-list>"
                 "\n  <!--=========================================================-->"
-                "\n  <part id = \"P1\">")
+                "\n  <part id=\"P1\">")
 
 
     for measure in range(measures):
@@ -72,12 +72,12 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
         else:
             print('error in createXML: no \'start\' value set')
 
+        f.write("\n    <measure number=\"" + str(measure + 1) + "\">")
+
         for voice in range(start, maxVoices):
 
-            f.write("\n    <measure number=\""+str(measure)+"\">")
-
             # first measure, add things like <key>, <time>, etc
-            if measure == 0:
+            if measure == 0 and voice == start:
                 f.write("\n      <attributes>"
                         "\n        <divisions>4</divisions>"  # 4 divisions per quarter note
                         "\n        <key>")
@@ -139,7 +139,6 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                     if note.pitch == 'r':
                         f.write("\n        <rest/>")
                     else:
-
                         f.write("\n        <pitch>")
 
                         pitchName = note.pitch[0].upper()
@@ -184,15 +183,15 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                         }
                         if instrument == "piano":
                             staves = {
-                                3: 1,
-                                2: 2,
-                                1: 2
+                                0: 2,
+                                1: 1,
+                                2: 1
                             }
                         elif instrument == "organ":
                             staves = {
-                                3: 1,  # gets its own staff
-                                2: 2,
-                                1: 1
+                                0: 1,  # gets its own staff
+                                1: 2,
+                                2: 1
                             }
                     elif maxVoices == 4:
                         voices = {
@@ -202,10 +201,10 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                             3: 1
                         }
                         staves = {
-                            4: 1,
-                            3: 1,
-                            2: 2,
-                            1: 2
+                            0: 1,
+                            1: 2,
+                            2: 1,
+                            3: 1
                         }
                     else:
                         print("error in createXML: maxVoices isn\'t 3 or 4...")
@@ -233,24 +232,24 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                         "\n        <duration>16</duration>"  # 16 = 4 beats*4 divisions
                         "\n      </backup>")
 
-            # end of measure
-            f.write("\n    </measure>")
             # last measure of each part vs end of any other measure
-            if measure == measures - 1 and voice == maxVoices - 1:
-                f.write("\n  </part>"
-                        "\n  <!--=========================================================-->")
-            else:
-                f.write("\n    <!--=======================================================-->")
+            if voice == maxVoices - 1:
+                f.write("\n    </measure>")
+                if measure == measures - 1:
+                    f.write("\n  </part>"
+                            "\n  <!--=========================================================-->")
+                else:
+                    f.write("\n    <!--=======================================================-->")
 
 
     # now do bass separately for organ
     if instrument == "organ":
 
+        f.write("\n  <part id=\"P2\">")
+
         for measure in range(measures):
-
             voice = 0
-
-            f.write("\n    <measure number=\"" + str(measure) + "\">")
+            f.write("\n    <measure number=\"" + str(measure + 1) + "\">")
 
             # first measure, add things like <key>, <time>, etc
             if measure == 0:
@@ -296,12 +295,12 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                 f.write("\n          <beat-type>" + str(timesig[1]) + "</beat-type>")
 
                 f.write("\n        </time>"
-                        "\n        <staves>2</staves>"
-                        "\n        <clef number=\"1\">"
-                        "\n          <sign>G</sign>"
-                        "\n          <line>2</line>"
-                        "\n        </clef>"
-                        "\n        <clef number=\"2\">"
+                        #"\n        <staves>2</staves>"
+                        #"\n        <clef> number=\"1\">"
+                        #"\n          <sign>G</sign>"
+                        #"\n          <line>2</line>"
+                        #"\n        </clef>"
+                        "\n        <clef>" # number=\"2\">"
                         "\n          <sign>F</sign>"
                         "\n          <line>4</line>"
                         "\n        </clef>"
@@ -358,18 +357,12 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                             1: 2,
                             2: 1
                         }
-                        if instrument == "piano":
-                            staves = {
-                                3: 1,
-                                2: 2,
-                                1: 2
-                            }
-                        elif instrument == "organ":
-                            staves = {
-                                3: 1,  # gets its own staff
-                                2: 2,
-                                1: 1
-                            }
+                        #if instrument == "organ":
+                        staves = {
+                            0: 1,  # gets its own staff
+                            1: 2,
+                            2: 1
+                        }
                     elif maxVoices == 4:
                         voices = {
                             0: 4,
@@ -378,10 +371,10 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                             3: 1
                         }
                         staves = {
-                            4: 1,
-                            3: 1,
-                            2: 2,
-                            1: 2
+                            0: 1,
+                            1: 2,
+                            2: 1,
+                            3: 1
                         }
                     else:
                         print("error in createXML: maxVoices isn\'t 3 or 4...")
@@ -406,8 +399,7 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
 
             # end of measure
             f.write("\n    </measure>")
-            # last measure of each part vs end of any other measure
-            if measure == measures - 1 and voice == maxVoices - 1:
+            if measure == measures - 1:
                 f.write("\n  </part>"
                         "\n  <!--=========================================================-->")
             else:
@@ -418,3 +410,29 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
     f.write("\n</score-partwise>\n")
 
     f.close()
+
+
+
+# debugging - move createXML to src directory for testing
+# from lib import musicObjects as mo
+# import numpy as np
+# a = mo.Note('c', 39, 2, False, 1)
+# b = mo.Note('e', 43, 2, False, 1)
+# c = mo.Note('g', 46, 2, False, 5)
+# d = mo.Note('d', 41, 2, False, 5)
+# r1 = mo.Note('r', 88, 1, False, 1)
+# r5 = mo.Note('r', 88, 1, False, 5)
+# e0 = mo.Cell(mo.Chord(1), mo.Chord(5), [1, 2, 3, 4], [a, b], 46, 0)
+# e1 = mo.Cell(mo.Chord(1), mo.Chord(5), [1, 2, 3, 4], [r1], 88, 1)
+# e2 = mo.Cell(mo.Chord(1), mo.Chord(5), [1, 2, 3, 4], [r1], 88, 2)
+# f0 = mo.Cell(mo.Chord(5), mo.Chord(1), [1, 2, 3, 4], [r5], 88, 0)
+# f1 = mo.Cell(mo.Chord(5), mo.Chord(1), [1, 2, 3, 4], [r5], 88, 1)
+# f2 = mo.Cell(mo.Chord(5), mo.Chord(1), [1, 2, 3, 4], [c, d], 39, 2)
+# testMTX = np.empty((2, 3), dtype=object)
+# testMTX[0][0] = [e0]
+# testMTX[0][1] = [e1]
+# testMTX[0][2] = [e2]
+# testMTX[1][0] = [f0]
+# testMTX[1][1] = [f1]
+# testMTX[1][2] = [f2]
+# createXML('Fugue.xml', 'c', True, [4,4], testMTX, 2, 3, "organ")
