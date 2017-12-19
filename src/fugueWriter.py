@@ -2,11 +2,12 @@ from lib import createLily as cl
 from lib import createXML as cx
 from lib import getNotes as gn
 from lib import musicObjects as mo
-from lib import pitchToTonal as ptt
-from lib import defineChord as dc
+#from lib import pitchToTonal as ptt
+#from lib import defineChord as dc
 from lib import distanceToPitch as dtp
-from lib import distanceToTonal as dtt
+#from lib import distanceToTonal as dtt
 from lib import transposeCellDiatonically as tcd
+#from lib import transposeDistance as td
 import numpy as np
 import random
 #import os
@@ -18,13 +19,16 @@ import random
 # fugueWriter() function takes arguments from the recorded melody
 def fugueWriter(subjectMTX = None, music = None):
 
-    # debugging
-    a = mo.Note('e', 43, 2, False, 1)
-    b = mo.Note('g', 46, 2, False, 1)
-    c = mo.Cell(mo.Chord(1), mo.Chord(5), [1, 2, 3, 4], [a, b], 39, 2)
-    d = tcd.transposeCellDiatonically(c, mo.Chord(2), mo.Chord(6))
-    for x in d.notes:
-        print(x.pitch, x.distance, d.destination)
+    # # debugging
+    # a = mo.Note('e', 43, 2, False, 1)
+    # b = mo.Note('g', 46, 2, False, 1)
+    # c = mo.Cell(mo.Chord(1), mo.Chord(5), [1, 2, 3, 4], [a, b], 39, 2)
+    # #d = tcd.transposeCellDiatonically(c, mo.Chord(2), mo.Chord(6))
+    # print(td.transposeDistance(a.distance, mo.Chord(1), mo.Chord(3), -1))
+    # print(td.transposeDistance(b.distance, mo.Chord(1), mo.Chord(3), 1))
+    # for x in d.notes:
+    #     print(x.pitch, x.distance, d.destination)
+    # print("end debugging")
 
 
     if music is None:
