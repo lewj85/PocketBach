@@ -1,7 +1,7 @@
 from lib import tonalToPitch as ttp
 from numpy import shape
 
-def matrixToLily(key, major, finalMTX, measures, maxVoices):
+def matrixToLily(music, finalMTX, measures, maxVoices):
     #   12 note data types: pitch, duration, direction, interval, chord root,
     #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
     finalString = ""
@@ -41,8 +41,8 @@ def matrixToLily(key, major, finalMTX, measures, maxVoices):
                         finalString += str(int(finalMTX[voice][j][1]))
                     finalString += " "
                 elif int(finalMTX[voice][j][0]) != 0:
-                    if key == 'C':
-                        if major == 1:
+                    if music.key == 'c':
+                        if music.major == 1:
                             # pitch
                             # NOTE: str.lower() no longer needed as they are now lowercase
                             # TO DO: add flats and sharps for secondary dominants

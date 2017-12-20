@@ -4,7 +4,7 @@
 from lib import distanceToPitch as dtp
 from lib import tonalToPitch as ttp
 
-def tonalToDistance(tonal, direction = 0, prevDist = None, voice = 0, key = 'C', major = True):
+def tonalToDistance(tonal, direction = 0, prevDist = None, voice = 0, key = 'c', major = True):
 
     # shouldn't happen
     if direction == 0:

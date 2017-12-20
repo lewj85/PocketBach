@@ -1,7 +1,8 @@
 from lib import matrixToLily as mtl
 from lib import speciesCP as scp
+#from lib import musicObjects as mo
 
-def createLily(key, major, finalMTX, measures, maxVoices, scoreType=1):
+def createLily(music, finalMTX, measures, maxVoices, scoreType = 1):
 
     # first convert the finalMTX if needed
     if scoreType == 1:
@@ -30,7 +31,7 @@ def createLily(key, major, finalMTX, measures, maxVoices, scoreType=1):
                     "\\language \"english\"\n\n" +
                     "\\parallelMusic #\'(voiceA voiceB voiceC)\n" +
                     "{\n%soprano\n\\relative c'' " +
-                    mtl.matrixToLily(key, major, finalMTX, measures, maxVoices) +
+                    mtl.matrixToLily(music, finalMTX, measures, maxVoices) +
                     "}\n"
                     "\\new StaffGroup <<\n"
                     "  \\new Staff << \\relative c\'\' \\voiceA \\\\ \\relative c\' \\voiceB >>\n"

@@ -1,3 +1,4 @@
+from lib import musicObjects as mo
 from lib import getNextChord as gnc
 from lib import tonalToPitch as ttp
 from lib import orchestrate as orch
@@ -10,11 +11,12 @@ import os
 
 
 # choraleWriter() function
-def choraleWriter():
+def choraleWriter(music = None):
 
     # initialize variables
-    key = 'C'
-    major = 1
+    if music is None:
+        music = mo.Music()
+
     chordArray = []
     chordsPerMeasure = 1
     beatsPerMeasure = 4
@@ -208,7 +210,7 @@ def choraleWriter():
     #print(chordArray)
     chordArray2 = []
     for c in range(len(chordArray)):
-        chordArray2.append(ttp.tonalToPitch(key, chordArray[c]))
+        chordArray2.append(ttp.tonalToPitch(chordArray[c], music.key))
     #print(chordArray2)
 
 
@@ -231,15 +233,15 @@ def choraleWriter():
     # MAGIC
     #####################################################################
 
-    # orchestrate the 3 voices
-    finalMTX = orch.orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices)
+    # orchestrate the voices
+    finalMTX = orch.orchestrate(music, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices)
     # print(noteMTX)
     #print(finalMTX)
     print(chordArray)
 
     # create .ly files for each species
-    cl.createLily(key, major, finalMTX, measures, maxVoices, 1)  # first species
-    #cl.createLily(key, major, finalMTX, measures, maxVoices, 2)  # second species
+    cl.createLily(music, finalMTX, measures, maxVoices, 1)  # first species
+    #cl.createLily(music, finalMTX, measures, maxVoices, 2)  # second species
     # TO DO: add other species
     # not using regex so don't need this anymore, keeping for legacy
     #copyfile('newScore.ly','newScore2.ly')

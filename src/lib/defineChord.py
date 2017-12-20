@@ -8,9 +8,7 @@ tonality = 0 is tonal root and chord
 tonality = -1 is lowered root, such as bIII, bVI, and bVII in a minor key
 tonality = 1 is a secondary dominant V, such as V/vi
 tonality = 2 is a secondary dominant viio, such as viio/V
-"""
 
-"""
 NOTE: currently only supports V/x chords and viio/x, no other secondary dominants
         but these are temporarily removed because choraleWriter manually inserts certain chords,
         so there's no guarantee that the secondary dominants will be followed by their expected resolution
@@ -23,8 +21,8 @@ TO DO: decide if you want to break tonality into multiple columns (rootAdjust,
 on the subject of scope, consider if you really want to write music more than C major/minor
 """
 
-
-def defineChord(ChordObject):
+# NOTE: weightedProbability must use a dictKey
+def defineChord(ChordObject, dictKey = None):
 
     key = ChordObject.key
     major = ChordObject.major
@@ -34,45 +32,46 @@ def defineChord(ChordObject):
     inversion = ChordObject.inversion
     secroot = ChordObject.secondaryRoot
 
-    # create the dictionary key by concatenating the params using Hooktheory's chord terminology
-    #   so we can complete searches in O(1) time
-    # TODO: fix tonality and secroot using ChordObject.secondaryRoot - consider scope of this project...
-    dictKey = ''
-    if tonality == 0:
-        dictKey += str(root)
-    elif tonality == -1:
-        dictKey += 'b'+str(root)
-    elif secroot:
-        dictKey += '5'
-        secroot = root+3  # TODO: fix this...
-        if secroot > 7:  # check root is in range
-            secroot -= 7
-    elif tonality == 2:
-        dictKey += '7'
-        secroot = root+1
-        if secroot == 8:  # check root is in range
-            secroot = 1
-
-    if seventh == 0:
-        # if inversion == 0: don't do anything
-        if inversion == 1:
-            dictKey += '6'
-        elif inversion == 2:  # can't use 'else' because we skipped inversion == 0
-            dictKey += '64'
-    else:  # seventh == 1
-        if inversion == 0:
+    if dictKey is None:
+        # create the dictionary key by concatenating the params using Hooktheory's chord terminology
+        #   so we can complete searches in O(1) time
+        # TODO: fix tonality and secroot using ChordObject.secondaryRoot - consider scope of this project...
+        dictKey = ''
+        if tonality == 0:
+            dictKey += str(root)
+        elif tonality == -1:
+            dictKey += 'b'+str(root)
+        elif secroot:
+            dictKey += '5'
+            secroot = root+3  # TODO: fix this...
+            if secroot > 7:  # check root is in range
+                secroot -= 7
+        elif tonality == 2:
             dictKey += '7'
-        elif inversion == 1:
-            dictKey += '65'
-        elif inversion == 2:
-            dictKey += '43'
-        else:  # inversion == 3
-            dictKey += '2'
+            secroot = root+1
+            if secroot == 8:  # check root is in range
+                secroot = 1
 
-    if tonality > 0:
-        dictKey += '/'+str(secroot)
+        if seventh == 0:
+            # if inversion == 0: don't do anything
+            if inversion == 1:
+                dictKey += '6'
+            elif inversion == 2:  # can't use 'else' because we skipped inversion == 0
+                dictKey += '64'
+        else:  # seventh == 1
+            if inversion == 0:
+                dictKey += '7'
+            elif inversion == 1:
+                dictKey += '65'
+            elif inversion == 2:
+                dictKey += '43'
+            else:  # inversion == 3
+                dictKey += '2'
 
-    print("dictKey", dictKey)
+        if tonality > 0:
+            dictKey += '/'+str(secroot)
+
+        print("dictKey", dictKey)
 
     # TODO: fix the chordArr adjustments in getNextNote.py to account for inversions being added
 

@@ -1,15 +1,15 @@
 import defineChord as dc
-import pitchToNum as ptn
-import random
+#import pitchToTonal as ptt
+#import random
 
 
 # calls itself recursively for composing Cells if it can't move linearly
 # if it can't move linearly to smaller Cell destinations, it
-def getNotes(noteArray, rhythms, destination, chord, numOfNotes, measure):
+def getNotesChorale(noteArray, rhythms, destination, chord, numOfNotes, measure):
 
     # get chord tones for strong beats, label as localDestinations
-    localDestinations,a,b,c = dc.defineChord('C', 1, chord)
-    print('localDestinations are ' + str(localDestinations))
+    #localDestinations,a,b,c = dc.defineChord(chord)
+    #print('localDestinations are ' + str(localDestinations))
 
     # store notes needed to destination
     distToDestUp = 0

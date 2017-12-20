@@ -1,6 +1,6 @@
 from lib import defineChord as dc
 from lib import pitchToTonal as ptt
-from lib import getRhythms as gr
+from lib import getRhythmsFugue as grf
 from lib import musicObjects as mo
 from lib import tonalToPitch as ttp
 from lib import distanceToPitch as dtp
@@ -9,7 +9,7 @@ from lib import pitchToDistance as ptd
 import random
 
 #######################################################################
-# getNotes()
+# getNotesFugue()
 #######################################################################
 # returns notes, destinationDistance (of types: [Note class array], int)
 # NOTE: destinationDistance is the distance from 0-87, not destinationTonal from 0-7
@@ -20,7 +20,7 @@ import random
 # uses previousCell for episodes to match intervals/rhythms - if previousCell is None, it will create the first cell of the episode
 
 # currentChord and nextChord params are now mo.Chord objects
-def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinationDistance = None, voice = 0, episode = False, previousCell = None, key = 'c', major = True, timesig = None):
+def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, destinationDistance = None, voice = 0, episode = False, previousCell = None, key = 'c', major = True, timesig = None):
 
     if timesig is None:
         timesig = [4,4]
@@ -104,7 +104,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
             # TODO: update and reuse randRhythm() from old getRhythm.py rather than rely on while loop... wasted cycles
             lenR = -1
             while lenR != distance:
-                rhythms = gr.getRhythms(beatsArr, timesig)
+                rhythms = grf.getRhythmsFugue(beatsArr, timesig)
                 lenR = len(rhythms)
 
             #print('distance:', distance, '\tlenR:', lenR)
@@ -174,8 +174,8 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
 
         else:
 
-            # call getRhythms to generate rhythms - this is now our number of notes needed
-            rhythms = gr.getRhythms(beatsArr, timesig)
+            # call getRhythmsFugue to generate rhythms - this is now our number of notes needed
+            rhythms = grf.getRhythmsFugue(beatsArr, timesig)
             lenR = len(rhythms)
 
             # TODO: change this. don't just repeat.
@@ -200,7 +200,7 @@ def getNotes(currentChord, nextChord, beatsArr, startDistance = None, destinatio
 
         # if previousCell is None, it's the first cell of the episode
         if not previousCell:
-            rhythms = gr.getRhythms(beatsArr, timesig)
+            rhythms = grf.getRhythmsFugue(beatsArr, timesig)
 
         # otherwise try to match intervals/rhythms from previousCell
         else:

@@ -1,4 +1,4 @@
-# orchestrate() fleshes out all voices for a given chord matrix
+"""orchestrate() fleshes out all voices for a given chord matrix"""
 
 from lib import makeMatrix as mm
 from lib import getNextNote as gnn
@@ -7,7 +7,7 @@ from lib import tonalToPitch as ttp
 import numpy as np
 import random
 
-def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices):
+def orchestrate(music, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices):
     # 3 dimensional matrix finalMTX contains the fully orchestrated chorale
     # x = time (16 chords)
     # y = note (12 note and chord data)
@@ -16,7 +16,7 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
     # z = voice (3 voices)
     #   0 = bass, 1 = alto/tenor, 2 = soprano
 
-    # OLD CRAP I TRIED - keeping for legacy
+    # old things i tried - keeping for legacy
     #finalMTX = [[['r', 'r', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 16] * 3  # THIS DOESN'T WORK, USE NUMPY
     #finalMTX.fill(0)                # fill it with 0s, this will make everything an int though...
     #finalMTX.shape = (16, 12, 3)    # define dimensions
@@ -74,7 +74,7 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
                         # any 'bad' measures
 
         # bass
-        finalMTX[0][i][0] = str(gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 0, maxVoices))
+        finalMTX[0][i][0] = str(gnn.getNextNote(music, noteMTX, finalMTX, i, measures, 0, maxVoices))
 
         # manually set last measure's bass to 1, apparently this wasn't a thing already...
         if i == measures - 1:
@@ -121,10 +121,10 @@ def orchestrate(key, major, noteMTX, chordsPerMeasure, beatsPerMeasure, measures
             finalMTX[0][13][7] = 2
 
         # soprano
-        finalMTX[2][i][0] = str(gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 2, maxVoices))  # soprano
+        finalMTX[2][i][0] = str(gnn.getNextNote(music, noteMTX, finalMTX, i, measures, 2, maxVoices))  # soprano
 
         # alto/tenor:
-        finalMTX[1][i][0] = str(gnn.getNextNote(key, major, noteMTX, finalMTX, i, measures, 1, maxVoices))  # alto/tenor
+        finalMTX[1][i][0] = str(gnn.getNextNote(music, noteMTX, finalMTX, i, measures, 1, maxVoices))  # alto/tenor
 
         # check for tritones, parallel 5ths, and parallel octaves. if any are found, rewrite the whole measure
         if (int(finalMTX[0][i][0]) == 4 and int(finalMTX[0][i - 1][0]) == 7) or \

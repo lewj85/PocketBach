@@ -2,7 +2,7 @@
 
 import random
 
-def getRhythm(finalMTX, measure, measures, timeSig, voice=0, maxVoices=3, choraleOrFugue=0, subject=[]):
+def getRhythmsChorale(finalMTX, measure, measures, timeSig, voice=0, maxVoices=3, choraleOrFugue=0, subject=[]):
     rhythmArr = []
     newArr = []
     if measure == measures:  # if on the last measure, return a whole note

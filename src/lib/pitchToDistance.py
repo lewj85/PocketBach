@@ -1,29 +1,29 @@
-def pitchToDistance(pitch, voice = 0, key = 'C'):
+def pitchToDistance(pitch, voice = 0, key = 'c'):
 
-    # middle C is 39
+    if key == 'c':
+        # middle C is 39
+        # C3 bass
+        if voice == 0:
+            distance = 24
+        elif voice == 1:
+            distance = 36
+        elif voice == 2:
+            distance = 48
 
-    # C3 bass
-    if voice == 0:
-        distance = 24
-    elif voice == 1:
-        distance = 36
-    elif voice == 2:
-        distance = 48
-
-    pitchVal = {
-        'a': 0,
-        'bf': 1,
-        'b': 2,
-        'c': 3,
-        'cs': 4,
-        'd': 5,
-        'ef': 6,
-        'e': 7,
-        'f': 8,
-        'fs': 9,
-        'g': 10,
-        'gs': 11
-    }.get(pitch, -1)
+        pitchVal = {
+            'a': 0,
+            'bf': 1,
+            'b': 2,
+            'c': 3,
+            'cs': 4,
+            'd': 5,
+            'ef': 6,
+            'e': 7,
+            'f': 8,
+            'fs': 9,
+            'g': 10,
+            'gs': 11
+        }.get(pitch, -1)
 
     # # C5 soprano
     # elif voice == 2:
@@ -61,8 +61,8 @@ def pitchToDistance(pitch, voice = 0, key = 'C'):
     #         'af': 3
     #     }.get(pitch, -1)
 
-    # if pitchVal > 6:
-    #     distance -= 12
+    # wrap around
+    if pitchVal > 6:
+        distance -= 12
 
-    if key == 'C':
-        return distance + pitchVal
+    return distance + pitchVal

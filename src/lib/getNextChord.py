@@ -4,6 +4,7 @@
 
 from lib import weightedProbability as wp
 from lib import defineChord as dc
+from lib import musicObjects as mo
 import random
 
 def getNextChord(chordsRemaining, destination, chordArray):
@@ -32,7 +33,7 @@ def getNextChord(chordsRemaining, destination, chordArray):
         # if we found a chord
         if newChord:
             # make sure it's a chord we allow!!!
-            found = dc.defineChord('C', 1, 1, 0, 0, 0, newChord)
+            found = dc.defineChord(mo.Chord(1), newChord)  # mo.Chord(1) is needed merely as a placeholder now
             #print('found is '+str(found))
 
         # if we allow it, return it along with the inversion, which is in found[1]
