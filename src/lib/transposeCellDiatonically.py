@@ -43,7 +43,7 @@ def transposeCellDiatonically(oldCell, newChord, newNextChord, direction = 1, ne
         # TODO: think diatonically, consider minor keys, etc - use pitchToDistance()
         newDistance = td.transposeDistance(oldNote.distance, oldCell.chord, newChord, direction)
 
-        print('transposing:', oldNote.pitch, ptt.pitchToTonal(oldNote.pitch), oldNote.distance, '--->', newPitch, newVal, newDistance)
+        #print('transposing:', oldNote.pitch, ptt.pitchToTonal(oldNote.pitch), oldNote.distance, '--->', newPitch, newVal, newDistance)
 
         # add everything else
         notes.append(mo.Note(newPitch, newDistance, oldNote.rhythm, oldNote.tied, newChord.root,

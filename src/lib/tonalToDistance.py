@@ -57,8 +57,8 @@ def tonalToDistance(tonal, direction = 0, prevDist = None, voice = 0, key = 'c',
         #print('ttp.tonalToPitch(tonal)', ttp.tonalToPitch(tonal))
         #print('prevDist', prevDist)
         #print('dtp.distanceToPitch(prevDist)', dtp.distanceToPitch(prevDist))
-        if ttp.tonalToPitch(tonal) == dtp.distanceToPitch(prevDist):
-            print('dropping an octave')
-            prevDist -=12
+        #if ttp.tonalToPitch(tonal) == dtp.distanceToPitch(prevDist):
+            #print('dropping an octave')
+            #prevDist -=12
 
     return prevDist + pitchVals[tonal]

@@ -224,6 +224,8 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
 
                     f.write("\n        <staff>" + str(staves.get(voice)) + "</staff>")
 
+                    #f.write("\n        <beam number=\"1\">start</beam>" # start, continue, end based on beat
+
                     f.write("\n      </note>")
 
             # backup to next voice in same measure:
@@ -394,6 +396,8 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                         f.write("\n        <dot/>")
 
                     f.write("\n        <staff>" + str(staves.get(voice)) + "</staff>")
+
+                    #f.write("\n        <beam number=\"1\">start</beam>" # start, continue, end based on beat
 
                     f.write("\n      </note>")
 

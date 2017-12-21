@@ -62,7 +62,7 @@ def pitchToDistance(pitch, voice = 0, key = 'c'):
     #     }.get(pitch, -1)
 
     # wrap around
-    if pitchVal > 6:
-        distance -= 12
+    #if pitchVal > 6:
+        #distance -= 12
 
     return distance + pitchVal

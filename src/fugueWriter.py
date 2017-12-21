@@ -35,7 +35,7 @@ def fugueWriter(subjectMTX = None, music = None):
         music = mo.Music()
 
     # initialize variables
-    measures = 32
+    measures = 9 # TODO: update to number of measures that have been finished - 32 total
     beats1234 = [1, 2, 3, 4]
     beats12 = [1, 2]
     beats34 = [3, 4]
@@ -212,12 +212,14 @@ def fugueWriter(subjectMTX = None, music = None):
 
     # Bass - Subject
     print("*******************MEASURE 6 (bass)**********************")
+    finalMTX[5][0] = []
     for cell in finalMTX[0][1]:
         # drop alto an octave for bass
         nextCell = tcd.transposeCellDiatonically(cell, cell.chord, cell.nextChord, -1)
         nextCell.voice = bass
         finalMTX[5][0].append(nextCell)
     print("*******************MEASURE 7 (bass)**********************")
+    finalMTX[6][0] = []
     for cell in finalMTX[1][1]:
         # drop alto an octave for bass
         nextCell = tcd.transposeCellDiatonically(cell, cell.chord, cell.nextChord, -1)
@@ -236,21 +238,23 @@ def fugueWriter(subjectMTX = None, music = None):
         notes, destinationAlto = gnf.getNotesFugue(finalMTX[1][1][cell].chord, finalMTX[1][1][cell].nextChord, beats1234, destinationAlto, None, alto)
         # print('notes:', notes)
         print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
-        finalMTX[5][1] = [mo.Cell(finalMTX[1][1][cell].chord, finalMTX[1][1][cell].nextChord, beats1234, notes, destinationAlto, alto)]
+        finalMTX[6][1] = [mo.Cell(finalMTX[1][1][cell].chord, finalMTX[1][1][cell].nextChord, beats1234, notes, destinationAlto, alto)]
 
     # Soprano - Counter-Subject 1
     print("*******************MEASURE 6 (soprano)**********************")
+    finalMTX[5][2] = []
     for cell in range(len(finalMTX[2][1])):
         # raise alto for soprano
         nextCell = tcd.transposeCellDiatonically(finalMTX[2][1][cell], finalMTX[0][1][cell].chord, finalMTX[0][1][cell].nextChord, 1)
         nextCell.voice = soprano
-        finalMTX[5][0].append(nextCell)
+        finalMTX[5][2].append(nextCell)
     print("*******************MEASURE 7 (soprano)**********************")
+    finalMTX[6][2] = []
     for cell in range(len(finalMTX[3][1])):
         # raise alto for soprano
         nextCell = tcd.transposeCellDiatonically(finalMTX[3][1][cell], finalMTX[1][1][cell].chord, finalMTX[1][1][cell].nextChord, 1)
         nextCell.voice = soprano
-        finalMTX[6][0].append(nextCell)
+        finalMTX[6][2].append(nextCell)
 
 
     #####################################################################
@@ -262,12 +266,14 @@ def fugueWriter(subjectMTX = None, music = None):
 
     # Bass - Counter-Subject 1
     print("*******************MEASURE 8 (bass)**********************")
+    finalMTX[7][0] = []
     for cell in finalMTX[0][1]:
         # drop alto an octave for bass
         nextCell = tcd.transposeCellDiatonically(cell, cell.chord, cell.nextChord, -1)
         nextCell.voice = bass
         finalMTX[7][0].append(nextCell)
     print("*******************MEASURE 9 (bass)**********************")
+    finalMTX[8][0] = []
     for cell in finalMTX[1][1]:
         # drop alto an octave for bass
         nextCell = tcd.transposeCellDiatonically(cell, cell.chord, cell.nextChord, -1)
@@ -290,17 +296,19 @@ def fugueWriter(subjectMTX = None, music = None):
 
     # Soprano - Counter-Subject 2
     print("*******************MEASURE 8 (soprano)**********************")
+    finalMTX[7][2] = []
     for cell in range(len(finalMTX[2][1])):
         # raise alto for soprano
         nextCell = tcd.transposeCellDiatonically(finalMTX[2][1][cell], finalMTX[0][1][cell].chord, finalMTX[0][1][cell].nextChord, 1)
         nextCell.voice = soprano
-        finalMTX[7][0].append(nextCell)
+        finalMTX[7][2].append(nextCell)
     print("*******************MEASURE 9 (soprano)**********************")
+    finalMTX[8][2] = []
     for cell in range(len(finalMTX[3][1])):
         # raise alto for soprano
         nextCell = tcd.transposeCellDiatonically(finalMTX[3][1][cell], finalMTX[1][1][cell].chord, finalMTX[1][1][cell].nextChord, 1)
         nextCell.voice = soprano
-        finalMTX[8][0].append(nextCell)
+        finalMTX[8][2].append(nextCell)
 
     #####################################################################
     # CREATE MEASURES 10-12
