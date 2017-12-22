@@ -2,12 +2,9 @@ from lib import createLily as cl
 from lib import createXML as cx
 from lib import getNotesFugue as gnf
 from lib import musicObjects as mo
-#from lib import pitchToTonal as ptt
-#from lib import defineChord as dc
+from lib import pitchToDistance as ptd
 from lib import distanceToPitch as dtp
-#from lib import distanceToTonal as dtt
 from lib import transposeCellDiatonically as tcd
-#from lib import transposeDistance as td
 import numpy as np
 import random
 #import os
@@ -79,7 +76,7 @@ def fugueWriter(subjectMTX = None, music = None):
 
         # 1st measure
         print("*******************MEASURE 1 (alto)**********************")
-        notes, destinationAlto = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, None, None, alto)
+        notes, destinationAlto = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, ptd.pitchToDistance(music.key), None, alto) # NOTE: starting with root of key
         #print('notes:', notes)
         print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
         subjectMTX[0][0] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationAlto, alto)]
@@ -164,16 +161,6 @@ def fugueWriter(subjectMTX = None, music = None):
         nextCell.voice = soprano
         finalMTX[3][2].append(nextCell)
 
-    # # debugging
-    # for measure in range(measures):
-    #     for voice in range(maxVoices):
-    #         if finalMTX[measure][voice]:
-    #             #print(finalMTX[voice][measure])
-    #             for cell in finalMTX[measure][voice]:
-    #                 #print(cell)
-    #                 if cell:
-    #                     print(measure, voice, cell.notes)
-
 
     #####################################################################
     # CREATE MEASURE 5
@@ -227,7 +214,7 @@ def fugueWriter(subjectMTX = None, music = None):
         finalMTX[6][0].append(nextCell)
 
     # Alto - Counter-Subject 2
-    print("*******************MEASURE 6 (soprano)**********************")
+    print("*******************MEASURE 6 (alto)**********************")
     for cell in range(len(finalMTX[2][1])):
         notes, destinationAlto = gnf.getNotesFugue(finalMTX[0][1][cell].chord, finalMTX[0][1][cell].nextChord, beats1234, destinationAlto, None, alto)
         # print('notes:', notes)
@@ -281,7 +268,7 @@ def fugueWriter(subjectMTX = None, music = None):
         finalMTX[8][0].append(nextCell)
 
     # Alto - Answer
-    print("*******************MEASURE 8 (soprano)**********************")
+    print("*******************MEASURE 8 (alto)**********************")
     for cell in range(len(finalMTX[2][1])):
         notes, destinationAlto = gnf.getNotesFugue(finalMTX[0][1][cell].chord, finalMTX[0][1][cell].nextChord, beats1234, destinationAlto, None, alto)
         # print('notes:', notes)

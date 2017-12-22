@@ -6,6 +6,7 @@ from lib import tonalToPitch as ttp
 from lib import distanceToPitch as dtp
 from lib import distanceToTonal as dtt
 from lib import pitchToDistance as ptd
+from lib import getMicroDestination as gmd
 import random
 
 #######################################################################
@@ -70,16 +71,16 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
     # calculate distance and direction
     if startDistance == destinationDistance:
         direction = 0
-        distance = 0
+        distanceBetweenTonal = 0
     elif startDistance < destinationDistance:
         direction = 1
-        distance = (destinationTonal - startTonal) % 7
+        distanceBetweenTonal = max(destinationTonal, startTonal) - min(destinationTonal, startTonal)
     else:
         direction = -1
-        distance = (startTonal - destinationTonal) % 7
+        distanceBetweenTonal = max(destinationTonal, startTonal) - min(destinationTonal, startTonal)
 
 
-    print('start: ' + str(startTonal) + '\tdestination: ' + str(destinationTonal) + '\tdistance: ' + str(distance) + '\tdirection: ' + str(direction))
+    print('start: ' + str(startTonal) + '\tdestination: ' + str(destinationTonal) + '\tdistanceBetweenTonal: ' + str(distanceBetweenTonal) + '\tdirection: ' + str(direction))
 
 
     #######################################################################
@@ -98,12 +99,12 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
         # TODO: find good percentage. starting high for debugging
         # 80% chance to move linearly - technically less if distance is out of range
         # NOTE: tested these values with testGetRhythms.py
-        if num1 < 0.8 and ( (len(beatsArr) == 4 and distance > 2 and distance < 9) or (len(beatsArr) == 2 and distance > 0 and distance < 8) ):
+        if num1 < 0.8 and ( (len(beatsArr) == 4 and distanceBetweenTonal > 2 and distanceBetweenTonal < 9) or (len(beatsArr) == 2 and distanceBetweenTonal > 0 and distanceBetweenTonal < 8) ):
 
             # create rhythms with a length equal to distance
-            # TODO: update and reuse randRhythm() from old getRhythm.py rather than rely on while loop... wasted cycles
+            # TODO: update and reuse randRhythm() from old getRhythmsChorale.py rather than rely on while loop... wasted cycles
             lenR = -1
-            while lenR != distance:
+            while lenR != distanceBetweenTonal:
                 rhythms = grf.getRhythmsFugue(beatsArr, timesig)
                 lenR = len(rhythms)
 
@@ -111,14 +112,14 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
 
             # TODO: only give linear motion an X% chance. (100-X)% chance to move differently
             # if dist up or dist down is same as number of rhythms, and that distance is < 5
-            if lenR == distance and direction == 1:
+            if lenR == distanceBetweenTonal and direction == 1:
                 nextNote = int(startTonal)
                 for note in rhythms:
                     if nextNote == 8:
                         nextNote = 1
                     notes.append(nextNote)
                     nextNote += 1
-            elif lenR == distance and direction == -1:
+            elif lenR == distanceBetweenTonal and direction == -1:
                 # same as above in other direction
                 nextNote = int(startTonal)
                 for note in rhythms:
@@ -134,7 +135,14 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
         # COMMON PATTERNS
         #####################################################
 
-        # elif num1 < 0.8
+        elif num1 < 0.05:
+            # TODO: remove random
+            # random for testing
+            print('random notes')
+            rhythms = grf.getRhythmsFugue(beatsArr, timesig)
+            for note in rhythms:
+                notes.append(random.randint(1,7))
+
 
             # # repeated pitch patterns
             # elif abs(distance) == 0:
@@ -189,6 +197,8 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
             #             # find a new micro-dest with a distance between startDistance and destinationDistance
             #             # move linearly if possible
             #             # else move be step
+            #             microDestinationTonal = gmd.getMicroDestination(currentChord, startDistance, direction)
+            #         else:
             #             pass
 
     #######################################################################
