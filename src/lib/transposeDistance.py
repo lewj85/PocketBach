@@ -12,7 +12,7 @@ def transposeDistance(oldDistance, oldChord, newChord, direction = 1):
         return oldDistance
     elif direction == 1 and tonalDistanceBetween < 0:
         tonalDistanceBetween += 7
-    elif direction == -1 and tonalDistanceBetween > 0: # using > -1 because we may want to transpose down an octave
+    elif direction == -1 and tonalDistanceBetween > 0: # > -1 because we may want to transpose down an octave?
         tonalDistanceBetween -= 7
 
     #print('oldDistance', oldDistance)

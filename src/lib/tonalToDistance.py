@@ -6,9 +6,8 @@ from lib import tonalToPitch as ttp
 
 def tonalToDistance(tonal, direction = 0, prevDist = None, voice = 0, key = 'c', major = True):
 
-    # shouldn't happen
+    # when there are repeated notes
     if direction == 0:
-        print('error: direction is 0 in tonalToDistance')
         return prevDist
 
     # in case we're at the start of the piece or coming from a rest

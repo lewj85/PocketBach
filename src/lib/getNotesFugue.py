@@ -1,11 +1,12 @@
 from lib import defineChord as dc
-from lib import pitchToTonal as ptt
 from lib import getRhythmsFugue as grf
 from lib import musicObjects as mo
+from lib import tonalToDistance as ttd
 from lib import tonalToPitch as ttp
 from lib import distanceToPitch as dtp
 from lib import distanceToTonal as dtt
 from lib import pitchToDistance as ptd
+from lib import pitchToTonal as ptt
 from lib import getMicroDestination as gmd
 import random
 
@@ -35,7 +36,7 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
         startTonal = ptt.pitchToTonal(startPitch)
         # pick a distance based on voice
         startDistance = ptd.pitchToDistance(startPitch, voice)
-        print('start:', startTonal, startPitch, startDistance)
+        #print('start:', startTonal, startPitch, startDistance)
 
     # if we are given a start
     else:
@@ -43,7 +44,7 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
         # convert start to 0-7
         startPitch = dtp.distanceToPitch(startDistance)
         startTonal = ptt.pitchToTonal(startPitch)
-        print('start:', startTonal, startPitch, startDistance)
+        #print('start:', startTonal, startPitch, startDistance)
 
 
     # if no destination given, make one
@@ -55,7 +56,7 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
         destinationTonal = ptt.pitchToTonal(destinationPitch)
         # pick a distance based on voice
         destinationDistance = ptd.pitchToDistance(destinationPitch, voice)
-        print('destination:', destinationTonal, destinationPitch, destinationDistance)
+        #print('destination:', destinationTonal, destinationPitch, destinationDistance)
 
     # if we are given a destination
     else:
@@ -63,7 +64,7 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
         # convert destination to 0-7
         destinationPitch = dtp.distanceToPitch(destinationDistance)
         destinationTonal = ptt.pitchToTonal(destinationPitch)
-        print('destination:', destinationTonal, destinationPitch, destinationDistance)
+        #print('destination:', destinationTonal, destinationPitch, destinationDistance)
 
 
     notes = []
@@ -220,9 +221,9 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
     #######################################################################
     # CONVERT TO MUSIC OBJECTS BEFORE RETURNING
     #######################################################################
-    print('notes: ', notes)
-    print('rhythms: ', rhythms)
-    print('destinationDistance:', destinationDistance)
+    #print('notes: ', notes)
+    #print('rhythms: ', rhythms)
+    #print('destinationDistance:', destinationDistance)
 
     # convert notes and rhythms to Note classes
     newNotes = []
@@ -233,10 +234,15 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
         ##########################################################################
         # TODO: FIX DISTANCE BELOW! this is where you decide where to move
         ##########################################################################
-        fixedDistance = ptd.pitchToDistance(ttp.tonalToPitch(notes[i]), voice)
-        if direction == -1:
-            # if voice == blah, check bounds so distance doesn't go too far
-            fixedDistance -= 12
+        if i == 0:
+            fixedDistance = int(startDistance)
+        else:
+            # no octave jumps yet, so this fixes the repeated note problem
+            if notes[i] == notes[i-1]:
+                fixedDistance = ttd.tonalToDistance(notes[i], 0, fixedDistance)
+            else:
+                fixedDistance = ttd.tonalToDistance(notes[i], direction, fixedDistance)
+        # if voice == blah, check bounds so distance doesn't go too far
         newNotes.append(mo.Note(ttp.tonalToPitch(notes[i]), fixedDistance, int(rhythms[i][0]), tied, currentChord.root,
                                 currentChord.tonality, currentChord.seventh, currentChord.inversion, currentChord.secondary,
                                 currentChord.secondaryRoot, key, major, timesig))
