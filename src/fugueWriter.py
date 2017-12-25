@@ -304,6 +304,18 @@ def fugueWriter(subjectMTX = None, music = None):
     # Bass - Episode
     #####################################################################
 
+    # first find the progression from starting chord (measure 5 = V by default)
+    #   to relative minor/major (vi by default)
+    # for now defaulting to V I, vi ii, viio V/vi
+
+    # hardcoding bassline for episode
+    print("*******************MEASURE 10 (bass)**********************")
+    newNote1 = mo.Note('g', 22, 2, False, 5)
+    newNote2 = mo.Note('c', 27, 2, False, 1)
+    newCell = mo.Cell(mo.Chord(5), mo.Chord(1), beats12, [newNote1, newNote2], 24, 0)
+    finalMTX[9][0] = [newCell]
+
+
 
     #####################################################################
     # CREATE MEASURES 13-14 - Relative minor/major (vi)
