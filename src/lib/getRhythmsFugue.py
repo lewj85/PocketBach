@@ -38,8 +38,9 @@ def getRhythmsFugue(beatsArr, timesig = None):
             downbeat = 1
         if total == 0 or total == 2:
             accented = 1
+
+        # remove certain rhythmic options based on previous rhythm selected
         if rhythms:
-            # remove certain rhythmic options based on previous rhythm selected
             if rhythms[-1][0] == '4.':  # must be an 8th
                 rhythms.append(['8', int(total) + 1, downbeat, accented])
             elif rhythms[-1][0] == '8' and not downbeat:  # only allow 8th and 16ths
@@ -67,7 +68,39 @@ def getRhythmsFugue(beatsArr, timesig = None):
             rhythms = []
             total = 0
 
-
-    #print(total)
-    #print(rhythms)
     return rhythms
+
+
+
+# pass array of Note objects from Cell
+def addRhythmData(notes):
+
+    rhythms = []
+    for note in notes:
+        rhythms.append(note.rhythm)
+
+    rhythmsWithData = []
+
+    optionsDict = {
+        '1': 4,
+        '2.': 3,
+        '2': 2,
+        '4.': 1.5,
+        '4': 1,
+        '8.': 0.75,
+        '8': 0.5,
+        '16': 0.25
+    }
+
+    total = 0
+
+    for rhythm in rhythms:
+        downbeat = int(total == int(total))
+        accented = int(total == 0 or total == 2)
+
+        # update total count
+        total += optionsDict[rhythm]
+
+        rhythmsWithData.append([rhythm, int(total) + 1, downbeat, accented])
+
+    return rhythmsWithData

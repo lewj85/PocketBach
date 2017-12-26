@@ -23,7 +23,7 @@ def transposeCellDiatonically(oldCell, newChord, newNextChord, direction = 1, ne
     if newDestinationDistance is None:
         # set a new destination distance based on the old cell's destination
         newDestinationDistance = td.transposeDistance(oldCell.destination, oldCell.chord, newChord, direction)
-        print("newDestinationDistance", newDestinationDistance)
+        #print("newDestinationDistance", newDestinationDistance)
         #newDestinationTonal = dtt.distanceToTonal(newDestinationDistance)
 
     # first get distance between old chord and new chord
@@ -32,7 +32,7 @@ def transposeCellDiatonically(oldCell, newChord, newNextChord, direction = 1, ne
         distanceBetweenTonal += 7
     elif direction == -1 and distanceBetweenTonal > 0:
         distanceBetweenTonal -= 7
-    print(distanceBetweenTonal)
+    #print('distanceBetweenTonal', distanceBetweenTonal)
 
     for oldNote in oldCell.notes:
 

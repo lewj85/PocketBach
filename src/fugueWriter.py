@@ -60,19 +60,19 @@ def fugueWriter(subjectMTX = None, music = None):
         # NOTE: all move to a V chord in the 3rd measure
         firstChords = [[1,1,5],[1,4,5],[1,5,5]]
         destinationChords = random.choice(firstChords)
-        print('chords for measures 1-3 are :', str(destinationChords))
+        print('chords for measures 1-3 are:', str(destinationChords))
 
         # 1st measure
         print("*******************MEASURE 1 (tenor)**********************")
         notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, ptd.pitchToDistance(music.key), None, tenor) # NOTE: starting with root of key
         #print('notes:', notes)
-        print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+        #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
         subjectMTX[0][0] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationTenor, tenor)]
         # 2nd measure
         print("*******************MEASURE 2 (tenor)**********************")
         notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, destinationTenor, None, tenor)
         #print('notes:', notes)
-        print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+        #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
         subjectMTX[1][0] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationTenor, tenor)]
 
         # free memory
@@ -111,7 +111,7 @@ def fugueWriter(subjectMTX = None, music = None):
     # TODO: remove default V in measure 5 to create some randomness, such as ii-V, IV-V, vi-V
     # TODO: add for loop to allow for subjects longer than 2 measures
     destinationChords = [(finalMTX[0][1][0].chord.root + 3) % 7 + 1, (finalMTX[1][1][0].chord.root + 3) % 7 + 1, 5]
-    print('chords for measures 3-5 are : ' + str(destinationChords))
+    print('chords for measures 3-5 are: ' + str(destinationChords))
 
     # Bass - resting
     print("*******************MEASURE 3 (bass)**********************")
@@ -185,6 +185,13 @@ def fugueWriter(subjectMTX = None, music = None):
     # Bass - Subject
     #####################################################################
 
+    destinationChords = []
+    for i in range(len(finalMTX[0][1])):
+        destinationChords.append(finalMTX[0][1][i].chord.root)
+    for i in range(len(finalMTX[1][1])):
+        destinationChords.append(finalMTX[1][1][i].chord.root)
+    print('chords for measures 6-7 are: ' + str(destinationChords))
+
     # Bass - Subject
     print("*******************MEASURE 6 (bass)**********************")
     finalMTX[5][0] = []
@@ -238,6 +245,13 @@ def fugueWriter(subjectMTX = None, music = None):
     # Tenor - Answer
     # Bass - Counter-Subject 1
     #####################################################################
+
+    destinationChords = []
+    for i in range(len(finalMTX[2][1])):
+        destinationChords.append(finalMTX[2][1][i].chord.root)
+    for i in range(len(finalMTX[3][1])):
+        destinationChords.append(finalMTX[3][1][i].chord.root)
+    print('chords for measures 8-9 are: ' + str(destinationChords))
 
     # Bass - Counter-Subject 1
     print("*******************MEASURE 8 (bass)**********************")
@@ -298,6 +312,10 @@ def fugueWriter(subjectMTX = None, music = None):
     #   to relative minor/major (vi by default)
     # for now defaulting to V I, vi ii, viio V/vi
     episodeChords = [mo.Chord(5), mo.Chord(1), mo.Chord(6), mo.Chord(2), mo.Chord(7), mo.Chord(5, 0, False, 0, True, 6), mo.Chord(6)]
+    destinationChords = []
+    for c in episodeChords:
+        destinationChords.append(c.root)
+    print('chords for measures 10-12 are: ' + str(destinationChords))
 
     # Bass - Episode - hardcoding bassline for now, TODO: add adaptability
     print("*******************MEASURE 10 (bass)**********************")
