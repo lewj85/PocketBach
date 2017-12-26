@@ -16,39 +16,27 @@ import random
 # fugueWriter() function takes arguments from the recorded melody
 def fugueWriter(subjectMTX = None, music = None):
 
-    # # debugging
-    # a = mo.Note('e', 43, 2, False, 1)
-    # b = mo.Note('g', 46, 2, False, 1)
-    # c = mo.Cell(mo.Chord(1), mo.Chord(5), [1, 2, 3, 4], [a, b], 39, 2)
-    # #d = tcd.transposeCellDiatonically(c, mo.Chord(2), mo.Chord(6))
-    # print(td.transposeDistance(a.distance, mo.Chord(1), mo.Chord(3), -1))
-    # print(td.transposeDistance(b.distance, mo.Chord(1), mo.Chord(3), 1))
-    # for x in d.notes:
-    #     print(x.pitch, x.distance, d.destination)
-    # print("end debugging")
-
-
     if music is None:
         music = mo.Music()
 
     # initialize variables
-    measures = 9 # TODO: update to number of measures that have been finished - 32 total
+    measures = 12 # TODO: update to number of measures that have been finished - 32 total
     beats1234 = [1, 2, 3, 4]
     beats12 = [1, 2]
     beats34 = [3, 4]
-    #maxVoices = 1
+    #maxVoices = -1
     #while maxVoices != 3 and maxVoices != 4:
     #    maxVoices = int(input("Enter 3 or 4 voices: "))
     maxVoices = 3
     if maxVoices == 3:
         bass = 0
-        alto = 1
+        tenor = 1
         soprano = 2
     else:
         bass = 0
         tenor = 1
-        alto = 2
-        soprano = 3
+        soprano = 2
+        alto = 3  # keeping as 3 instead of swapping with soprano - easier to add into current code
 
 
     # create finalMTX - a 2D array of 1D arrays (lists) of Cells - because each measure can hold 1-4 Cells
@@ -59,7 +47,7 @@ def fugueWriter(subjectMTX = None, music = None):
     # CREATE MEASURES 1-2 - Tonic (I)
     # NOTE: default harmonies pick from: I-I, I-IV, I-V
     # Soprano - rest
-    # Alto - Subject
+    # Tenor - Subject
     # Bass - rest
     #####################################################################
 
@@ -75,23 +63,23 @@ def fugueWriter(subjectMTX = None, music = None):
         print('chords for measures 1-3 are :', str(destinationChords))
 
         # 1st measure
-        print("*******************MEASURE 1 (alto)**********************")
-        notes, destinationAlto = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, ptd.pitchToDistance(music.key), None, alto) # NOTE: starting with root of key
+        print("*******************MEASURE 1 (tenor)**********************")
+        notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, ptd.pitchToDistance(music.key), None, tenor) # NOTE: starting with root of key
         #print('notes:', notes)
-        print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
-        subjectMTX[0][0] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationAlto, alto)]
+        print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+        subjectMTX[0][0] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationTenor, tenor)]
         # 2nd measure
-        print("*******************MEASURE 2 (alto)**********************")
-        notes, destinationAlto = gnf.getNotesFugue(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, destinationAlto, None, alto)
+        print("*******************MEASURE 2 (tenor)**********************")
+        notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, destinationTenor, None, tenor)
         #print('notes:', notes)
-        print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
-        subjectMTX[1][0] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationAlto, alto)]
+        print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+        subjectMTX[1][0] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationTenor, tenor)]
 
         # free memory
         del firstChords, notes
 
     else:
-        destinationAlto = subjectMTX[0][-1].destination
+        destinationTenor = subjectMTX[0][-1].destination
 
     # assign subjectMTX values to finalMTX
     # TODO: add for loop (subjectMTX.size[1]) to allow for subjects that are not exactly 2 measures long
@@ -115,7 +103,7 @@ def fugueWriter(subjectMTX = None, music = None):
     # CREATE MEASURES 3-4 - Dominant (V)
     # NOTE: default harmonies set to first 2 measure chords +4, so I-V becomes V-ii
     # Soprano - Answer
-    # Alto - Counter-Subject 1
+    # Tenor - Counter-Subject 1
     # Bass - rest
     #####################################################################
 
@@ -131,17 +119,17 @@ def fugueWriter(subjectMTX = None, music = None):
     print("*******************MEASURE 4 (bass)**********************")
     finalMTX[3][0] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), finalMTX[0][1][0].beats, [mo.Note('r', 88, 1, False, 1)], None, bass)]
 
-    # Alto - Countersubject
-    print("*******************MEASURE 3 (alto)**********************")
-    notes, destinationAlto = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, destinationAlto, None, alto)
+    # Tenor - Countersubject
+    print("*******************MEASURE 3 (tenor)**********************")
+    notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, destinationTenor, None, tenor)
     #print('notes:', notes)
-    #print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
-    finalMTX[2][1] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationAlto, alto)]
-    print("*******************MEASURE 4 (alto)**********************")
-    notes, destinationAlto = gnf.getNotesFugue(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, destinationAlto, None, alto)
+    #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+    finalMTX[2][1] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationTenor, tenor)]
+    print("*******************MEASURE 4 (tenor)**********************")
+    notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, destinationTenor, None, tenor)
     #print('notes:', notes)
-    #print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
-    finalMTX[3][1] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationAlto, alto)]
+    #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+    finalMTX[3][1] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationTenor, tenor)]
 
     # Soprano - Answer
     # get pitches that fit the new harmony
@@ -166,7 +154,7 @@ def fugueWriter(subjectMTX = None, music = None):
     # CREATE MEASURE 5
     # NOTE: default harmony set to V
     # Soprano - Codetta
-    # Alto - Codetta
+    # Tenor - Codetta
     # Bass - rest
     #####################################################################
 
@@ -175,12 +163,12 @@ def fugueWriter(subjectMTX = None, music = None):
     print("*******************MEASURE 5 (bass)**********************")
     finalMTX[4][0] = [mo.Cell(mo.Chord(5), mo.Chord(1), finalMTX[0][1][0].beats, [mo.Note('r', 88, 1, False, 1)], None, bass)]
 
-    # Alto - Codetta
-    print("*******************MEASURE 5 (alto)**********************")
-    notes, destinationAlto = gnf.getNotesFugue(mo.Chord(5), mo.Chord(1), beats1234, destinationAlto, None, alto)
+    # Tenor - Codetta
+    print("*******************MEASURE 5 (tenor)**********************")
+    notes, destinationTenor = gnf.getNotesFugue(mo.Chord(5), mo.Chord(1), beats1234, destinationTenor, None, tenor)
     #print('notes:', notes)
-    #print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
-    finalMTX[4][1] = [mo.Cell(mo.Chord(5), mo.Chord(1), beats1234, notes, destinationAlto, alto)]
+    #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+    finalMTX[4][1] = [mo.Cell(mo.Chord(5), mo.Chord(1), beats1234, notes, destinationTenor, tenor)]
 
     # Soprano - Codetta
     print("*******************MEASURE 5 (soprano)**********************")
@@ -193,7 +181,7 @@ def fugueWriter(subjectMTX = None, music = None):
     #####################################################################
     # CREATE MEASURES 6-7 - Tonic (I)
     # Soprano - Counter-Subject 1
-    # Alto - Counter-Subject 2
+    # Tenor - Counter-Subject 2
     # Bass - Subject
     #####################################################################
 
@@ -201,44 +189,44 @@ def fugueWriter(subjectMTX = None, music = None):
     print("*******************MEASURE 6 (bass)**********************")
     finalMTX[5][0] = []
     for cell in finalMTX[0][1]:
-        # drop alto an octave for bass
+        # drop tenor an octave for bass
         nextCell = tcd.transposeCellDiatonically(cell, cell.chord, cell.nextChord, -1)
         nextCell.voice = bass
         finalMTX[5][0].append(nextCell)
     print("*******************MEASURE 7 (bass)**********************")
     finalMTX[6][0] = []
     for cell in finalMTX[1][1]:
-        # drop alto an octave for bass
+        # drop tenor an octave for bass
         nextCell = tcd.transposeCellDiatonically(cell, cell.chord, cell.nextChord, -1)
         nextCell.voice = bass
         finalMTX[6][0].append(nextCell)
 
-    # Alto - Counter-Subject 2
-    print("*******************MEASURE 6 (alto)**********************")
+    # Tenor - Counter-Subject 2
+    print("*******************MEASURE 6 (tenor)**********************")
     for cell in range(len(finalMTX[2][1])):
-        notes, destinationAlto = gnf.getNotesFugue(finalMTX[0][1][cell].chord, finalMTX[0][1][cell].nextChord, beats1234, destinationAlto, None, alto)
+        notes, destinationTenor = gnf.getNotesFugue(finalMTX[0][1][cell].chord, finalMTX[0][1][cell].nextChord, beats1234, destinationTenor, None, tenor)
         # print('notes:', notes)
-        #print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
-        finalMTX[5][1] = [mo.Cell(finalMTX[0][1][cell].chord, finalMTX[0][1][cell].nextChord, beats1234, notes, destinationAlto, alto)]
-    print("*******************MEASURE 7 (alto)**********************")
+        #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+        finalMTX[5][1] = [mo.Cell(finalMTX[0][1][cell].chord, finalMTX[0][1][cell].nextChord, beats1234, notes, destinationTenor, tenor)]
+    print("*******************MEASURE 7 (tenor)**********************")
     for cell in range(len(finalMTX[3][1])):
-        notes, destinationAlto = gnf.getNotesFugue(finalMTX[1][1][cell].chord, finalMTX[1][1][cell].nextChord, beats1234, destinationAlto, None, alto)
+        notes, destinationTenor = gnf.getNotesFugue(finalMTX[1][1][cell].chord, finalMTX[1][1][cell].nextChord, beats1234, destinationTenor, None, tenor)
         # print('notes:', notes)
-        #print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
-        finalMTX[6][1] = [mo.Cell(finalMTX[1][1][cell].chord, finalMTX[1][1][cell].nextChord, beats1234, notes, destinationAlto, alto)]
+        #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+        finalMTX[6][1] = [mo.Cell(finalMTX[1][1][cell].chord, finalMTX[1][1][cell].nextChord, beats1234, notes, destinationTenor, tenor)]
 
     # Soprano - Counter-Subject 1
     print("*******************MEASURE 6 (soprano)**********************")
     finalMTX[5][2] = []
     for cell in range(len(finalMTX[2][1])):
-        # raise alto for soprano
+        # raise tenor for soprano
         nextCell = tcd.transposeCellDiatonically(finalMTX[2][1][cell], finalMTX[0][1][cell].chord, finalMTX[0][1][cell].nextChord, 1)
         nextCell.voice = soprano
         finalMTX[5][2].append(nextCell)
     print("*******************MEASURE 7 (soprano)**********************")
     finalMTX[6][2] = []
     for cell in range(len(finalMTX[3][1])):
-        # raise alto for soprano
+        # raise tenor for soprano
         nextCell = tcd.transposeCellDiatonically(finalMTX[3][1][cell], finalMTX[1][1][cell].chord, finalMTX[1][1][cell].nextChord, 1)
         nextCell.voice = soprano
         finalMTX[6][2].append(nextCell)
@@ -247,7 +235,7 @@ def fugueWriter(subjectMTX = None, music = None):
     #####################################################################
     # CREATE MEASURES 8-9 - Dominant (V)
     # Soprano - Counter-Subject 2
-    # Alto - Answer
+    # Tenor - Answer
     # Bass - Counter-Subject 1
     #####################################################################
 
@@ -255,44 +243,46 @@ def fugueWriter(subjectMTX = None, music = None):
     print("*******************MEASURE 8 (bass)**********************")
     finalMTX[7][0] = []
     for cell in finalMTX[2][1]:
-        # drop alto an octave for bass
+        # drop tenor an octave for bass
         nextCell = tcd.transposeCellDiatonically(cell, cell.chord, cell.nextChord, -1)
         nextCell.voice = bass
         finalMTX[7][0].append(nextCell)
     print("*******************MEASURE 9 (bass)**********************")
     finalMTX[8][0] = []
     for cell in finalMTX[3][1]:
-        # drop alto an octave for bass
+        # drop tenor an octave for bass
         nextCell = tcd.transposeCellDiatonically(cell, cell.chord, cell.nextChord, -1)
         nextCell.voice = bass
         finalMTX[8][0].append(nextCell)
 
-    # Alto - Answer
-    print("*******************MEASURE 8 (alto)**********************")
+    # Tenor - Answer
+    print("*******************MEASURE 8 (tenor)**********************")
+    finalMTX[7][1] = []
     for cell in range(len(finalMTX[2][1])):
-        notes, destinationAlto = gnf.getNotesFugue(finalMTX[2][1][cell].chord, finalMTX[2][1][cell].nextChord, beats1234, destinationAlto, None, alto)
+        notes, destinationTenor = gnf.getNotesFugue(finalMTX[2][1][cell].chord, finalMTX[2][1][cell].nextChord, beats1234, destinationTenor, None, tenor)
         # print('notes:', notes)
-        #print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
-        finalMTX[7][1] = [mo.Cell(finalMTX[2][1][cell].chord, finalMTX[2][1][cell].nextChord, beats1234, notes, destinationAlto, alto)]
-    print("*******************MEASURE 9 (alto)**********************")
+        #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+        finalMTX[7][1].append(mo.Cell(finalMTX[2][1][cell].chord, finalMTX[2][1][cell].nextChord, beats1234, notes, destinationTenor, tenor))
+    print("*******************MEASURE 9 (tenor)**********************")
+    finalMTX[8][1] = []
     for cell in range(len(finalMTX[3][1])):
-        notes, destinationAlto = gnf.getNotesFugue(finalMTX[3][1][cell].chord, finalMTX[3][1][cell].nextChord, beats1234, destinationAlto, None, alto)
+        notes, destinationTenor = gnf.getNotesFugue(finalMTX[3][1][cell].chord, finalMTX[3][1][cell].nextChord, beats1234, destinationTenor, None, tenor)
         # print('notes:', notes)
-        #print('destinationAlto:', destinationAlto, dtp.distanceToPitch(destinationAlto))
-        finalMTX[8][1] = [mo.Cell(finalMTX[3][1][cell].chord, finalMTX[3][1][cell].nextChord, beats1234, notes, destinationAlto, alto)]
+        #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+        finalMTX[8][1].append(mo.Cell(finalMTX[3][1][cell].chord, finalMTX[3][1][cell].nextChord, beats1234, notes, destinationTenor, tenor))
 
     # Soprano - Counter-Subject 2
     print("*******************MEASURE 8 (soprano)**********************")
     finalMTX[7][2] = []
     for cell in range(len(finalMTX[5][1])):
-        # raise alto for soprano
+        # raise tenor for soprano
         nextCell = tcd.transposeCellDiatonically(finalMTX[5][1][cell], finalMTX[2][1][cell].chord, finalMTX[2][1][cell].nextChord, 1)
         nextCell.voice = soprano
         finalMTX[7][2].append(nextCell)
     print("*******************MEASURE 9 (soprano)**********************")
     finalMTX[8][2] = []
     for cell in range(len(finalMTX[6][1])):
-        # raise alto for soprano
+        # raise tenor for soprano
         nextCell = tcd.transposeCellDiatonically(finalMTX[6][1][cell], finalMTX[3][1][cell].chord, finalMTX[3][1][cell].nextChord, 1)
         nextCell.voice = soprano
         finalMTX[8][2].append(nextCell)
@@ -300,27 +290,53 @@ def fugueWriter(subjectMTX = None, music = None):
     #####################################################################
     # CREATE MEASURES 10-12
     # Soprano - Episode
-    # Alto - Episode
+    # Tenor - Episode
     # Bass - Episode
     #####################################################################
 
     # first find the progression from starting chord (measure 5 = V by default)
     #   to relative minor/major (vi by default)
     # for now defaulting to V I, vi ii, viio V/vi
+    episodeChords = [mo.Chord(5), mo.Chord(1), mo.Chord(6), mo.Chord(2), mo.Chord(7), mo.Chord(5, 0, False, 0, True, 6), mo.Chord(6)]
 
-    # hardcoding bassline for episode
+    # Bass - Episode - hardcoding bassline for now, TODO: add adaptability
     print("*******************MEASURE 10 (bass)**********************")
-    newNote1 = mo.Note('g', 22, 2, False, 5)
-    newNote2 = mo.Note('c', 27, 2, False, 1)
-    newCell = mo.Cell(mo.Chord(5), mo.Chord(1), beats12, [newNote1, newNote2], 24, 0)
+    newNote = mo.Note('g', 22, 2, False, episodeChords[0].root)
+    newCell = mo.Cell(episodeChords[0], episodeChords[1], beats12, [newNote], 27, 0)
     finalMTX[9][0] = [newCell]
+    newNote = mo.Note('c', 27, 2, False, episodeChords[1].root)
+    newCell = mo.Cell(episodeChords[1], episodeChords[2], beats34, [newNote], 24, 0)
+    finalMTX[9][0].append(newCell)
+    print("*******************MEASURE 11 (bass)**********************")
+    newNote = mo.Note('a', 24, 2, False, episodeChords[2].root)
+    newCell = mo.Cell(episodeChords[2], episodeChords[3], beats12, [newNote], 29, 0)
+    finalMTX[10][0] = [newCell]
+    newNote = mo.Note('d', 29, 2, False, episodeChords[3].root)
+    newCell = mo.Cell(episodeChords[3], episodeChords[4], beats34, [newNote], 26, 0)
+    finalMTX[10][0].append(newCell)
+    print("*******************MEASURE 12 (bass)**********************")
+    newNote = mo.Note('b', 26, 2, False, episodeChords[4].root)
+    newCell = mo.Cell(episodeChords[4], episodeChords[5], beats12, [newNote], 31, 0)
+    finalMTX[11][0] = [newCell]
+    newNote = mo.Note('e', 31, 2, False, episodeChords[5].root, episodeChords[5].tonality, episodeChords[5].seventh, episodeChords[5].inversion, episodeChords[5].secondary, episodeChords[5].secondaryRoot)  # V/vi
+    newCell = mo.Cell(episodeChords[5], episodeChords[6], beats34, [newNote], 24, 0)
+    finalMTX[11][0].append(newCell)
+
+    # Tenor - Episode
+    print("*******************MEASURE 10 (tenor)**********************")
+    finalMTX[9][1] = []
+    notes, destinationTenor = gnf.getNotesFugue(episodeChords[0], episodeChords[1], beats12, finalMTX[8][1][-1].destination, None, tenor, True)
+    finalMTX[9][1].append(mo.Cell(episodeChords[0], episodeChords[1], beats12, notes, destinationTenor, tenor))
+    notes, destinationTenor = gnf.getNotesFugue(episodeChords[1], episodeChords[2], beats34, finalMTX[8][1][-1].destination, None, tenor, True, finalMTX[9][1][-1])
+    finalMTX[9][1].append(mo.Cell(episodeChords[1], episodeChords[2], beats34, notes, destinationTenor, tenor))
+
 
 
 
     #####################################################################
     # CREATE MEASURES 13-14 - Relative minor/major (vi)
     # Soprano - Subject
-    # Alto - Counter-Subject 1
+    # Tenor - Counter-Subject 1
     # Bass - rest
     #####################################################################
 
@@ -329,7 +345,7 @@ def fugueWriter(subjectMTX = None, music = None):
     #####################################################################
     # CREATE MEASURES 15-16 - Dominant of relative minor/major (V/vi)
     # Soprano - Counter-Subject 1
-    # Alto - Counter-Subject 2
+    # Tenor - Counter-Subject 2
     # Bass - Answer
     #####################################################################
 
@@ -338,7 +354,7 @@ def fugueWriter(subjectMTX = None, music = None):
     #####################################################################
     # CREATE MEASURES 17-20 - vi, ii, V, I
     # Soprano - Episode
-    # Alto - Episode, Answer false entry measure 19
+    # Tenor - Episode, Answer false entry measure 19
     # Bass - Episode
     #####################################################################
 
@@ -347,7 +363,7 @@ def fugueWriter(subjectMTX = None, music = None):
     #####################################################################
     # CREATE MEASURES 21-22 - Subdominant (IV)
     # Soprano - rest
-    # Alto - Subject
+    # Tenor - Subject
     # Bass - Counter-Subject 2
     #####################################################################
 
@@ -356,7 +372,7 @@ def fugueWriter(subjectMTX = None, music = None):
     #####################################################################
     # CREATE MEASURES 23-24
     # Soprano - Episode
-    # Alto - Episode
+    # Tenor - Episode
     # Bass - Episode
     #####################################################################
 
@@ -365,7 +381,7 @@ def fugueWriter(subjectMTX = None, music = None):
     #####################################################################
     # CREATE MEASURES 25-26 - Tonic (I)
     # Soprano - Subject
-    # Alto - Counter-Subject 2
+    # Tenor - Counter-Subject 2
     # Bass - Counter-Subject 1
     #####################################################################
 
@@ -374,7 +390,7 @@ def fugueWriter(subjectMTX = None, music = None):
     #####################################################################
     # CREATE MEASURES 27-28 - Tonic (I)
     # Soprano - Free counterpoint
-    # Alto - Counter-subject 1
+    # Tenor - Counter-subject 1
     # Bass - Subject
     #####################################################################
 
@@ -383,7 +399,7 @@ def fugueWriter(subjectMTX = None, music = None):
     #####################################################################
     # CREATE MEASURES 29-32 - IV ii, V7, I sus43, I
     # Soprano - Coda, Answer false entry measure 30, hold 5th or 3rd measures 31 and 32
-    # Alto - Coda, sus43 measures 30-31 with anticipation of final chord at end of 31
+    # Tenor - Coda, sus43 measures 30-31 with anticipation of final chord at end of 31
     # Bass - pickup-iii, IV ii, V low-V, I, I and low-I
     #####################################################################
 

@@ -215,7 +215,7 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
 
         # otherwise try to match intervals/rhythms from previousCell
         else:
-            rhythms = previousCell[1]
+            rhythms = previousCell.notes
 
 
     #######################################################################

@@ -47,7 +47,7 @@ class Note(Chord):
     def __init__(self, pitch, distance, rhythm, tied, root, tonality = 0, seventh = False, inversion = 0, secondary = False, secondaryRoot = 0, key = 'c', major = True, timesig = None):
         Chord.__init__(self, root, tonality, seventh, inversion, secondary, secondaryRoot, key, major, timesig)
         self.pitch = pitch                      # string: lowercase char plus "s" for sharp, "f" for flat, "ss", or "ff" - 'r' for rest
-        self.distance = distance                # int: 0-88, distance from lowest pitch "A0" = 0, "C8" = 87, rest = 88
+        self.distance = distance                # int: 0-88, distance from lowest pitch "A0" = 0, "C4" = 39 (middle C), "C8" = 87, rest = 88
         self.rhythm = rhythm                    # int: 1 = whole note, 2 = half, 4 = quarter, 8 = 8th, 16 = 16th
         self.tied = tied                        # boolean: False = not tied to next note, True = tied to next note
 
