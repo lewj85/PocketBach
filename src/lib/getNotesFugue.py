@@ -213,9 +213,17 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
         if not previousCell:
             rhythms = grf.getRhythmsFugue(beatsArr, timesig)
 
+            # TODO: change this. don't just repeat.
+            for note in rhythms:
+                notes.append(startTonal)
+
         # otherwise try to match intervals/rhythms from previousCell
         else:
             rhythms = grf.addRhythmData(previousCell.notes)
+
+            # TODO: change this. don't just repeat.
+            for note in rhythms:
+                notes.append(startTonal)
 
 
 

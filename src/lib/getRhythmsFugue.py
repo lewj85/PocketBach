@@ -77,7 +77,10 @@ def addRhythmData(notes):
 
     rhythms = []
     for note in notes:
-        rhythms.append(note.rhythm)
+        r = str(note.rhythm)
+        if note.tied:
+            r += '.'
+        rhythms.append(r)
 
     rhythmsWithData = []
 
