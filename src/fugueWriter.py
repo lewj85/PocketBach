@@ -5,6 +5,7 @@ from lib import musicObjects as mo
 from lib import pitchToDistance as ptd
 from lib import distanceToPitch as dtp
 from lib import transposeCellDiatonically as tcd
+from lib import defineChord as dc
 import numpy as np
 import random
 #import os
@@ -66,13 +67,13 @@ def fugueWriter(subjectMTX = None, music = None):
         print("*******************MEASURE 1 (tenor)**********************")
         notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, ptd.pitchToDistance(music.key), None, tenor) # NOTE: starting with root of key
         #print('notes:', notes)
-        #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+        print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
         subjectMTX[0][0] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationTenor, tenor)]
         # 2nd measure
         print("*******************MEASURE 2 (tenor)**********************")
         notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, destinationTenor, None, tenor)
         #print('notes:', notes)
-        #print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
+        print('destinationTenor:', destinationTenor, dtp.distanceToPitch(destinationTenor))
         subjectMTX[1][0] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationTenor, tenor)]
 
         # free memory
@@ -148,6 +149,13 @@ def fugueWriter(subjectMTX = None, music = None):
         nextCell = tcd.transposeCellDiatonically(cell, mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), 1)
         nextCell.voice = soprano
         finalMTX[3][soprano].append(nextCell)
+    # TODO: soprano destination changes to fit V chord - alter soprano in measure 4 if you want to move linearly
+    notesInVChord = dc.defineChord(mo.Chord(5))
+    currentDestinationDistance = finalMTX[3][soprano][-1].destination
+    # TODO: change this. for now just move down to closest destination that IS in a V chord
+    while dtp.distanceToPitch(currentDestinationDistance) not in notesInVChord[0]:
+        currentDestinationDistance -= 1
+    finalMTX[3][soprano][-1].destination = currentDestinationDistance
 
 
     #####################################################################
@@ -350,16 +358,16 @@ def fugueWriter(subjectMTX = None, music = None):
     finalMTX[9][tenor].append(mo.Cell(episodeChords[1], episodeChords[2], beats34, notes, destinationTenor, tenor))
     print("*******************MEASURE 11 (tenor)**********************")
     finalMTX[10][tenor] = []
-    notes, destinationTenor = gnf.getNotesFugue(episodeChords[1], episodeChords[2], beats12, destinationTenor, None, tenor, True, finalMTX[9][1][0])
-    finalMTX[10][tenor].append(mo.Cell(episodeChords[1], episodeChords[2], beats12, notes, destinationTenor, tenor))
-    notes, destinationTenor = gnf.getNotesFugue(episodeChords[2], episodeChords[3], beats34, destinationTenor, None, tenor, True, finalMTX[9][1][0])
-    finalMTX[10][tenor].append(mo.Cell(episodeChords[2], episodeChords[3], beats34, notes, destinationTenor, tenor))
+    notes, destinationTenor = gnf.getNotesFugue(episodeChords[2], episodeChords[3], beats12, destinationTenor, None, tenor, True, finalMTX[9][1][0])
+    finalMTX[10][tenor].append(mo.Cell(episodeChords[2], episodeChords[3], beats12, notes, destinationTenor, tenor))
+    notes, destinationTenor = gnf.getNotesFugue(episodeChords[3], episodeChords[4], beats34, destinationTenor, None, tenor, True, finalMTX[9][1][0])
+    finalMTX[10][tenor].append(mo.Cell(episodeChords[3], episodeChords[4], beats34, notes, destinationTenor, tenor))
     print("*******************MEASURE 12 (tenor)**********************")
     finalMTX[11][tenor] = []
-    notes, destinationTenor = gnf.getNotesFugue(episodeChords[3], episodeChords[4], beats12, destinationTenor, None, tenor, True, finalMTX[9][1][0])
-    finalMTX[11][tenor].append(mo.Cell(episodeChords[3], episodeChords[4], beats12, notes, destinationTenor, tenor))
-    notes, destinationTenor = gnf.getNotesFugue(episodeChords[4], episodeChords[5], beats34, destinationTenor, None, tenor, True, finalMTX[9][1][0])
-    finalMTX[11][tenor].append(mo.Cell(episodeChords[4], episodeChords[5], beats34, notes, destinationTenor, tenor))
+    notes, destinationTenor = gnf.getNotesFugue(episodeChords[4], episodeChords[5], beats12, destinationTenor, None, tenor, True, finalMTX[9][1][0])
+    finalMTX[11][tenor].append(mo.Cell(episodeChords[4], episodeChords[5], beats12, notes, destinationTenor, tenor))
+    notes, destinationTenor = gnf.getNotesFugue(episodeChords[5], episodeChords[6], beats34, destinationTenor, None, tenor, True, finalMTX[9][1][0])
+    finalMTX[11][tenor].append(mo.Cell(episodeChords[5], episodeChords[6], beats34, notes, destinationTenor, tenor))
 
     # Soprano - Episode
     print("*******************MEASURE 10 (soprano)**********************")
@@ -370,16 +378,16 @@ def fugueWriter(subjectMTX = None, music = None):
     finalMTX[9][soprano].append(mo.Cell(episodeChords[1], episodeChords[2], beats34, notes, destinationSoprano, soprano))
     print("*******************MEASURE 11 (soprano)**********************")
     finalMTX[10][soprano] = []
-    notes, destinationSoprano = gnf.getNotesFugue(episodeChords[1], episodeChords[2], beats12, destinationSoprano, None, soprano, True, finalMTX[9][2][0])
-    finalMTX[10][soprano].append(mo.Cell(episodeChords[1], episodeChords[2], beats12, notes, destinationSoprano, soprano))
-    notes, destinationSoprano = gnf.getNotesFugue(episodeChords[2], episodeChords[3], beats34, destinationSoprano, None, soprano, True, finalMTX[9][2][0])
-    finalMTX[10][soprano].append(mo.Cell(episodeChords[2], episodeChords[3], beats34, notes, destinationSoprano, soprano))
+    notes, destinationSoprano = gnf.getNotesFugue(episodeChords[2], episodeChords[3], beats12, destinationSoprano, None, soprano, True, finalMTX[9][2][0])
+    finalMTX[10][soprano].append(mo.Cell(episodeChords[2], episodeChords[3], beats12, notes, destinationSoprano, soprano))
+    notes, destinationSoprano = gnf.getNotesFugue(episodeChords[3], episodeChords[4], beats34, destinationSoprano, None, soprano, True, finalMTX[9][2][0])
+    finalMTX[10][soprano].append(mo.Cell(episodeChords[3], episodeChords[4], beats34, notes, destinationSoprano, soprano))
     print("*******************MEASURE 12 (soprano)**********************")
     finalMTX[11][soprano] = []
-    notes, destinationSoprano = gnf.getNotesFugue(episodeChords[3], episodeChords[4], beats12, destinationSoprano, None, soprano, True, finalMTX[9][2][0])
-    finalMTX[11][soprano].append(mo.Cell(episodeChords[3], episodeChords[4], beats12, notes, destinationSoprano, soprano))
-    notes, destinationSoprano = gnf.getNotesFugue(episodeChords[4], episodeChords[5], beats34, destinationSoprano, None, soprano, True, finalMTX[9][2][0])
-    finalMTX[11][soprano].append(mo.Cell(episodeChords[4], episodeChords[5], beats34, notes, destinationSoprano, soprano))
+    notes, destinationSoprano = gnf.getNotesFugue(episodeChords[4], episodeChords[5], beats12, destinationSoprano, None, soprano, True, finalMTX[9][2][0])
+    finalMTX[11][soprano].append(mo.Cell(episodeChords[4], episodeChords[5], beats12, notes, destinationSoprano, soprano))
+    notes, destinationSoprano = gnf.getNotesFugue(episodeChords[5], episodeChords[6], beats34, destinationSoprano, None, soprano, True, finalMTX[9][2][0])
+    finalMTX[11][soprano].append(mo.Cell(episodeChords[5], episodeChords[6], beats34, notes, destinationSoprano, soprano))
 
 
     #####################################################################

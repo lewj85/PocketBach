@@ -33,7 +33,7 @@ def tonalToDistance(tonal, direction = 0, prevDist = None, voice = 0, key = 'c',
     if dtp.distanceToPitch(prevDist) == 'a':
         pitchVals = [88, 3, 5, 7, 8, 10, 12, 2]
     elif dtp.distanceToPitch(prevDist) == 'b':
-        pitchVals = [88, 1, 3, 5, 6, 8, 10, 12]
+        pitchVals = [88, 1, 3, 5, 6, 8, 10, 0]  # changed 12 to 0 for bug
     elif dtp.distanceToPitch(prevDist) == 'c':
         pitchVals = [88, 12, 2, 4, 5, 7, 9, 11]
     elif dtp.distanceToPitch(prevDist) == 'd':

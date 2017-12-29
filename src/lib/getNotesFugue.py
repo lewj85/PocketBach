@@ -136,15 +136,6 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
         # COMMON PATTERNS
         #####################################################
 
-        elif num1 < 0.05:
-            # TODO: remove random
-            # random for testing
-            print('random notes')
-            rhythms = grf.getRhythmsFugue(beatsArr, timesig)
-            for note in rhythms:
-                notes.append(random.randint(1,7))
-
-
             # # repeated pitch patterns
             # elif abs(distance) == 0:
             #     pass
@@ -251,6 +242,11 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
                 fixedDistance = ttd.tonalToDistance(notes[i], 0, fixedDistance)
             else:
                 fixedDistance = ttd.tonalToDistance(notes[i], direction, fixedDistance)
+                # check range
+                if newNotes[-1].distance > fixedDistance and (newNotes[-1].distance - fixedDistance) > 9:
+                    fixedDistance += 12
+                elif newNotes[-1].distance < fixedDistance and (fixedDistance - newNotes[-1].distance) > 9:
+                    fixedDistance += 12
         # if voice == blah, check bounds so distance doesn't go too far
         newNotes.append(mo.Note(ttp.tonalToPitch(notes[i]), fixedDistance, int(rhythms[i][0]), tied, currentChord.root,
                                 currentChord.tonality, currentChord.seventh, currentChord.inversion, currentChord.secondary,

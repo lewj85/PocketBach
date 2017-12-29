@@ -153,6 +153,9 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                             f.write("\n          <alter>" + str(alterDict.get(note.pitch[1:])) + "</alter>")
 
                         octave = (note.distance + 10) // 12
+                        # weird bug - B's are an octave too high
+                        if note.pitch == 'b':
+                            octave -= 1
                         f.write("\n          <octave>" + str(octave) + "</octave>")
 
                         f.write("\n        </pitch>")
@@ -331,6 +334,9 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                             f.write("\n          <alter>" + str(alterDict.get(note.pitch[1:])) + "</alter>")
 
                         octave = (note.distance + 10) // 12
+                        # weird bug - B's are an octave too high. manually adjusting them lower.
+                        if note.pitch == 'b':
+                            octave -= 1
                         f.write("\n          <octave>" + str(octave) + "</octave>")
 
                         f.write("\n        </pitch>")
