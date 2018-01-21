@@ -61,7 +61,7 @@ def defineChord(ChordObject, dictKey = None):
         if ChordObject.secondary:
             dictKey += '/'+str(secroot)
 
-        print("dictKey:", dictKey)
+        #print("dictKey:", dictKey)
 
     # TODO: fix the chordArr adjustments in getNextNote.py to account for inversions being added
 

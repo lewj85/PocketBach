@@ -75,10 +75,16 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
         distanceBetweenTonal = 0
     elif startDistance < destinationDistance:
         direction = 1
-        distanceBetweenTonal = max(destinationTonal, startTonal) - min(destinationTonal, startTonal)
+        if startTonal < destinationTonal: # 1 to 7 = 7 - 1 = 6, 3 to 5 = 5 - 3 = 2
+            distanceBetweenTonal = max(destinationTonal, startTonal) - min(destinationTonal, startTonal)
+        else: # 7 to 1 = 1 - 7 + 7 = 1, 5 to 3 = 3 - 5 + 7 = 5
+            distanceBetweenTonal = min(destinationTonal, startTonal) - max(destinationTonal, startTonal) + 7
     else:
         direction = -1
-        distanceBetweenTonal = max(destinationTonal, startTonal) - min(destinationTonal, startTonal)
+        if startTonal < destinationTonal: # 1 to 7 = 7 - 1 = 6, 3 to 5 = 5 - 3 = 2
+            distanceBetweenTonal = max(destinationTonal, startTonal) - min(destinationTonal, startTonal)
+        else: # 7 to 1 = 1 - 7 + 7 = 1, 5 to 3 = 3 - 5 + 7 = 5
+            distanceBetweenTonal = min(destinationTonal, startTonal) - max(destinationTonal, startTonal) + 7
 
 
     print('start: ' + str(startTonal) + '\tdestination: ' + str(destinationTonal) + '\tdistanceBetweenTonal: ' + str(distanceBetweenTonal) + '\tdirection: ' + str(direction))
@@ -198,7 +204,7 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
     #######################################################################
 
     else:
-        print('episode')
+        #print('episode')
 
         # if previousCell is None, it's the first cell of the episode
         if not previousCell:

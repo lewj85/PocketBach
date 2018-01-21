@@ -210,7 +210,13 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                             3: 1
                         }
                     else:
-                        print("error in createXML: maxVoices isn\'t 3 or 4...")
+                        print("error in createXML: maxVoices isn\'t 3 or 4... possibly running melodyTester()")
+                        voices = {
+                            0: 2
+                        }
+                        staves = {
+                            0: 2,
+                        }
                     f.write("\n        <voice>" + str(voices.get(voice)) + "</voice>")
 
                     rhythmName = {
@@ -385,7 +391,13 @@ def createXML(filename, key, major, timesig, finalMTX, measures, maxVoices, inst
                             3: 1
                         }
                     else:
-                        print("error in createXML: maxVoices isn\'t 3 or 4...")
+                        print("error in createXML: maxVoices isn\'t 3 or 4... possibly running melodyTester()")
+                        voices = {
+                            0: 2
+                        }
+                        staves = {
+                            0: 2,
+                        }
                     f.write("\n        <voice>" + str(voices.get(voice)) + "</voice>")
 
                     rhythmName = {
