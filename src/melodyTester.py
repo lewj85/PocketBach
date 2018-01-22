@@ -28,9 +28,12 @@ def melodyTester(subjectMTX = None, music = None):
 
     # Hard-coding to I-IV-V for testing
     destinationChords = [1,4,5]
-    for i in range(2):
-        notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[i]), mo.Chord(destinationChords[i+1]), beats1234, ptd.pitchToDistance(music.key), None, tenor)  # NOTE: starting with root of key
-        finalMTX[i][tenor] = [mo.Cell(mo.Chord(destinationChords[i]), mo.Chord(destinationChords[i+1]), beats1234, notes, destinationTenor, tenor)]
+    notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, ptd.pitchToDistance(music.key), None, tenor)  # NOTE: starting with root of key
+    print('destinationTenor', destinationTenor, dtp.distanceToPitch(destinationTenor))
+    finalMTX[0][tenor] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, destinationTenor, tenor)]
+    notes, destinationTenor = gnf.getNotesFugue(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, destinationTenor, None, tenor)  # NOTE: starting with root of key
+    print('destinationTenor', destinationTenor, dtp.distanceToPitch(destinationTenor))
+    finalMTX[1][tenor] = [mo.Cell(mo.Chord(destinationChords[1]), mo.Chord(destinationChords[2]), beats1234, notes, destinationTenor, tenor)]
     finalMTX[2][tenor] = [mo.Cell(mo.Chord(destinationChords[2]), mo.Chord(1), beats1234, [mo.Note(dtp.distanceToPitch(destinationTenor), destinationTenor, 1, False, 5)], destinationTenor, tenor)]
 
 

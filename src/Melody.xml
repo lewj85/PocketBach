@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="3.0">
-  <movement-title>Melody</movement-title>
+  <movement-title>Fugue</movement-title>
   <part-list>
     <score-part id="P1">
       <part-name>Piano</part-name>
@@ -45,6 +45,16 @@
           <step>C</step>
           <octave>3</octave>
         </pitch>
+        <duration>8</duration>
+        <voice>2</voice>
+        <type>half</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <pitch>
+          <step>D</step>
+          <octave>3</octave>
+        </pitch>
         <duration>6</duration>
         <voice>2</voice>
         <type>quarter</type>
@@ -53,18 +63,21 @@
       </note>
       <note>
         <pitch>
-          <step>B</step>
-          <octave>2</octave>
+          <step>E</step>
+          <octave>3</octave>
         </pitch>
         <duration>2</duration>
         <voice>2</voice>
         <type>eighth</type>
         <staff>2</staff>
       </note>
+    </measure>
+    <!--=======================================================-->
+    <measure number="2">
       <note>
         <pitch>
-          <step>A</step>
-          <octave>2</octave>
+          <step>F</step>
+          <octave>3</octave>
         </pitch>
         <duration>3</duration>
         <voice>2</voice>
@@ -74,8 +87,8 @@
       </note>
       <note>
         <pitch>
-          <step>G</step>
-          <octave>2</octave>
+          <step>E</step>
+          <octave>3</octave>
         </pitch>
         <duration>1</duration>
         <voice>2</voice>
@@ -84,20 +97,7 @@
       </note>
       <note>
         <pitch>
-          <step>F</step>
-          <octave>2</octave>
-        </pitch>
-        <duration>4</duration>
-        <voice>2</voice>
-        <type>quarter</type>
-        <staff>2</staff>
-      </note>
-    </measure>
-    <!--=======================================================-->
-    <measure number="2">
-      <note>
-        <pitch>
-          <step>C</step>
+          <step>D</step>
           <octave>3</octave>
         </pitch>
         <duration>4</duration>
@@ -107,48 +107,8 @@
       </note>
       <note>
         <pitch>
-          <step>B</step>
-          <octave>2</octave>
-        </pitch>
-        <duration>1</duration>
-        <voice>2</voice>
-        <type>16th</type>
-        <staff>2</staff>
-      </note>
-      <note>
-        <pitch>
-          <step>A</step>
-          <octave>2</octave>
-        </pitch>
-        <duration>1</duration>
-        <voice>2</voice>
-        <type>16th</type>
-        <staff>2</staff>
-      </note>
-      <note>
-        <pitch>
-          <step>G</step>
-          <octave>2</octave>
-        </pitch>
-        <duration>1</duration>
-        <voice>2</voice>
-        <type>16th</type>
-        <staff>2</staff>
-      </note>
-      <note>
-        <pitch>
-          <step>F</step>
-          <octave>2</octave>
-        </pitch>
-        <duration>1</duration>
-        <voice>2</voice>
-        <type>16th</type>
-        <staff>2</staff>
-      </note>
-      <note>
-        <pitch>
-          <step>E</step>
-          <octave>2</octave>
+          <step>C</step>
+          <octave>3</octave>
         </pitch>
         <duration>8</duration>
         <voice>2</voice>
