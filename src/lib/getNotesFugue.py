@@ -195,7 +195,7 @@ def getNotesFugue(currentChord, nextChord, beatsArr, startDistance = None, desti
             #             # find a new micro-dest with a distance between startDistance and destinationDistance
             #             # move linearly if possible
             #             # else move be step
-            #             microDestinationTonal = gmd.getMicroDestination(currentChord, startDistance, direction)
+            #             microDestinationTonal, x, y = gmd.getMicroDestination(currentChord, startDistance, direction)
             #         else:
             #             pass
 
