@@ -466,7 +466,7 @@ def fugueWriter(subjectMTX = None, music = None):
 
 
     #####################################################################
-    # CREATE FILES: .ly, .mxl
+    # CREATE FILES: .ly, .xml
     #####################################################################
     #cl.createLily(music.key, music.major, finalMTX, measures, maxVoices)  # commented out while fugueWriter is being written
     # cl.createLily(key, major, finalMTX, measures, maxVoices, 2)  # second species
