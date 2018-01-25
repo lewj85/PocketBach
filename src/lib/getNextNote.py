@@ -176,7 +176,7 @@ def getNextNote(music, noteMTX, finalMTX, index, measures, voice, maxVoices):
 
         # there's a high chance the note will fall through the if-elifs above,
         #   so don't put this line into "else:"
-        return ptn.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
+        return ptt.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
 
     ################################################################
     # alto/tenor
@@ -210,58 +210,58 @@ def getNextNote(music, noteMTX, finalMTX, index, measures, voice, maxVoices):
         if finalMTX[0][index][5] == 0:  # if not a 7th chord
             if inversion == 0:  # if inversion = 0
                 # if root+root, must be 3rd
-                if str(int(finalMTX[2][index][0])) == ptn.pitchToTonal(chordVec[0], music.key):
-                    return int(ptn.pitchToTonal(chordVec[1], music.key))  # NOTE: return
+                if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[0], music.key):
+                    return int(ptt.pitchToTonal(chordVec[1], music.key))  # NOTE: return
                 # if root+3rd, can be root or 5th
-                elif str(int(finalMTX[2][index][0])) == ptn.pitchToTonal(chordVec[1], music.key):
+                elif str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[1], music.key):
                     del chordVec[1]
                 # if root+5th, must be 3rd
                 else:
-                    return int(ptn.pitchToTonal(chordVec[1], music.key))  # NOTE: return
+                    return int(ptt.pitchToTonal(chordVec[1], music.key))  # NOTE: return
             elif inversion == 1:  # if inversion = 1
                 # if 3rd+root, can be root or 5th
-                if str(int(finalMTX[2][index][0])) == ptn.pitchToTonal(chordVec[2], music.key):
+                if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[2], music.key):
                     del chordVec[0]
                 # elif # can't be 3rd+3rd
                 else:  # if 3rd+5th, must be root
-                    return int(ptn.pitchToTonal(chordVec[2], music.key))  # NOTE: return
+                    return int(ptt.pitchToTonal(chordVec[2], music.key))  # NOTE: return
             elif inversion == 2:  # if inversion = 2
                 # if 5th+root, must be 3rd
-                if str(int(finalMTX[2][index][0])) == ptn.pitchToTonal(chordVec[1], music.key):
-                    return int(ptn.pitchToTonal(chordVec[2], music.key))  # NOTE: return
+                if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[1], music.key):
+                    return int(ptt.pitchToTonal(chordVec[2], music.key))  # NOTE: return
                 # elif # can't be 5th+5th
                 else:  # if 5th+3rd, must be root
-                    return int(ptn.pitchToTonal(chordVec[1], music.key))  # NOTE: return
+                    return int(ptt.pitchToTonal(chordVec[1], music.key))  # NOTE: return
         else:  # if a 7th chord
             # 7th chords with 3 voices cannot have a 5th
             if maxVoices == 3:
                 if inversion == 0:  # if inversion = 0
                     # 7th chords with 3 voices cannot be root+root
                     # 7th chords with 3 voices with root+3rd, must be 7th
-                    if str(int(finalMTX[2][index][0])) == ptn.pitchToTonal(chordVec[1], music.key):
-                        return int(ptn.pitchToTonal(chordVec[3], music.key))  # NOTE: return
+                    if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[1], music.key):
+                        return int(ptt.pitchToTonal(chordVec[3], music.key))  # NOTE: return
                     # elif # 7th chords with 3 voices cannot have a 5th
                     # 7th chords with 3 voices with root+7th, must be 3rd
                     else:
-                        return int(ptn.pitchToTonal(chordVec[1], music.key))  # NOTE: return
+                        return int(ptt.pitchToTonal(chordVec[1], music.key))  # NOTE: return
 
                 elif inversion == 1:  # if inversion = 1
                     # 7th chords with 3 voices with 3rd+root, must be 7th
-                    if str(int(finalMTX[2][index][0])) == ptn.pitchToTonal(chordVec[3], music.key):
-                        return int(ptn.pitchToTonal(chordVec[2], music.key))  # NOTE: return
+                    if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[3], music.key):
+                        return int(ptt.pitchToTonal(chordVec[2], music.key))  # NOTE: return
                     # 7th chords with 3 voices cannot be 3rd+3rd
                     # 7th chords with 3 voices cannot have a 5th
                     # 7th chords with 3 voices with 3rd+7th, must be root
                     else:
-                        return int(ptn.pitchToTonal(chordVec[3], music.key))  # NOTE: return
+                        return int(ptt.pitchToTonal(chordVec[3], music.key))  # NOTE: return
                 # 7th chords with 3 voices cannot have a 5th, so no 2nd inversion
                 else:  # if inversion = 3
                     # 7th chords with 3 voices with 7th+root, must be 3rd
-                    if str(int(finalMTX[2][index][0])) == ptn.pitchToTonal(chordVec[1], music.key):
-                        return int(ptn.pitchToTonal(chordVec[2], music.key))  # NOTE: return
+                    if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[1], music.key):
+                        return int(ptt.pitchToTonal(chordVec[2], music.key))  # NOTE: return
                     # 7th chords with 3 voices with 7th+3rd, must be root
                     else:
-                        return int(ptn.pitchToTonal(chordVec[1], music.key))  # NOTE: return
+                        return int(ptt.pitchToTonal(chordVec[1], music.key))  # NOTE: return
                     # 7th chords with 3 voices cannot have a 5th
                     # can't be 7th+7th
 
@@ -275,31 +275,31 @@ def getNextNote(music, noteMTX, finalMTX, index, measures, voice, maxVoices):
             if ttp.tonalToPitch(prevNote, music.key) in chordVec:
                 nextNote = prevNote
             else:
-                nextNote = ptn.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
+                nextNote = ptt.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
         elif num1 < 0.7:    # 30% chance to move up linearly (technically less than 30%,
                             # because we check to see if prevNote + 1 is a chord tone)
             if prevNote == 7:  # if prevNote is 7, can't use prevNote + 1
                 if ttp.tonalToPitch(1, music.key) in chordVec:
                     nextNote = 1
                 else:
-                    nextNote = ptn.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
+                    nextNote = ptt.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
             else:  # if prevNote isn't 7, can use prevNote + 1
                 if ttp.tonalToPitch(prevNote + 1, music.key) in chordVec:
                     nextNote = prevNote + 1
                 else:
-                    nextNote = ptn.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
+                    nextNote = ptt.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
         else:   # 30% chance to move down linearly (technically less than 30%,
                 # because we check to see if prevNote - 1 is a chord tone)
             if prevNote == 1:  # if prevNote is 1, can't use prevNote - 1
                 if ttp.tonalToPitch(7, music.key) in chordVec:
                     nextNote = 7
                 else:
-                    nextNote = ptn.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
+                    nextNote = ptt.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
             else:  # if prevNote isn't 1, can use prevNote - 1
                 if ttp.tonalToPitch(prevNote - 1, music.key) in chordVec:
                     nextNote = prevNote - 1
                 else:
-                    nextNote = ptn.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
+                    nextNote = ptt.pitchToTonal(chordVec[random.randint(0, len(chordVec) - 1)], music.key)
 
     #print(chordVec)
     return nextNote

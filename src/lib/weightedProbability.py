@@ -8,7 +8,7 @@ def weightedProbability(keyStr):
     num1 = random.random()
 
     # extract the json data
-    filename = "../data/hooktheoryfiles/hooktheoryData2.json"
+    filename = "../data/hooktheory/hooktheoryData2.json"
     f = open(filename, 'r')
     checkStr = f.read()
     f.close()

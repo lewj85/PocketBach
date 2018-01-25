@@ -52,7 +52,7 @@ def melodyTester(subjectMTX = None, music = None):
 
     # notes
     # using a bunch of melodies: train a neural network? create a decision tree? many options, but leaning toward decision tree with weighted probability
-    # decision tree would know which elements are more important at each step (highest entropy)
+    # decision tree would know which elements are more important at each step (highest information gain using entropy)
     # ie. is linear motion more important than microdestinations landing on a chord tone on an accented beat?
     # ie. is following intervallic/rhythmic repetition more important than landing on a chord tone in the next measure?
     # ie. if landing on a chord tone is more important, then should we change the rhythm or the interval?
@@ -93,17 +93,153 @@ def melodyTester(subjectMTX = None, music = None):
     # we now have the startDistance, microDestDistance, and nextMeasureDestDistance
     # TODO: test melody-creation here and add final result to getNotesFugue()
 
-    part1notes, microDestDistance = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[0]), beats12, startDistance, microDestDistance, tenor)
-    part2notes, nextMeasureDestDistance = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats34, microDestDistance, nextMeasureDestDistance, tenor)
-    notes = []
-    for note in part1notes:
-        notes.append(note)
-    for note in part2notes:
-        notes.append(note)
-    finalMTX[0][tenor] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, nextMeasureDestDistance, tenor)]
+    # part1notes, microDestDistance = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[0]), beats12, startDistance, microDestDistance, tenor)
+    # part2notes, nextMeasureDestDistance = gnf.getNotesFugue(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats34, microDestDistance, nextMeasureDestDistance, tenor)
+    # notes = []
+    # for note in part1notes:
+    #     notes.append(note)
+    # for note in part2notes:
+    #     notes.append(note)
+    # finalMTX[0][tenor] = [mo.Cell(mo.Chord(destinationChords[0]), mo.Chord(destinationChords[1]), beats1234, notes, nextMeasureDestDistance, tenor)]
 
-    # TODO: continue from here. add measures 2 and 3
+    # first pick a rhythm for beats [1 2]
+    rhythmOptions = [
+        # 1 note
+        ['2'],
+        # 2 notes
+        ['4.', '8'], ['4', '4'], ['8', '4.'],
+        # 3 notes
+        ['4.', '16', '16'], ['4', '8.', '16'], ['4', '8', '8'], ['8.', '16', '4'], ['8', '8~', '8', '8'], ['8', '8', '4'],
+        # ['4~', '16', '8', '16'], ['4~', '16', '16', '8'], ['16', '8.', '4'],
+        # 4 notes
+        ['4~', '16', '16', '16', '16'], ['4', '8', '16', '16'], ['4', '16', '8', '16'], ['4', '16', '16', '8'],
+        ['8.', '16', '8.', '16'], ['8.', '16', '8', '8'], ['8', '8', '8.', '16'],
+        ['8', '8~', '8', '16', '16'], ['8', '8', '8', '8'], ['8', '16', '16', '4'],
+        ['16', '8', '16', '4'], ['16', '16', '8', '4'],
+        # ['16', '8.', '8.', '16'], ['16', '8.', '8', '8'], ['16', '8.', '16', '8.'], ['8.', '16', '16', '8.'], ['8', '8', '16', '8.'],
+        # 5 notes
+        ['4', '16', '16', '16', '16'], ['8.', '16', '8', '16', '16'], ['8.', '16', '16', '8', '16'], ['8.', '16', '16', '16', '8'],
+        ['8', '8~', '16', '16', '16', '16'], ['8', '8', '8', '16', '16'], ['8', '8', '16', '8', '16'], ['8', '8', '16', '16', '8'],
+        ['8', '16', '16~', '16', '16', '8'], ['8', '16', '16', '8.', '16'], ['8', '16', '16', '8', '8'],
+        ['16', '16', '8~', '8', '16', '16'], ['16', '16', '8~', '16', '8', '16'], ['16', '16', '8~', '16', '16', '8'],
+        ['16', '16', '8', '8.', '16'], ['16', '16', '8', '8', '8'],
+        # 6 notes
+        ['8.', '16', '16', '16', '16', '16'], ['8', '8', '16', '16', '16', '16'], ['8', '16', '16~', '16', '16', '16', '16'],
+        ['8', '16', '16', '8', '16', '16'], ['8', '16', '16', '16', '8', '16'], ['8', '16', '16', '16', '16', '8'],
+        ['16', '8', '16~', '16', '16', '16', '16'], ['16', '8', '16', '8', '16', '16'],
+        ['16', '8', '16', '16', '8', '16'], ['16', '8', '16', '16', '16', '8'], ['16', '16', '8~', '16', '16', '16', '16'],
+        ['16', '16', '8', '8', '16', '16'], ['16', '16', '8', '16', '8', '16'], ['16', '16', '8', '16', '16', '8'],
+        ['16', '16', '16', '16~', '16', '8', '16'], ['16', '16', '16', '16~', '16', '16', '8'],
+        ['16', '16', '16', '16', '8.', '16'], ['16', '16', '16', '16', '8', '8'],
+        # ['16', '8.', '16', '16', '16', '16'], ['16', '16', '16', '16', '16', '8.'],
+        # 7 notes
+        ['8', '16', '16', '16', '16', '16', '16'], ['16', '8', '16', '16', '16', '16', '16'],
+        ['16', '16', '8', '16', '16', '16', '16'], ['16', '16', '16', '16~', '16', '16', '16', '16'],
+        ['16', '16', '16', '16', '8', '16', '16'], ['16', '16', '16', '16', '16', '8', '16'],
+        ['16', '16', '16', '16', '16', '16', '8'],
+        # 8 notes
+        # ['16', '16', '16', '16', '16', '16', '16', '16']
+    ]
 
+    # get random rhythms. check for # of them to prevent too many/few notes
+    # make sure there's at least 1 'long' note (half, dotted quarter, tied quarter, or quarter)
+    counter = 0
+    longNotes = 0
+    while (counter > 10 or counter < 3) or (longNotes == 0):
+        rhythm12 = random.choice(rhythmOptions)
+        rhythm34 = random.choice(rhythmOptions)
+        counter = 0
+        longNotes = 0
+        for i in rhythm12:
+            counter += 1
+            if i == '2' or i == '4.' or i == '4~' or i == '4':
+                longNotes += 1
+        for i in rhythm34:
+            counter += 1
+            if i == '2' or i == '4.' or i == '4~' or i == '4':
+                longNotes += 1
+        #print(longNotes)
+
+    #print(rhythm12, rhythm34)
+
+    # count notes to microdestinations and combine rhythms
+    rhythms = []
+    counter12 = 0
+    counter34 = 0
+    for i in rhythm12:
+        rhythms.append(i)
+        counter12 += 1
+    for i in rhythm34:
+        rhythms.append(i)
+        counter34 += 1
+    print(rhythms)
+
+    # calculate distance and direction
+    startTonal = dtt.distanceToTonal(startDistance)
+    if startDistance == microDestDistance:
+        direction = 0
+        distanceBetweenTonal = 0
+    elif startDistance < microDestDistance:
+        direction = 1
+        if startTonal < microDestTonal: # 1 to 7 = 7 - 1 = 6, 3 to 5 = 5 - 3 = 2
+            distanceBetweenTonal = max(microDestTonal, startTonal) - min(microDestTonal, startTonal)
+        else: # 7 to 1 = 1 - 7 + 7 = 1, 5 to 3 = 3 - 5 + 7 = 5
+            distanceBetweenTonal = min(microDestTonal, startTonal) - max(microDestTonal, startTonal) + 7
+    else:
+        direction = -1
+        if startTonal < microDestTonal: # 1 to 7 = 1 - 7 + 7 = 1, 3 to 5 = 3 - 5 + 7 = 5
+            distanceBetweenTonal = min(microDestTonal, startTonal) - max(microDestTonal, startTonal) + 7
+        else: # 7 to 1 = 7 - 1 = 6, 5 to 3 = 5 - 3 = 2
+            distanceBetweenTonal = max(microDestTonal, startTonal) - min(microDestTonal, startTonal)
+
+    # 50% chance to pick a common pattern
+    num1 = random.random()
+    if num1 < .5:
+        if counter12 == distanceBetweenTonal:
+            # move linearly
+            pass
+        elif counter12 == distanceBetweenTonal + 1:
+            pass
+        elif counter12 == distanceBetweenTonal + 2:
+            pass
+        elif counter12 == distanceBetweenTonal + 3:
+            pass
+        else:
+            # just do random
+        pass
+    # otherwise just move randomly
+    else:
+        if rhythm12[-1] == '16':
+            # make sure it moves linearly
+            if rhythm12[-2] == '16':
+                # make sure both move linearly
+                pass
+            pass
+        num2 = random.random()
+        # the shorter the rhythm, the higher the chance to move linearly
+
+
+    # TODO: continue from here
+
+
+
+
+
+    # TODO: add measures 2 and 3
+    # small percent chance to reuse a rhythm from measure 1
+    num1 = random.random()
+    if num1 < .1:
+        # reuse rhythm12
+        pass
+    elif num1 < .2:
+        # reuse rhythm34
+        pass
+    elif num1 < .25:
+        # reuse both rhythm12 and rhythm34
+        pass
+    else:
+        # pick random rhythms
+        pass
 
     #####################################################################
     # CREATE FILES: .ly, .xml

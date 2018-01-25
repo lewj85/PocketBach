@@ -26,6 +26,7 @@ def choraleWriter(music = None):
     #####################################################################
     # CREATE MEASURES 1-4
     #####################################################################
+    print('writing measures 1-4')
     # start with a I chord
     chordArray.append(1)
 
@@ -91,6 +92,8 @@ def choraleWriter(music = None):
     #####################################################################
     # CREATE MEASURES 5-8
     #####################################################################
+    print('writing measures 5-8')
+    print(chordArray)
     # start with I, IV, V, or vi
     # NOTE: we want a different chord than previous so...
     chordArray.append(chordArray[-1])  # to enter loop below (no python do-while)
@@ -151,6 +154,8 @@ def choraleWriter(music = None):
     #####################################################################
     # CREATE MEASURES 9-12
     #####################################################################
+    print('writing measures 9-12')
+    print(chordArray)
     # repeat first 4 measures
     for m in range(4):
         chordArray.append(chordArray[m])
@@ -180,6 +185,8 @@ def choraleWriter(music = None):
     #####################################################################
     # CREATE MEASURES 13-16
     #####################################################################
+    print('writing measures 13-16')
+    print(chordArray)
     # set destination to I
     destination = 1
 
@@ -228,6 +235,7 @@ def choraleWriter(music = None):
         noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
         #noteMTXList.append(noteMTX[j][:])
 
+    print(chordArray)
 
     #####################################################################
     # MAGIC
@@ -237,7 +245,6 @@ def choraleWriter(music = None):
     finalMTX = orch.orchestrate(music, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices)
     # print(noteMTX)
     #print(finalMTX)
-    print(chordArray)
 
     # create .ly files for each species
     cl.createLily(music, finalMTX, measures, maxVoices, 1)  # first species
