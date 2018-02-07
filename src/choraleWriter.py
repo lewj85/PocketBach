@@ -4,6 +4,7 @@ from lib import tonalToPitch as ttp
 from lib import orchestrate as orch
 from lib import createLily as cl
 from lib import speciesCP as scp
+import numpy as np
 import random
 import os
 #import time
@@ -18,10 +19,14 @@ def choraleWriter(music = None):
         music = mo.Music()
 
     chordArray = []
-    chordsPerMeasure = 1
-    beatsPerMeasure = 4
+    species = 1
     measures = 16
+    # maxVoices = -1
+    # while maxVoices != 3 or maxVoices != 4:
+    #    maxVoices = int(input("Enter 3 or 4 voices: "))
     maxVoices = 3
+
+    # TODO: change chordArray to hold [[1], [4]...] rather than [1,4...] for other species
 
     #####################################################################
     # CREATE MEASURES 1-4
@@ -61,39 +66,39 @@ def choraleWriter(music = None):
         #     secondInversionLocations.append(i+2)
         #     secondInversionLocations.append(i+10)  # add same inversions to measures 9-12 (really 10-12)
 
-    # display chordArray
-    #print(chordArray)
-
-    # create a 2D note matrix
-    # x dimension = chords
-    # y dimensions:
-    #   1. notes in current chord
-    #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
-    noteMTX = [[0 for y in range(12)] for x in range(16)]  # hard-coded to 16 chords/measures
-
-    # create a list of the note matrices
-    #   broken down by chord
-    #noteMTXList = []
-
-    # fill in the chords:
-    for j in range(4):
-        noteMTX[j][4] = chordArray[j]                       # chord root
-        if j > 0:
-            noteMTX[j][8] = noteMTX[j-1][4]                 # prev chord root
-        noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
-        noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-        #noteMTXList.append(noteMTX[j][:])
-
-    # display noteMTXList
-    #print(noteMTXList)
+    # # display chordArray
+    # #print(chordArray)
+    #
+    # # create a 2D note matrix
+    # # x dimension = chords
+    # # y dimensions:
+    # #   1. notes in current chord
+    # #   2. 12 note data types: pitch, duration, direction, interval, chord root,
+    # #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
+    # noteMTX = [[0 for y in range(12)] for x in range(16)]  # hard-coded to 16 chords/measures
+    #
+    # # create a list of the note matrices
+    # #   broken down by chord
+    # #noteMTXList = []
+    #
+    # # fill in the chords:
+    # for j in range(4):
+    #     noteMTX[j][4] = chordArray[j]                       # chord root
+    #     if j > 0:
+    #         noteMTX[j][8] = noteMTX[j-1][4]                 # prev chord root
+    #     noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
+    #     noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
+    #     #noteMTXList.append(noteMTX[j][:])
+    #
+    # # display noteMTXList
+    # #print(noteMTXList)
 
 
     #####################################################################
     # CREATE MEASURES 5-8
     #####################################################################
     print('writing measures 5-8')
-    print(chordArray)
+    #print(chordArray)
     # start with I, IV, V, or vi
     # NOTE: we want a different chord than previous so...
     chordArray.append(chordArray[-1])  # to enter loop below (no python do-while)
@@ -130,63 +135,63 @@ def choraleWriter(music = None):
     # add the hard-coded V destination to bring us back to I in measure 9
     chordArray.append(5)
 
-    # display chordArray
-    #print(chordArray)
-
-    # create a 2D note matrix
-    # x dimension = chords
-    # y dimensions:
-    #   1. notes in current chord
-    #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
-    # fill in the chords:
-    for j in range(4, 8):
-        noteMTX[j][4] = chordArray[j]                       # chord root
-        noteMTX[j][8] = noteMTX[j-1][4]                     # prev chord root
-        noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
-        noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-        #noteMTXList.append(noteMTX[j][:])
-
-    # display noteMTXList
-    #print(noteMTXList)
+    # # display chordArray
+    # #print(chordArray)
+    #
+    # # create a 2D note matrix
+    # # x dimension = chords
+    # # y dimensions:
+    # #   1. notes in current chord
+    # #   2. 12 note data types: pitch, duration, direction, interval, chord root,
+    # #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
+    # # fill in the chords:
+    # for j in range(4, 8):
+    #     noteMTX[j][4] = chordArray[j]                       # chord root
+    #     noteMTX[j][8] = noteMTX[j-1][4]                     # prev chord root
+    #     noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
+    #     noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
+    #     #noteMTXList.append(noteMTX[j][:])
+    #
+    # # display noteMTXList
+    # #print(noteMTXList)
 
 
     #####################################################################
     # CREATE MEASURES 9-12
     #####################################################################
     print('writing measures 9-12')
-    print(chordArray)
+    #print(chordArray)
     # repeat first 4 measures
     for m in range(4):
         chordArray.append(chordArray[m])
-
-    # display chordArray
-    #print(chordArray)
-
-    # create a 2D note matrix
-    # x dimension = chords
-    # y dimensions:
-    #   1. notes in current chord
-    #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
-    # fill in the chords:
-    for j in range(8, 12):
-        noteMTX[j][4] = chordArray[j]                       # chord root
-        #noteMTX[j][7] = noteMTX[j-8][7]                     # inversion - this is done at the end
-        noteMTX[j][8] = noteMTX[j - 1][4]                   # prev chord root
-        noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1  # beats
-        noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-        #noteMTXList.append(noteMTX[j][:])
-
-    # display noteMTXList
-    #print(noteMTXList)
+    #
+    # # display chordArray
+    # #print(chordArray)
+    #
+    # # create a 2D note matrix
+    # # x dimension = chords
+    # # y dimensions:
+    # #   1. notes in current chord
+    # #   2. 12 note data types: pitch, duration, direction, interval, chord root,
+    # #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
+    # # fill in the chords:
+    # for j in range(8, 12):
+    #     noteMTX[j][4] = chordArray[j]                       # chord root
+    #     #noteMTX[j][7] = noteMTX[j-8][7]                     # inversion - this is done at the end
+    #     noteMTX[j][8] = noteMTX[j - 1][4]                   # prev chord root
+    #     noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1  # beats
+    #     noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
+    #     #noteMTXList.append(noteMTX[j][:])
+    #
+    # # display noteMTXList
+    # #print(noteMTXList)
 
 
     #####################################################################
     # CREATE MEASURES 13-16
     #####################################################################
     print('writing measures 13-16')
-    print(chordArray)
+    #print(chordArray)
     # set destination to I
     destination = 1
 
@@ -207,8 +212,8 @@ def choraleWriter(music = None):
         nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray)
         chordArray.append(nextChord[0])
         # NOTE: NO INVERSIONS FOR LAST 4 MEASURES EXCEPT FOR POSSIBLE I64-V-I
-        if len(chordArray) == 14 and nextChord[0] == 1 and nextChord[1] == 2:
-            noteMTX[13][7] = 2
+        # if len(chordArray) == 14 and nextChord[0] == 1 and nextChord[1] == 2:
+        #     noteMTX[13][7] = 2
 
     # add the hard-coded I destination to end the chorale
     chordArray.append(1)
@@ -217,32 +222,33 @@ def choraleWriter(music = None):
     #print(chordArray)
     chordArray2 = []
     for c in range(len(chordArray)):
-        chordArray2.append(ttp.tonalToPitch(chordArray[c], music.key))
+        chordArray2.append(mo.Chord(chordArray[c]))
     #print(chordArray2)
 
 
-    # create a 2D note matrix
-    # x dimension = chords
-    # y dimensions:
-    #   1. notes in current chord
-    #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
-    # fill in the chords:
-    for j in range(12, 16):
-        noteMTX[j][4] = chordArray[j]                       # chord root
-        noteMTX[j][8] = noteMTX[j-1][4]                     # prev chord root
-        noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
-        noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-        #noteMTXList.append(noteMTX[j][:])
-
+    # # create a 2D note matrix
+    # # x dimension = chords
+    # # y dimensions:
+    # #   1. notes in current chord
+    # #   2. 12 note data types: pitch, duration, direction, interval, chord root,
+    # #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
+    # # fill in the chords:
+    # for j in range(12, 16):
+    #     noteMTX[j][4] = chordArray[j]                       # chord root
+    #     noteMTX[j][8] = noteMTX[j-1][4]                     # prev chord root
+    #     noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
+    #     noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
+    #     #noteMTXList.append(noteMTX[j][:])
+    #
     print(chordArray)
+
 
     #####################################################################
     # MAGIC
     #####################################################################
 
     # orchestrate the voices
-    finalMTX = orch.orchestrate(music, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices)
+    finalMTX = orch.orchestrate(music, chordArray2, maxVoices)
     # print(noteMTX)
     #print(finalMTX)
 

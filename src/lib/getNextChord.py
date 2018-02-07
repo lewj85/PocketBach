@@ -29,7 +29,7 @@ def getNextChord(chordsRemaining, destination, chordArray):
 
         #print('keyStr is '+keyStr)
         newChord = wp.weightedProbability(keyStr)
-        print('newChord is '+str(newChord))
+        #print('newChord is '+str(newChord))
         # if we found a chord
         if newChord:
             # make sure it's a chord we allow!!!

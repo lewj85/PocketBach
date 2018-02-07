@@ -26,7 +26,7 @@ def fugueWriter(subjectMTX = None, music = None):
     beats12 = [1, 2]
     beats34 = [3, 4]
     #maxVoices = -1
-    #while maxVoices != 3 and maxVoices != 4:
+    #while maxVoices != 3 or maxVoices != 4:
     #    maxVoices = int(input("Enter 3 or 4 voices: "))
     maxVoices = 3
     if maxVoices == 3:

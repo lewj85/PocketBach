@@ -18,7 +18,7 @@ Cell = chord, beats, notes, rhythms
 class Music:
 
     def __init__(self, key = 'c', major = True, timesig = None):
-        self.key = key                          # int: represents number of sharps (positive) or flats (negative)
+        self.key = key                          # string: root, with s = sharp, f = flat. 'c', 'cs', etc
         self.major = major                      # boolean: True or False
         self.timesig = timesig                  # [int, int] array: index 0 = beats, index 1 = rhythmic base value
         if timesig is None:

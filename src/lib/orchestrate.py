@@ -3,60 +3,63 @@
 from lib import makeMatrix as mm
 from lib import getNextNote as gnn
 from lib import pitchToTonal as ptt
+from lib import pitchToDistance as ptd
 from lib import tonalToPitch as ttp
 import numpy as np
 import random
 
-def orchestrate(music, noteMTX, chordsPerMeasure, beatsPerMeasure, measures, maxVoices):
-    # 3 dimensional matrix finalMTX contains the fully orchestrated chorale
-    # x = time (16 chords)
-    # y = note (12 note and chord data)
-    #   12 note data types: pitch, duration, direction, interval, chord root,
-    #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
-    # z = voice (3 voices)
-    #   0 = bass, 1 = alto/tenor, 2 = soprano
+def orchestrate(music, chordArray, maxVoices):
 
-    # old things i tried - keeping for legacy
-    #finalMTX = [[['r', 'r', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 16] * 3  # THIS DOESN'T WORK, USE NUMPY
-    #finalMTX.fill(0)                # fill it with 0s, this will make everything an int though...
-    #finalMTX.shape = (16, 12, 3)    # define dimensions
+    if maxVoices == 3:
+        bass = 0
+        tenor = 1
+        soprano = 2
+    else:
+        bass = 0
+        tenor = 1
+        soprano = 2
+        alto = 3  # keeping as 3 instead of swapping with soprano - easier to add into current code
 
-    # NOTE: THE NEW WAY OF DOING THIS USES LISTS TO ALLOW MULTIPLE TYPES INTO THE MATRIX.
-    #       this 'removes' the note data dimension, though it can still be accessed with finalMTX[voice][note][data]
-    finalMTX = mm.makeMatrix(maxVoices)
-    newNote = finalMTX
-    for i in range(measures - 1):
-        finalMTX = np.concatenate((finalMTX, newNote), 1)  # add 15 blank notes, for 16 total
-    #print(finalMTX.shape)
+    beats1234 = [1,2,3,4]
+    beats12 = [1,2]
+    beats34 = [3,4]
+
+    measures = len(chordArray)
+    # create finalMTX - a 2D array of 1D arrays (lists) of Cells - because each measure can hold 1-4 Cells
+    finalMTX = np.empty((measures, maxVoices), dtype=object)
 
     ################################################################
-    # initialize the first chord
+    # orchestrate the first chord
     ################################################################
     # bass
-    finalMTX[0][0][0] = '1'
-    finalMTX[0][0][1] = str(chordsPerMeasure)    # TO DO: fix this for non-4/4
-    finalMTX[0][0][4] = 1
-    finalMTX[0][0][10] = 1
-    finalMTX[0][0][11] = 1
-    # alto/tenor
+    finalMTX[0][bass] = []
+    for chord in range(len(chordArray[0])):
+        # if 1 chord in the measure
+        if range(len(chordArray[0])) == 1:
+            finalMTX[0][bass].append(mo.Cell(chordArray[0][0], chordArray[1][0], beats1234, mo.Note(pitch, ptd.pitchToDistance(chordArray[0][0].root), 1, False, chordArray[0][0].root), destination, voice))
+    # TODO: add other species
+
     chordNotes = [1, 3, 5]  # create array for random to choose from below
-    finalMTX[1][0][0] = str(chordNotes[random.randint(1, 3)-1])  # pick 1, 3, or 5
-    finalMTX[1][0][1] = str(chordsPerMeasure)    # TO DO: fix this for non-4/4
-    finalMTX[1][0][4] = 1
-    finalMTX[1][0][10] = 1
-    finalMTX[1][0][11] = 1
+
+    # alto/tenor
+    finalMTX[0][tenor] = []
+    for chord in range(len(chordArray[0])):
+        # if 1 chord in the measure
+        if range(len(chordArray[0])) == 1:
+            choice = ttp.tonalToPitch(random.choice(chordNotes))  # pick 1, 3, or 5
+            finalMTX[0][tenor].append(mo.Cell(chordArray[0][0], chordArray[1][0], beats1234, mo.Note(choice, ptd.pitchToDistance(choice), 1, False, chordArray[0][0].root), destination, voice))
+    # TODO: add other species
+
     # soprano
-    if finalMTX[1][0][0] == '1':      # if 2 roots, must pick 3rd
-        finalMTX[2][0][0] = '3'
-    elif finalMTX[1][0][0] == '3':    # if root and 3rd, can pick 1 or 5
+    if finalMTX[0][tenor][0].notes[0].pitch == music.key:  # if 2 roots, must pick 3rd
+        finalMTX[0][soprano] =   # 3
+    elif finalMTX[0][tenor][0].notes[0].pitch == mo.Chord(music.key).getPitches()[1]:  # if root and 3rd, can pick 1 or 5
         chordNotes = [1, 5]
-        finalMTX[2][0][0] = str(chordNotes[random.randint(1, 2)-1])
-    else:                           # if root and 5th, must pick 3rd
-        finalMTX[2][0][0] = '3'
-    finalMTX[2][0][1] = str(chordsPerMeasure)    # TO DO: fix this for non-4/4
-    finalMTX[2][0][4] = 1
-    finalMTX[2][0][10] = 1
-    finalMTX[2][0][11] = 1
+        finalMTX[0][soprano] =   # str(chordNotes[random.randint(1, 2) - 1])
+    else:  # if root and 5th, must pick 3rd
+        finalMTX[0][soprano] =   # '3'
+    # TODO: add other species
+
 
     ################################################################
     # orchestrate the remaining chords
