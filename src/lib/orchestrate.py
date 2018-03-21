@@ -1,14 +1,16 @@
 """orchestrate() fleshes out all voices for a given chord matrix"""
 
+from lib import musicObjects as mo
 from lib import makeMatrix as mm
 from lib import getNextNote as gnn
 from lib import pitchToTonal as ptt
 from lib import pitchToDistance as ptd
+from lib import tonalToDistance as ttd
 from lib import tonalToPitch as ttp
 import numpy as np
 import random
 
-def orchestrate(music, chordArray, maxVoices):
+def orchestrate(music, chordArray, maxVoices, species = 1):
 
     if maxVoices == 3:
         bass = 0
@@ -35,8 +37,8 @@ def orchestrate(music, chordArray, maxVoices):
     finalMTX[0][bass] = []
     for chord in range(len(chordArray[0])):
         # if 1 chord in the measure
-        if range(len(chordArray[0])) == 1:
-            finalMTX[0][bass].append(mo.Cell(chordArray[0][0], chordArray[1][0], beats1234, mo.Note(pitch, ptd.pitchToDistance(chordArray[0][0].root), 1, False, chordArray[0][0].root), destination, voice))
+        if len(chordArray[0]) == 1:
+            finalMTX[0][bass].append(mo.Cell(chordArray[0][0], chordArray[1][0], beats1234, [mo.Note(ttp.tonalToPitch(chordArray[0][0].root), ttd.tonalToDistance(chordArray[0][0].root), 1, False, chordArray[0][0].root)], None, bass))
     # TODO: add other species
 
     chordNotes = [1, 3, 5]  # create array for random to choose from below
@@ -45,19 +47,21 @@ def orchestrate(music, chordArray, maxVoices):
     finalMTX[0][tenor] = []
     for chord in range(len(chordArray[0])):
         # if 1 chord in the measure
-        if range(len(chordArray[0])) == 1:
-            choice = ttp.tonalToPitch(random.choice(chordNotes))  # pick 1, 3, or 5
-            finalMTX[0][tenor].append(mo.Cell(chordArray[0][0], chordArray[1][0], beats1234, mo.Note(choice, ptd.pitchToDistance(choice), 1, False, chordArray[0][0].root), destination, voice))
+        if len(chordArray[0]) == 1:
+            pitch = ttp.tonalToPitch(random.choice(chordNotes))  # pick 1, 3, or 5
+            finalMTX[0][tenor].append(mo.Cell(chordArray[0][0], chordArray[1][0], beats1234, [mo.Note(pitch, ptd.pitchToDistance(pitch, tenor), 1, False, chordArray[0][0].root)], None, tenor))
     # TODO: add other species
 
     # soprano
+    finalMTX[0][soprano] = []
     if finalMTX[0][tenor][0].notes[0].pitch == music.key:  # if 2 roots, must pick 3rd
-        finalMTX[0][soprano] =   # 3
-    elif finalMTX[0][tenor][0].notes[0].pitch == mo.Chord(music.key).getPitches()[1]:  # if root and 3rd, can pick 1 or 5
+        pitch = finalMTX[0][tenor][0].chord.getPitches()[1] # 3rd of chord
+    elif finalMTX[0][tenor][0].notes[0].pitch == mo.Chord(ptt.pitchToTonal(music.key)).getPitches()[1]:  # if root and 3rd, can pick 1 or 5
         chordNotes = [1, 5]
-        finalMTX[0][soprano] =   # str(chordNotes[random.randint(1, 2) - 1])
+        pitch = ttp.tonalToPitch(random.choice(chordNotes))
     else:  # if root and 5th, must pick 3rd
-        finalMTX[0][soprano] =   # '3'
+        pitch = finalMTX[0][tenor][0].chord.getPitches()[1]  # 3rd of chord
+    finalMTX[0][soprano].append(mo.Cell(chordArray[0][0], chordArray[1][0], beats1234, [mo.Note(pitch, ptd.pitchToDistance(pitch, soprano), 1, False, chordArray[0][0].root)], None, soprano))
     # TODO: add other species
 
 
@@ -69,17 +73,21 @@ def orchestrate(music, chordArray, maxVoices):
     totalFailures = 0
 
     # save for overwrite prevention
-    i64 = (noteMTX[13][7] == 2)
+    i64 = (chordArray[13][0].root == 1) # .inversion == 2
 
     i = 1
-    while i < measures:  # NOTE: this used to be a for loop from 1 to 'measures', but i changed to
-                        # a while loop so we could add checks for tritones and reset 'i' to re-write
-                        # any 'bad' measures
+    while i < measures:
+        """NOTE: this used to be a for loop from 1 to 'measures', but i changed to a while loop so we 
+        could add checks for tritones and reset 'i' to re-write any 'bad' measures"""
 
         # bass
-        finalMTX[0][i][0] = str(gnn.getNextNote(music, noteMTX, finalMTX, i, measures, 0, maxVoices))
+        notes = []
+        for s in range(species):
+            # TODO: CONTINUE FROM HERE *******make getNextNote() return Note classes instead of ints*********
+            notes.append(gnn.getNextNote(music, chordArray, finalMTX, i, measures, bass, maxVoices))
+        finalMTX[i][0][0] = mo.Cell(blah)
 
-        # manually set last measure's bass to 1, apparently this wasn't a thing already...
+        # manually set last measure's bass to 1
         if i == measures - 1:
             finalMTX[0][i][0] = str(noteMTX[i][4])
 
@@ -100,28 +108,16 @@ def orchestrate(music, chordArray, maxVoices):
             noteMTX[i][7] = 3
             finalMTX[0][i][7] = 3  # 7th chords have 3rd inversion
 
-        # keeping all these old comments for legacy
-        #chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6], finalMTX[0][i][0])
-        #print(chordArr)
-        #print(str(int(finalMTX[0][i][0])))
-        #print(ptt.pitchToTonal(key, chordArr[0]))
-        #print(str(int(finalMTX[0][i][0])) == ptt.pitchToTonal(key, chordArr[0]))
-        # FOUND A BUG: after converting to structs, need to remove the "b'value'" from first 2 columns...
-        # TO DO: CHORALEWRITER'S GETNEXTCHORD IS CURRENTLY DECIDING WHETHER OR NOT TO ADD INVERSIONS, BUT
-        #       GETNEXTNOTE ABOVE REALLY OUGHT TO BE THE THING DECIDING IF THERE ARE INVERSIONS (except for 164 cadences)
-        #       so FIX IT - use the code below, not #finalMTX[0][i][7] = noteMTX[i][7] (except for 164 cadences...)
-        # choraleWriter creates inversions now, so replace everything above with this?
-        #finalMTX[0][i][7] = noteMTX[i][7]
 
         # manually reset 164 if it was overwritten
-        if i == 13 and i64 == True:
+        if i == 13 and i64:
             #print('overwriting')
             noteMTX[13][0] = str(noteMTX[0][4]+4)
             if int(noteMTX[13][0]) > 7:
                 noteMTX[13][0] = str(int(noteMTX[13][0]) - 7)
             finalMTX[0][13][0] = noteMTX[13][0]
-            noteMTX[13][7] = 2
-            finalMTX[0][13][7] = 2
+            for j in range(maxVoices):
+                finalMTX[i][j][0].chord.inversion = 2
 
         # soprano
         finalMTX[2][i][0] = str(gnn.getNextNote(music, noteMTX, finalMTX, i, measures, 2, maxVoices))  # soprano
@@ -201,19 +197,7 @@ def orchestrate(music, chordArray, maxVoices):
                 finalMTX[voice][i][4] = noteMTX[i][4]                       # chord root
                 finalMTX[voice][i][5] = noteMTX[i][5]                       # 7th chord
                 finalMTX[voice][i][6] = noteMTX[i][6]                       # tonality
-
-                # chordArr = dc.defineChord(key, major, noteMTX[i][4], noteMTX[i][5], noteMTX[i][6], noteMTX[i][7])  # inversion
-                # if str(int(finalMTX[voice][i][0])) == ptt.pitchToTonal(key, chordArr[0]):
-                #     finalMTX[voice][i][7] = 0
-                # elif str(int(finalMTX[voice][i][0])) == ptt.pitchToTonal(key, chordArr[1]):
-                #     finalMTX[voice][i][7] = 1
-                # elif str(int(finalMTX[voice][i][0])) == ptt.pitchToTonal(key, chordArr[2]):
-                #     finalMTX[voice][i][7] = 2
-                # else:
-                #     finalMTX[voice][i][7] = 3  # 7th chords have 3rd inversion
-                # replace everything above with this
                 finalMTX[voice][i][7] = noteMTX[i][7]                       # inversion
-
                 finalMTX[voice][i][8] = noteMTX[i-1][4]                     # prev chord root
                 finalMTX[voice][i][9] = 0                                   # distance, none in bass
                 finalMTX[voice][i][10] = noteMTX[i][10]                     # beat

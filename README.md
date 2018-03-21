@@ -6,16 +6,6 @@
 Requires LilyPond to be installed: http://lilypond.org/
 
 
-To record:
-```
-$ python3 audioRecorder.py
-```
-
-To play back:
-```
-$ aplay melody.wav
-```
-
 **Audio Recorder** - Complete
 
 **Audio Transcriber** - *Incomplete*
@@ -26,14 +16,11 @@ $ aplay melody.wav
 
 **Data Parser** - Complete
 
-**Chorale Writer** - Complete
+**Chorale Writer** - Complete, temporarily broken during conversion  
+Working version: https://github.com/lewj85/PocketBach/tree/cd7f2fd9bf8f5b0def7a6928b1b55e5612ba8728
 
 **Fugue Writer** - *Incomplete*
 
 **MusicXML Converter** - Complete
 
 **LilyPond Converter** - Complete
-
-
-
-Visit www.pocketbach.com for more info.

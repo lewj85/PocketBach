@@ -48,8 +48,6 @@ def choraleWriter(music = None):
 
     # calculate number of chords that need to be filled
     chordsNeeded = 3
-    firstInversionLocations = []
-    secondInversionLocations = []
 
     # fill in the missing chords
     for i in range(0, chordsNeeded):
@@ -59,39 +57,6 @@ def choraleWriter(music = None):
         # 3. the previous chord, found by chordArray[-1]
         nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray)
         chordArray.append(nextChord[0])
-        # if nextChord[1] == 1:
-        #     firstInversionLocations.append(i+2)
-        #     firstInversionLocations.append(i+10)  # add same inversions to measures 9-12 (really 10-12)
-        # elif nextChord[1] == 2:
-        #     secondInversionLocations.append(i+2)
-        #     secondInversionLocations.append(i+10)  # add same inversions to measures 9-12 (really 10-12)
-
-    # # display chordArray
-    # #print(chordArray)
-    #
-    # # create a 2D note matrix
-    # # x dimension = chords
-    # # y dimensions:
-    # #   1. notes in current chord
-    # #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    # #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
-    # noteMTX = [[0 for y in range(12)] for x in range(16)]  # hard-coded to 16 chords/measures
-    #
-    # # create a list of the note matrices
-    # #   broken down by chord
-    # #noteMTXList = []
-    #
-    # # fill in the chords:
-    # for j in range(4):
-    #     noteMTX[j][4] = chordArray[j]                       # chord root
-    #     if j > 0:
-    #         noteMTX[j][8] = noteMTX[j-1][4]                 # prev chord root
-    #     noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
-    #     noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-    #     #noteMTXList.append(noteMTX[j][:])
-    #
-    # # display noteMTXList
-    # #print(noteMTXList)
 
 
     #####################################################################
@@ -127,33 +92,9 @@ def choraleWriter(music = None):
         # 3. the previous chord, found by chordArray[-1]
         nextChord = gnc.getNextChord((chordsNeeded - i), destination, chordArray)
         chordArray.append(nextChord[0])
-        # if nextChord[1] == 1:
-        #     firstInversionLocations.append(i+6)  # NOTE: not i+5 because we start with a non-inversion on measure 5
-        # elif nextChord[1] == 2:
-        #     secondInversionLocations.append(i+6)  # NOTE: not i+5 because we start with a non-inversion on measure 5
 
     # add the hard-coded V destination to bring us back to I in measure 9
     chordArray.append(5)
-
-    # # display chordArray
-    # #print(chordArray)
-    #
-    # # create a 2D note matrix
-    # # x dimension = chords
-    # # y dimensions:
-    # #   1. notes in current chord
-    # #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    # #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
-    # # fill in the chords:
-    # for j in range(4, 8):
-    #     noteMTX[j][4] = chordArray[j]                       # chord root
-    #     noteMTX[j][8] = noteMTX[j-1][4]                     # prev chord root
-    #     noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
-    #     noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-    #     #noteMTXList.append(noteMTX[j][:])
-    #
-    # # display noteMTXList
-    # #print(noteMTXList)
 
 
     #####################################################################
@@ -164,27 +105,6 @@ def choraleWriter(music = None):
     # repeat first 4 measures
     for m in range(4):
         chordArray.append(chordArray[m])
-    #
-    # # display chordArray
-    # #print(chordArray)
-    #
-    # # create a 2D note matrix
-    # # x dimension = chords
-    # # y dimensions:
-    # #   1. notes in current chord
-    # #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    # #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
-    # # fill in the chords:
-    # for j in range(8, 12):
-    #     noteMTX[j][4] = chordArray[j]                       # chord root
-    #     #noteMTX[j][7] = noteMTX[j-8][7]                     # inversion - this is done at the end
-    #     noteMTX[j][8] = noteMTX[j - 1][4]                   # prev chord root
-    #     noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1  # beats
-    #     noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-    #     #noteMTXList.append(noteMTX[j][:])
-    #
-    # # display noteMTXList
-    # #print(noteMTXList)
 
 
     #####################################################################
@@ -199,9 +119,9 @@ def choraleWriter(music = None):
     num1 = random.random()
     if num1 < 0.4:
         chordArray.append(1)
-        chordsNeeded = 2
+        chordsNeeded = 1
     else:
-        chordsNeeded = 3
+        chordsNeeded = 2
 
     # fill in the missing chords
     for i in range(0, chordsNeeded):
@@ -215,33 +135,17 @@ def choraleWriter(music = None):
         # if len(chordArray) == 14 and nextChord[0] == 1 and nextChord[1] == 2:
         #     noteMTX[13][7] = 2
 
-    # add the hard-coded I destination to end the chorale
+    # add the hard-coded V-I cadence to end the chorale
+    chordArray.append(5)
     chordArray.append(1)
 
     # display chordArray, both in numbers and pitches
-    #print(chordArray)
     chordArray2 = []
     for c in range(len(chordArray)):
-        chordArray2.append(mo.Chord(chordArray[c]))
-    #print(chordArray2)
+        # TODO: remove the [] around the chords, build species properly
+        chordArray2.append([mo.Chord(chordArray[c])])
 
-
-    # # create a 2D note matrix
-    # # x dimension = chords
-    # # y dimensions:
-    # #   1. notes in current chord
-    # #   2. 12 note data types: pitch, duration, direction, interval, chord root,
-    # #       7th chord, tonality, inversion, prev chord root, distance, beat, measure
-    # # fill in the chords:
-    # for j in range(12, 16):
-    #     noteMTX[j][4] = chordArray[j]                       # chord root
-    #     noteMTX[j][8] = noteMTX[j-1][4]                     # prev chord root
-    #     noteMTX[j][10] = int((j % chordsPerMeasure) * (beatsPerMeasure / chordsPerMeasure)) + 1      # beats
-    #     noteMTX[j][11] = int(j / chordsPerMeasure) + 1      # measure number
-    #     #noteMTXList.append(noteMTX[j][:])
-    #
     print(chordArray)
-
 
     #####################################################################
     # MAGIC

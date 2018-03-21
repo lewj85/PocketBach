@@ -1,4 +1,4 @@
-"""getNextNote() chooses the next note based on the previous note and current chord, returns an int (not a string)"""
+"""getNextNote() chooses the next note based on the previous note and current chord. Returns a Note class."""
 
 from lib import musicObjects as mo
 from lib import tonalToPitch as ttp
@@ -7,38 +7,33 @@ from lib import defineChord as dc
 import random
 
 
-def getNextNote(music, noteMTX, finalMTX, index, measures, voice, maxVoices):
-    # extract relevant data from matrices
-    prevNote = int(finalMTX[voice][index - 1][0])   # previous note, TO DO: change this to a dictionary
-    currentRoot = noteMTX[index][4]             # current chord root
-    nextChord = 1                               # next chord root, currently unused
-    if index < measures - 1:
-        nextChord = noteMTX[index + 1][4]
-    seventh = noteMTX[index][5]                 # seventh chord?
-    tonality = noteMTX[index][6]                # tonal root?
-    inversion = noteMTX[index][7]               # inversion
+# TODO: CONTINUE FROM HERE *******make getNextNote() return Note classes instead of ints*********
+# need to track direction using finalMTX[measure - 1][voice][-1].notes[-1].distance
 
-    # TO DO: need to add nextChord considerations!!
+
+def getNextNote(music, chordArray, finalMTX, measure, measures, voice, maxVoices):
+    # extract relevant data from matrices
+    # previous note
+    prevNote = int(ptt.pitchToTonal(finalMTX[measure - 1][voice][-1].notes[-1].pitch))
+
+    # TODO: fix [measure][0] for species with more than 1 chord per measure
+    currentRoot = chordArray[measure][0].root        # current chord root
+    nextChord = 1                                    # next chord root, currently unused
+    if measure < measures - 1:                       # avoid index out of range error on last measure
+        nextChord = chordArray[measure + 1][0].root
+    seventh = chordArray[measure][0].seventh         # seventh chord
+    tonality = chordArray[measure][0].tonality       # tonal root
+    inversion = chordArray[measure][0].inversion     # inversion
+
+    # TODO: need to add nextChord considerations!!
     #   especially for 7th chords because of 3rd inversion linear descents,
     #   but also for picking 2nd inversions, which should be rare if it isn't linear motion
 
-    # for reference:
-    # 12 note data types: pitch, duration, direction, interval, chord root,
-    #   7th chord, tonality, inversion, prev chord root, distance, beat, measure
-
     # generate random number - PocketBach's soul...
     num1 = random.random()
-    #print(num1)
 
     # track chord tones
-    chordData = dc.defineChord(mo.Chord(currentRoot, tonality, seventh, inversion)) # root, tonality = 0, seventh = False, inversion = 0, secondary = False, secondaryRoot
-    # if there's a problem defining a chord above, just use a I-chord
-    if chordData == -1:
-        chordVec = ['c','e','g']
-    else:
-        chordVec = chordData[0]
-        #inversion = chordData[1]  # we already know this!
-    #print(chordVec)
+    chordVec = chordArray[measure][0].getPitches()
 
 
     ################################################################
@@ -60,11 +55,11 @@ def getNextNote(music, noteMTX, finalMTX, index, measures, voice, maxVoices):
             return nextNote
 
         # if on the 2nd to last measure return a 5
-        if index == measures - 2:
+        if measure == measures - 2:
             return 5
 
         # 7th chords with only 3 voices cannot be in 2nd inversion (5th in bass)
-        if noteMTX[index][5] == 1 and maxVoices == 3:
+        if chordArray[measure][5] == 1 and maxVoices == 3:
             if inversion == 0:
                 del chordVec[2]
             elif inversion == 1:
@@ -126,10 +121,10 @@ def getNextNote(music, noteMTX, finalMTX, index, measures, voice, maxVoices):
         # check for 7th chords first
 
         # first of all... if on the last measure, just return tonic
-        if noteMTX[index][11] == measures:
+        if chordArray[measure][11] == measures:
             return 1
 
-        if finalMTX[0][index][5] == 0:  # if not a 7th chord
+        if finalMTX[0][measure][5] == 0:  # if not a 7th chord
             # can't be 3rd+3rd
             if inversion == 1:  # if inversion = 1
                 del chordVec[0]
@@ -207,27 +202,27 @@ def getNextNote(music, noteMTX, finalMTX, index, measures, voice, maxVoices):
     else:
         # enforce rules above by changing chordVec!!!
         # check for 7th chords first
-        if finalMTX[0][index][5] == 0:  # if not a 7th chord
+        if finalMTX[0][measure][5] == 0:  # if not a 7th chord
             if inversion == 0:  # if inversion = 0
                 # if root+root, must be 3rd
-                if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[0], music.key):
+                if str(int(finalMTX[2][measure][0])) == ptt.pitchToTonal(chordVec[0], music.key):
                     return int(ptt.pitchToTonal(chordVec[1], music.key))  # NOTE: return
                 # if root+3rd, can be root or 5th
-                elif str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[1], music.key):
+                elif str(int(finalMTX[2][measure][0])) == ptt.pitchToTonal(chordVec[1], music.key):
                     del chordVec[1]
                 # if root+5th, must be 3rd
                 else:
                     return int(ptt.pitchToTonal(chordVec[1], music.key))  # NOTE: return
             elif inversion == 1:  # if inversion = 1
                 # if 3rd+root, can be root or 5th
-                if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[2], music.key):
+                if str(int(finalMTX[2][measure][0])) == ptt.pitchToTonal(chordVec[2], music.key):
                     del chordVec[0]
                 # elif # can't be 3rd+3rd
                 else:  # if 3rd+5th, must be root
                     return int(ptt.pitchToTonal(chordVec[2], music.key))  # NOTE: return
             elif inversion == 2:  # if inversion = 2
                 # if 5th+root, must be 3rd
-                if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[1], music.key):
+                if str(int(finalMTX[2][measure][0])) == ptt.pitchToTonal(chordVec[1], music.key):
                     return int(ptt.pitchToTonal(chordVec[2], music.key))  # NOTE: return
                 # elif # can't be 5th+5th
                 else:  # if 5th+3rd, must be root
@@ -238,7 +233,7 @@ def getNextNote(music, noteMTX, finalMTX, index, measures, voice, maxVoices):
                 if inversion == 0:  # if inversion = 0
                     # 7th chords with 3 voices cannot be root+root
                     # 7th chords with 3 voices with root+3rd, must be 7th
-                    if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[1], music.key):
+                    if str(int(finalMTX[2][measure][0])) == ptt.pitchToTonal(chordVec[1], music.key):
                         return int(ptt.pitchToTonal(chordVec[3], music.key))  # NOTE: return
                     # elif # 7th chords with 3 voices cannot have a 5th
                     # 7th chords with 3 voices with root+7th, must be 3rd
@@ -247,7 +242,7 @@ def getNextNote(music, noteMTX, finalMTX, index, measures, voice, maxVoices):
 
                 elif inversion == 1:  # if inversion = 1
                     # 7th chords with 3 voices with 3rd+root, must be 7th
-                    if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[3], music.key):
+                    if str(int(finalMTX[2][measure][0])) == ptt.pitchToTonal(chordVec[3], music.key):
                         return int(ptt.pitchToTonal(chordVec[2], music.key))  # NOTE: return
                     # 7th chords with 3 voices cannot be 3rd+3rd
                     # 7th chords with 3 voices cannot have a 5th
@@ -257,7 +252,7 @@ def getNextNote(music, noteMTX, finalMTX, index, measures, voice, maxVoices):
                 # 7th chords with 3 voices cannot have a 5th, so no 2nd inversion
                 else:  # if inversion = 3
                     # 7th chords with 3 voices with 7th+root, must be 3rd
-                    if str(int(finalMTX[2][index][0])) == ptt.pitchToTonal(chordVec[1], music.key):
+                    if str(int(finalMTX[2][measure][0])) == ptt.pitchToTonal(chordVec[1], music.key):
                         return int(ptt.pitchToTonal(chordVec[2], music.key))  # NOTE: return
                     # 7th chords with 3 voices with 7th+3rd, must be root
                     else:
