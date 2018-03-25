@@ -12,21 +12,18 @@ import os
 
 
 # choraleWriter() function
-def choraleWriter(music = None):
+def choraleWriter(music = None, species = 1):
 
     # initialize variables
     if music is None:
         music = mo.Music()
 
     chordArray = []
-    species = 1
     measures = 16
     # maxVoices = -1
     # while maxVoices != 3 or maxVoices != 4:
     #    maxVoices = int(input("Enter 3 or 4 voices: "))
     maxVoices = 3
-
-    # TODO: change chordArray to hold [[1], [4]...] rather than [1,4...] for other species
 
     #####################################################################
     # CREATE MEASURES 1-4
